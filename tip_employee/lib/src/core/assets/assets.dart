@@ -10,4 +10,5 @@ class Assets {
   static const googleImage = 'assets/images/google.png';
   static const forgot = 'assets/images/forget.png';
     static const facebookImage = 'assets/images/facebook.png';
+       static const dot = 'assets/images/dot.png'; 
 }
