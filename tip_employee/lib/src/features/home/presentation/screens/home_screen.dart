@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
                       height: 44, // Fixed height to match avatar and notification
                       decoration: BoxDecoration(
                         color: Colors.grey[100], // Light background color
-                        borderRadius: BorderRadius.circular(12), // Half of height for pill shape
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: const TextField(
                         decoration: InputDecoration(
@@ -87,17 +87,109 @@ class _HomeState extends State<Home> {
               ),
             ),
 
-            // 🔹 Balance Card (optional)
-            // const Padding(
-            //   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-            //   child: BalanceCard(),
-            // ),
-
-            // 🔹 Time Filter Buttons
-            // const Padding(
-            //   padding: EdgeInsets.symmetric(vertical: 8.0),
-            //   child: TimeFilterButton(),
-            // ),
+            // 🔹 Promotional Banner with background image
+            Container(
+              width: double.infinity,
+              height: 220, // Increased height to accommodate additional content
+              margin: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/birr.png'),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black54, // Dark overlay to improve text visibility
+                    BlendMode.darken,
+                  ),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Financial information section
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total money earned',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          '\$1,234.56',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Total withdrawn',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          '\$1,200.00',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Available balance',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          '\$34.56',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    const Spacer(), // Pushes the button to the bottom
+                    
+                    // Right-aligned button
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          'Show all transactions',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.primaryColor,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             // 🔹 Recent Tips Header
             Padding(
