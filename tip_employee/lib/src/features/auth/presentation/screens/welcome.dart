@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tip_employee/src/features/auth/presentation/screens/landing_screen.dart';
-import '../../../../core/assets/assets.dart';
+import 'package:tip_employee/src/app/routes/app_routes.dart';
+import 'package:tip_employee/src/core/assets/assets.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -8,46 +8,45 @@ class Welcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 187, 253, 111),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
-        
-        child: Row(
-          mainAxisSize: MainAxisSize.min, 
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            
-             Container(
-              width: 100,
-              height: 100,
-          
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(Assets.tag),
-                  
-                 
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(Assets.tag),
+                    ),
+                  ),
                 ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, AppRoutes.landing);
+                  },
+                  child: Text(
+                    'Tip-tip',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.landing);
+                },
+                child: const Text('Get Started'),
               ),
             ),
-            
-             GestureDetector(
-              onTap: () {
-                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Taskugas()),
-                );
-                
-              },
-            child:Text('Tasktugas',style: TextStyle(
-              fontSize: 40,
-              fontWeight: FontWeight.w900,
-              color: const Color.fromARGB(255, 22, 126, 1),
-            ),)
-             ),
-
           ],
-
-
-
-
         ),
       ),
     );
