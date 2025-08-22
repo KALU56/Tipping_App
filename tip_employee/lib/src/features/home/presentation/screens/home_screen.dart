@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tip_employee/src/app/routes/app_routes.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
 import 'package:tip_employee/src/features/home/presentation/widgets/balance_card.dart';
 import 'package:tip_employee/src/features/home/presentation/widgets/bottom_nav_bar.dart';
@@ -23,23 +24,34 @@ class _HomeState extends State<Home> {
           children: [
             // 🔹 Header Row (Avatar + Search + Notifications)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12,
+              ),
               child: Row(
                 children: [
-                  // Avatar with border - fixed height container
-                  Container(
-                    height: 44, // Fixed height to match other elements
-                    width: 44, // Fixed width to make it square
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppTheme.primaryColor,
-                        width: 2,
+                  // Avatar with border - fixed height container (now clickable)
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to settings page
+                      Navigator.pushNamed(context, AppRoutes.settings);
+                    },
+                    child: Container(
+                      height: 44, // Fixed height to match other elements
+                      width: 44, // Fixed width to make it square
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppTheme.primaryColor,
+                          width: 2,
+                        ),
                       ),
-                    ),
-                    child: const CircleAvatar(
-                      radius: 20,
-                      backgroundImage: AssetImage('assets/images/Ellipse 7.png'),
+                      child: const CircleAvatar(
+                        radius: 20,
+                        backgroundImage: AssetImage(
+                          'assets/images/Ellipse 7.png',
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -47,7 +59,8 @@ class _HomeState extends State<Home> {
                   // Search box - with consistent background color
                   Expanded(
                     child: Container(
-                      height: 44, // Fixed height to match avatar and notification
+                      height:
+                          44, // Fixed height to match avatar and notification
                       decoration: BoxDecoration(
                         color: Colors.grey[100], // Light background color
                         borderRadius: BorderRadius.circular(12),
@@ -56,8 +69,15 @@ class _HomeState extends State<Home> {
                         decoration: InputDecoration(
                           hintText: 'Search tips or customers...',
                           border: InputBorder.none,
-                          prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor, size: 20),
-                          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: AppTheme.primaryColor,
+                            size: 20,
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
                         ),
                       ),
                     ),
@@ -164,14 +184,16 @@ class _HomeState extends State<Home> {
                         ),
                       ],
                     ),
-                    
+
                     const Spacer(), // Pushes the button to the bottom
-                    
                     // Right-aligned button
                     Align(
                       alignment: Alignment.centerRight,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(6),
@@ -200,8 +222,8 @@ class _HomeState extends State<Home> {
                   Text(
                     'Recent Tips',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {},
@@ -220,21 +242,9 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 8),
 
             // 🔹 Recent tips list expands to fill space
-            const Expanded(
-              child: RecentTipsList(),
-            ),
+            const Expanded(child: RecentTipsList()),
           ],
         ),
-      ),
-
-      // 🔹 Bottom navigation
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
       ),
     );
   }
