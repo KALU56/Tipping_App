@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tip_employee/src/features/home/presentation/screens/home_screen.dart';
+import 'package:tip_employee/src/features/home/home.dart';
+
 import 'package:tip_employee/src/features/transactions/presentation/screens/transaction_history_screen.dart';
 import 'package:tip_employee/src/features/withdraw/presentation/screens/withdraw_screen.dart';
 import 'package:tip_employee/src/features/home/presentation/widgets/bottom_nav_bar.dart';

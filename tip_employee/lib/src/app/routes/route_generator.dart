@@ -5,7 +5,7 @@ import 'package:tip_employee/src/features/auth/presentation/screens/login.dart';
 import 'package:tip_employee/src/features/auth/presentation/screens/signup.dart';
 import 'package:tip_employee/src/features/auth/presentation/screens/welcome.dart';
 
-import 'package:tip_employee/src/features/home/presentation/screens/mainscreen.dart';
+import 'package:tip_employee/mainscreen.dart';
 import 'package:tip_employee/src/features/settings/presentation/screens/settings_screen.dart';
 import 'package:tip_employee/src/features/transactions/presentation/screens/transaction_history_screen.dart';
 import 'package:tip_employee/src/features/withdraw/presentation/screens/withdraw_screen.dart';
