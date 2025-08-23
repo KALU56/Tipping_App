@@ -1,10 +1,11 @@
-
+// lib/src/features/home/presentation/screens/home_screen.dart
 part of '../../home.dart';
-class _HomeState extends State<Home> {
 
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: Column(
           children: [

@@ -1,5 +1,5 @@
+// lib/src/features/home/presentation/components/header_row.dart
 part of '../../home.dart';
-
 
 class _HeaderRow extends StatelessWidget {
   const _HeaderRow();
@@ -7,18 +7,17 @@ class _HeaderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          // Avatar with border - fixed height container (now clickable)
+          // Avatar with border
           GestureDetector(
             onTap: () {
-              // Navigate to settings page
               Navigator.pushNamed(context, AppRoutes.settings);
             },
             child: Container(
-              height: 44, // Fixed height to match other elements
-              width: 44, // Fixed width to make it square
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -34,13 +33,21 @@ class _HeaderRow extends StatelessWidget {
           ),
           const SizedBox(width: 12),
 
-          // Search box - with consistent background color
+          // Search box
           Expanded(
             child: Container(
-              height: 44, // Fixed height to match avatar and notification
+              height: 44,
               decoration: BoxDecoration(
-                color: Colors.grey[100], // Light background color
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  )
+                ],
               ),
               child: const TextField(
                 decoration: InputDecoration(
@@ -48,13 +55,9 @@ class _HeaderRow extends StatelessWidget {
                   border: InputBorder.none,
                   prefixIcon: Icon(
                     Icons.search,
-                    color: AppTheme.primaryColor,
-                    size: 20,
+                    color: Colors.grey,
                   ),
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 16,
-                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
             ),
@@ -62,21 +65,28 @@ class _HeaderRow extends StatelessWidget {
 
           const SizedBox(width: 12),
 
-          // Notification icon - in a container with same background color
+          // Notification icon
           Container(
-            height: 44, // Fixed height to match other elements
-            width: 44, // Fixed width to make it square
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
+              color: Colors.white,
               shape: BoxShape.circle,
-              color: Colors.grey[100], // Same background as search bar
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 2),
+                )
+              ],
             ),
             child: IconButton(
               icon: Icon(
                 Icons.notifications_none,
-                color: AppTheme.textPrimary,
+                color: Colors.grey[700],
                 size: 24,
               ),
-              padding: EdgeInsets.zero, // Remove default padding
               onPressed: () {},
             ),
           ),

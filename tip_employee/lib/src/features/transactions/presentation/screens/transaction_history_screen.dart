@@ -8,17 +8,17 @@ class _TransactionState extends State<TransactionHistoryScreen> {
   // Sample transaction data
   final List<TransactionModel> _transactions = [
     TransactionModel(
-      title: 'Grocery Shopping',
+      title: 'cbe ',
       amount: -85.30,
       date: 'Today, 10:30 AM',
-      icon: Icons.shopping_cart,
-      color: Colors.orange,
+      icon: Icons.person,
+      color: Colors.green,
     ),
     TransactionModel(
-      title: 'Salary Deposit',
+      title: 'telebirr',
       amount: 2500.00,
       date: 'Today, 9:15 AM',
-      icon: Icons.account_balance,
+      icon: Icons.person,
       color: Colors.green,
     ),
     // … other transactions
