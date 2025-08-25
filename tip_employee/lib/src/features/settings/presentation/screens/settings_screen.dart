@@ -1,66 +1,54 @@
 part of '../../settings.dart';
 
-class SettingsScreen extends StatefulWidget {
-  final UserRepository repository;
-
-  const SettingsScreen({super.key, required this.repository});
-
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingState extends State<Setting> {
   bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
-  late Future<UserProfile> _profileFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _profileFuture = widget.repository.getUserProfile();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Settings'),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FutureBuilder<UserProfile>(
-              future: _profileFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData) {
-                  return const Text('No profile found');
-                }
-                final profile = snapshot.data!;
-                return ProfileSection(profile: profile);
+            // Profile Section
+            ProfileSection(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileDetailsScreen(),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 24),
+
+            // Other Settings Title
             const Text(
               'Other Settings',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
+
+            // Settings Options
             Expanded(
               child: ListView(
                 children: [
                   SettingsOption(
                     icon: Icons.person_outline,
-                    title: 'Profile Details',
+                    title: 'Edit Profile',
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              ProfileDetailsScreen(repository: widget.repository),
+                          builder: (context) => const ProfileEditScreen(),
                         ),
                       );
                     },
@@ -72,8 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              ChangePasswordScreen(repository: widget.repository),
+                          builder: (context) => const ChangePasswordScreen(),
                         ),
                       );
                     },
@@ -82,22 +69,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     icon: Icons.notifications_none,
                     title: 'Notifications',
                     value: _notificationsEnabled,
-                    onChanged: (val) =>
-                        setState(() => _notificationsEnabled = val),
+                    onChanged: (value) {
+                      setState(() {
+                        _notificationsEnabled = value;
+                      });
+                    },
                   ),
                   SettingsSwitchOption(
                     icon: Icons.dark_mode_outlined,
                     title: 'Dark Mode',
                     value: _darkModeEnabled,
-                    onChanged: (val) =>
-                        setState(() => _darkModeEnabled = val),
+                    onChanged: (value) {
+                      setState(() {
+                        _darkModeEnabled = value;
+                      });
+                    },
                   ),
                   const Divider(height: 32),
                   SettingsOption(
-                      icon: Icons.info_outline,
-                      title: 'About Application',
-                      onTap: () {}),
-                  SettingsOption(icon: Icons.help_outline, title: 'Help', onTap: () {}),
+                    icon: Icons.info_outline,
+                    title: 'About Application',
+                    onTap: () {},
+                  ),
+                  SettingsOption(
+                    icon: Icons.help_outline,
+                    title: 'Help',
+                    onTap: () {},
+                  ),
                   SettingsOption(
                     icon: Icons.delete_outline,
                     title: 'Delete Account',
@@ -107,17 +105,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
             ),
+
+            // Logout Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () async {
-                  await widget.repository.logout();
-                  if (mounted) {
-                    showDialog(
-                      context: context,
-                      builder: (_) => const LogoutDialog(),
-                    );
-                  }
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => const LogoutDialog(),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,

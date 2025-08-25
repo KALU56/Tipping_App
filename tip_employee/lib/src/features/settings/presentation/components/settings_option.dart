@@ -17,15 +17,17 @@ class SettingsOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: isDestructive ? Colors.red : Colors.grey[700]),
+      leading: Icon(icon, color: isDestructive ? Colors.red : Colors.blue),
       title: Text(
         title,
         style: TextStyle(
           color: isDestructive ? Colors.red : Colors.black,
+          fontWeight: FontWeight.w500,
         ),
       ),
-      trailing: const Icon(Icons.chevron_right),
+      trailing: Icon(Icons.chevron_right, color: Colors.grey[400]),
       onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
     );
   }
 }

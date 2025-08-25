@@ -1,56 +1,56 @@
 part of '../../settings.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
-  final UserRepository repository;
-
-  const ProfileDetailsScreen({super.key, required this.repository});
+  const ProfileDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile Details")),
-      body: FutureBuilder<UserProfile>(
-        future: repository.getUserProfile(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text("No profile data found"));
-          }
-
-          final profile = snapshot.data!;
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage(profile.avatar),
-                ),
-                const SizedBox(height: 16),
-                Text(profile.name,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                Text(profile.role,
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600])),
-                const Divider(height: 32),
-                ListTile(
-                  leading: const Icon(Icons.email_outlined),
-                  title: const Text("Email"),
-                  subtitle: Text("${profile.name.toLowerCase()}@example.com"),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.phone_outlined),
-                  title: const Text("Phone"),
-                  subtitle: const Text("+251 900 000 000"),
-                ),
-              ],
+      appBar: AppBar(
+        title: const Text('Profile Details'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage('assets/images/Ellipse 7.png'),
             ),
-          );
-        },
+            const SizedBox(height: 16),
+            const Text(
+              'maron',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'manager',
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 24),
+            _buildDetailItem('Email', 'maron@example.com'),
+            _buildDetailItem('Phone', '+1234567890'),
+            _buildDetailItem('Location', 'New York, USA'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailItem(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(value),
+        ],
       ),
     );
   }

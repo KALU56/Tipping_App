@@ -29,7 +29,7 @@ class RouteGenerator {
       case AppRoutes.withdraw:
         return MaterialPageRoute(builder: (_) => const WithdrawScreen());
         case AppRoutes.settings:
-  return MaterialPageRoute(builder: (_) => const Settings());
+  return MaterialPageRoute(builder: (_) => const Setting());
       case AppRoutes.home:
   return MaterialPageRoute(builder: (_) => const MainScreen());
       default:
