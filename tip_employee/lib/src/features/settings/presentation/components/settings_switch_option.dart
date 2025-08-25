@@ -16,15 +16,11 @@ class SettingsSwitchOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.blue),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-      trailing: Switch(
-        value: value,
-        onChanged: onChanged,
-        activeColor: Colors.blue,
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+    return SwitchListTile(
+      secondary: Icon(icon, color: Colors.grey[700]),
+      title: Text(title),
+      value: value,
+      onChanged: onChanged,
     );
   }
 }

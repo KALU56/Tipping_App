@@ -1,7 +1,9 @@
 part of '../../settings.dart';
 
 class ProfileSection extends StatelessWidget {
-  const ProfileSection({super.key});
+  final UserProfile profile;
+
+  const ProfileSection({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -13,25 +15,21 @@ class ProfileSection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 30,
-            backgroundImage: AssetImage('assets/images/Ellipse 7.png'),
-            child: Icon(Icons.person, size: 30),
+            backgroundImage: AssetImage(profile.avatar),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'maron',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                Text(profile.name,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
-                Text(
-                  'manager',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
+                Text(profile.role,
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600])),
               ],
             ),
           ),
