@@ -1,8 +1,6 @@
-// lib/src/features/settings/domain/repositories/user_repository.dart
-import '../models/user_profile.dart';
+import '../models/user.dart';
 
 abstract class UserRepository {
-  Future<UserProfile> getUserProfile();
-  Future<void> updatePassword(String oldPassword, String newPassword);
-  Future<void> logout();
+  Future<User> getProfile();
+  Future<void> updateProfile(User user);
 }

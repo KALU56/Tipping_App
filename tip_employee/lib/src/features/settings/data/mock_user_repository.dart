@@ -1,27 +1,25 @@
-// lib/src/features/settings/data/mock_user_repository.dart
-import '../domain/models/user_profile.dart';
+import '../domain/models/user.dart';
 import '../domain/repositories/user_repository.dart';
 
 class MockUserRepository implements UserRepository {
+  User _mockUser = const User(
+    id: "1",
+    name: "maron",
+    username: "maron_user",
+    email: "maron@example.com",
+    description: "Manager at Company",
+    accountNumber: "1234567890",
+  );
+
   @override
-  Future<UserProfile> getUserProfile() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return UserProfile(
-      name: 'maron',
-      role: 'manager',
-      avatar: 'assets/images/Ellipse 7.png',
-    );
+  Future<User> getProfile() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return _mockUser;
   }
 
   @override
-  Future<void> updatePassword(String oldPassword, String newPassword) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    // Just mock success
-  }
-
-  @override
-  Future<void> logout() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    // Mock logout
+  Future<void> updateProfile(User user) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    _mockUser = user;
   }
 }
