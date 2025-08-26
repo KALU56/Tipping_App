@@ -17,12 +17,12 @@ class SettingsSwitchOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: Colors.blue),
+      leading: Icon(icon, color: AppTheme.primaryColor),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
       trailing: Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: Colors.blue,
+        activeColor: AppTheme.primaryColor,
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
     );

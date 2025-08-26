@@ -7,14 +7,14 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(
-      title: const Text('Settings'),
-      centerTitle: true,
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black, // text and icon color
-  
-      elevation: 0,
-    ),
+      appBar: AppBar(
+        title: const Text('Settings'),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black, // text and icon color
+
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -44,18 +44,40 @@ class _SettingState extends State<Setting> {
             Expanded(
               child: ListView(
                 children: [
-                  SettingsOption(
-                    icon: Icons.person_outline,
-                    title: 'Edit Profile',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProfileEditScreen(),
-                        ),
-                      );
-                    },
-                  ),
+                 SettingsOption(
+    icon: Icons.person_outline,
+    title: 'Edit Profile',
+    onTap: () {
+      showDialog(
+        context: context,
+        barrierColor: Colors.transparent, // no dark overlay
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent, // <- make dialog itself transparent
+            insetPadding: const EdgeInsets.all(16),
+            child: Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white, // <- card content background
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const ProfileEditDialog(),
+              ),
+            ),
+          );
+        },
+      );
+    },
+  ),
                   SettingsOption(
                     icon: Icons.lock_outline,
                     title: 'Password',

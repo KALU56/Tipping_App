@@ -17,7 +17,7 @@ class SettingsOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: isDestructive ? Colors.red : Colors.blue),
+      leading: Icon(icon, color: isDestructive ? Colors.red : AppTheme.primaryColor),
       title: Text(
         title,
         style: TextStyle(
