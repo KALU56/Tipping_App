@@ -18,7 +18,7 @@ class _RecentTipsHeader extends StatelessWidget {
           Text(
             'View All',
             style: TextStyle(
-              color: Colors.blue,
+              color: AppTheme.primaryColor, 
               fontWeight: FontWeight.w600,
             ),
           ),

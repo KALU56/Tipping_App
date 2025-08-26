@@ -59,10 +59,10 @@ class _RecentTipsListState extends State<RecentTipsList> {
                   width: 45,
                   height: 45,
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.2),
+                    color:AppTheme.primaryColor, 
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.person, color: Colors.blue),
+                  child: const Icon(Icons.person, color: Colors.white),
                 ),
                 title: Text(
                   tip.customerName,
@@ -76,7 +76,7 @@ class _RecentTipsListState extends State<RecentTipsList> {
                   '\$${tip.amount}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                    color:AppTheme.primaryColor, 
                   ),
                 ),
               ),

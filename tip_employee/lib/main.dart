@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tip_employee/src/app/routes/app_routes.dart';
 import 'package:tip_employee/src/app/routes/route_generator.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  statusBarColor: Colors.transparent,
+
+));
   runApp(const MyApp());
 }
 
@@ -21,4 +26,15 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
-}
+}  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF4CAF50), // same green
+          title: const Text("Home"),
+        ),
+        body: const Center(child: Text("Hello World")),
+      ),
+    );
+  }
