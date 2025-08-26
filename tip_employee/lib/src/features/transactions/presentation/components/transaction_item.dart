@@ -1,14 +1,9 @@
+// transaction_item.dart
 part of '../../transaction.dart';
-
-
 
 class TransactionItem extends StatelessWidget {
   final TransactionModel transaction;
-
-  const TransactionItem({
-    super.key,
-    required this.transaction,
-  });
+  const TransactionItem({super.key, required this.transaction});
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +22,8 @@ class TransactionItem extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        leading: Container(
-          width: 45,
-          height: 45,
-          decoration: BoxDecoration(
-            color: transaction.color.withOpacity(0.2),
-            shape: BoxShape.circle,
-          ),
+        leading: CircleAvatar(
+          backgroundColor: transaction.color.withOpacity(0.2),
           child: Icon(transaction.icon, color: transaction.color),
         ),
         title: Text(transaction.title, style: const TextStyle(fontWeight: FontWeight.w500)),

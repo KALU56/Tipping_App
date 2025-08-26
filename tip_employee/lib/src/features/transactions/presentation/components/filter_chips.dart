@@ -1,14 +1,11 @@
+// filter_chips.dart
 part of '../../transaction.dart';
 
 class FilterChips extends StatefulWidget {
   final List<String> filters;
   final ValueChanged<int> onFilterChanged;
 
-  const FilterChips({
-    super.key,
-    required this.filters,
-    required this.onFilterChanged,
-  });
+  const FilterChips({super.key, required this.filters, required this.onFilterChanged});
 
   @override
   State<FilterChips> createState() => _FilterChipsState();
@@ -34,9 +31,7 @@ class _FilterChipsState extends State<FilterChips> {
               label: Text(widget.filters[index]),
               selected: _selectedFilter == index,
               onSelected: (bool selected) {
-                setState(() {
-                  _selectedFilter = selected ? index : 0;
-                });
+                setState(() => _selectedFilter = selected ? index : 0);
                 widget.onFilterChanged(_selectedFilter);
               },
               selectedColor: Colors.blue[100],

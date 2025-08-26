@@ -1,38 +1,24 @@
 // lib/src/features/transactions/presentation/screens/transaction_history_screen.dart
 part of '../../transaction.dart';
 
-class _TransactionState extends State<TransactionHistoryScreen> {
-  final List<String> _filters = ['Today', 'This Week', 'This Month', 'This Year'];
+class TransactionHistoryScreen extends StatefulWidget {
+  const TransactionHistoryScreen({super.key});
+
+  @override
+  State<TransactionHistoryScreen> createState() => _TransactionHistoryScreenState();
+}
+
+class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
+  final TransactionRepository _repository = MockTransactionRepository();
   String _searchQuery = '';
+  int _selectedFilter = 0;
 
-  // Sample transaction data
-  final List<TransactionModel> _transactions = [
-    TransactionModel(
-      title: 'cbe ',
-      amount: -85.30,
-      date: 'Today, 10:30 AM',
-      icon: Icons.person,
-      color: Colors.green,
-    ),
-    TransactionModel(
-      title: 'telebirr',
-      amount: 2500.00,
-      date: 'Today, 9:15 AM',
-      icon: Icons.person,
-      color: Colors.green,
-    ),
-    // … other transactions
-  ];
+  List<String> get _filters => ['Today', 'This Week', 'This Month', 'This Year'];
 
-  double get _totalBalance => 12458.00;
-  double get _totalIncome => 9258.00;
-  double get _totalExpenses => 2458.00;
-
-  List<TransactionModel> get _filteredTransactions {
-    return _transactions.where((transaction) {
-      final matchesSearch = transaction.title.toLowerCase().contains(_searchQuery.toLowerCase());
-      return matchesSearch;
-    }).toList();
+  List<TransactionModel> get _transactions {
+    final all = _repository.getTransactions();
+    return all.where((tx) =>
+        tx.title.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
   }
 
   @override
@@ -43,25 +29,36 @@ class _TransactionState extends State<TransactionHistoryScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Balance card
+            // Balance Card
             Padding(
               padding: const EdgeInsets.all(16),
               child: BalanceCard(
-                totalBalance: _totalBalance,
-                income: _totalIncome,
-                expenses: _totalExpenses,
+                totalBalance: _repository.getTotalBalance(),
+                income: _repository.getTotalIncome(),
+                expenses: _repository.getTotalExpenses(),
               ),
             ),
             // Filter Chips
-            FilterChips(
-              filters: _filters,
-              onFilterChanged: (index) {
-              },
+          
+            Align(
+               alignment: Alignment.center,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: FilterChips(
+                  filters: _filters,
+                  onFilterChanged: (index) {
+                    setState(() => _selectedFilter = index);
+                  },
+                ),
+              ),
             ),
             // Search Bar
             Padding(
               padding: const EdgeInsets.all(16),
               child: SearchBar(
+                onChanged: (query) {
+                  setState(() => _searchQuery = query);
+                },
                 onSearchChanged: (query) {
                   setState(() => _searchQuery = query);
                 },
@@ -77,10 +74,9 @@ class _TransactionState extends State<TransactionHistoryScreen> {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: _filteredTransactions.length,
+                itemCount: _transactions.length,
                 itemBuilder: (context, index) {
-                  final transaction = _filteredTransactions[index];
-                  return TransactionItem(transaction: transaction);
+                  return TransactionItem(transaction: _transactions[index]);
                 },
               ),
             ),

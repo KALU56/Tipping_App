@@ -1,4 +1,4 @@
-// lib/src/features/transactions/data/models/transaction_model.dart
+// lib/src/features/transactions/domain/models/transaction_model.dart
 import 'package:flutter/material.dart';
 
 class TransactionModel {
@@ -16,5 +16,5 @@ class TransactionModel {
     required this.color,
   });
 
-  bool get isIncome => amount > 0;
+  bool get isIncome => amount >= 0;
 }
