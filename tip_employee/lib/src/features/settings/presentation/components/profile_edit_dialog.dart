@@ -1,7 +1,6 @@
 part of '../../settings.dart';
 
 
-
 class ProfileEditDialog extends StatefulWidget {
   const ProfileEditDialog({super.key});
 
@@ -53,7 +52,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
     await _repo.updateProfile(updated);
 
     if (mounted) {
-      Navigator.pop(context, updated); // close dialog
+      Navigator.pop(context, updated);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Profile updated!")),
       );
@@ -62,48 +61,75 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
 
   @override
   Widget build(BuildContext context) {
-    if (_user == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    if (_user == null) return const Center(child: CircularProgressIndicator());
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        
-        AlertDialog(
-          
-          title: const Text("Edit Profile"),
-          content: Form(
-            key: _formKey,
+    return Center(
+      child: Material(
+        color: Colors.transparent,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))],
+            ),
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(controller: _nameController, decoration: const InputDecoration(labelText: "Name")),
-                  const SizedBox(height: 12),
-                  TextFormField(controller: _usernameController, decoration: const InputDecoration(labelText: "Username")),
-                  const SizedBox(height: 12),
-                  TextFormField(controller: _emailController, decoration: const InputDecoration(labelText: "Email")),
-                  const SizedBox(height: 12),
-                  TextFormField(controller: _descController, decoration: const InputDecoration(labelText: "Description")),
-                  const SizedBox(height: 12),
-                  TextFormField(controller: _accountController, decoration: const InputDecoration(labelText: "Account Number")),
-                ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Edit Profile',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField('Name', _nameController),
+                    const SizedBox(height: 12),
+                    _buildTextField('Username', _usernameController),
+                    const SizedBox(height: 12),
+                    _buildTextField('Email', _emailController),
+                    const SizedBox(height: 12),
+                    _buildTextField('Description', _descController),
+                    const SizedBox(height: 12),
+                    _buildTextField('Account Number', _accountController),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: _saveProfile,
+                          child: const Text('Save'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: _saveProfile,
-              child: const Text("Save"),
-            ),
-          ],
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
     );
   }
 }

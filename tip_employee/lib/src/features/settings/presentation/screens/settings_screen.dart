@@ -45,50 +45,26 @@ class _SettingState extends State<Setting> {
               child: ListView(
                 children: [
                  SettingsOption(
-    icon: Icons.person_outline,
-    title: 'Edit Profile',
-    onTap: () {
-      showDialog(
-        context: context,
-        barrierColor: Colors.transparent, // no dark overlay
-        builder: (context) {
-          return Dialog(
-            backgroundColor: Colors.transparent, // <- make dialog itself transparent
-            insetPadding: const EdgeInsets.all(16),
-            child: Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white, // <- card content background
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const ProfileEditDialog(),
-              ),
-            ),
-          );
-        },
-      );
-    },
-  ),
+                    icon: Icons.person_outline,
+                    title: 'Edit Profile',
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierColor: Colors.transparent, // settings page visible in back
+                        builder: (context) => const ProfileEditDialog(),
+                      );
+                    },
+                  ),
                   SettingsOption(
                     icon: Icons.lock_outline,
                     title: 'Password',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ChangePasswordScreen(),
-                        ),
-                      );
-                    },
+                     onTap: () {
+                    showDialog(
+                      context: context,
+                      barrierColor: Colors.transparent, // keeps settings visible
+                      builder: (context) => const ChangePasswordDialog(),
+                    );
+                  },
                   ),
                   SettingsSwitchOption(
                     icon: Icons.notifications_none,
