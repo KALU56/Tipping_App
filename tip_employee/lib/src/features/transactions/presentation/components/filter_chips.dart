@@ -1,6 +1,5 @@
 // filter_chips.dart
 part of '../../transaction.dart';
-
 class FilterChips extends StatefulWidget {
   final List<String> filters;
   final ValueChanged<int> onFilterChanged;
@@ -22,23 +21,25 @@ class _FilterChipsState extends State<FilterChips> {
         scrollDirection: Axis.horizontal,
         itemCount: widget.filters.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(
-              left: index == 0 ? 16 : 8,
-              right: index == widget.filters.length - 1 ? 16 : 0,
-            ),
-            child: FilterChip(
-              label: Text(widget.filters[index]),
-              selected: _selectedFilter == index,
-              onSelected: (bool selected) {
-                setState(() => _selectedFilter = selected ? index : 0);
-                widget.onFilterChanged(_selectedFilter);
-              },
-              selectedColor: Colors.blue[100],
-              checkmarkColor: Colors.blue,
-              labelStyle: TextStyle(
-                color: _selectedFilter == index ? Colors.blue : Colors.grey[700],
+          final bool isSelected = _selectedFilter == index;
+
+          return FilterChip(
+            label: Text(
+              widget.filters[index],
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.black,
+                fontWeight: FontWeight.w500,
               ),
+            ),
+            selected: isSelected,
+            onSelected: (bool selected) {
+              setState(() => _selectedFilter = selected ? index : 0);
+              widget.onFilterChanged(_selectedFilter);
+            },
+            selectedColor: Colors.green,
+            backgroundColor: Colors.grey[200],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
           );
         },

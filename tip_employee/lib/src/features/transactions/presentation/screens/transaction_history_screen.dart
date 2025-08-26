@@ -13,7 +13,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
   String _searchQuery = '';
   int _selectedFilter = 0;
 
-  List<String> get _filters => ['Today', 'This Week', 'This Month', 'This Year'];
+  List<String> get _filters => ['Tip', 'withdrawal'];
 
   List<TransactionModel> get _transactions {
     final all = _repository.getTransactions();

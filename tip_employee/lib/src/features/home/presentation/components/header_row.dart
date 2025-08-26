@@ -31,7 +31,7 @@ class _HeaderRow extends StatelessWidget {
                     ),
                     child: const CircleAvatar(
                       radius: 20,
-                      backgroundImage: AssetImage('assets/images/Ellipse 7.png'),
+                      backgroundImage: AssetImage('assets/images/avatar.png'),
                     ),
                   ),
                   const SizedBox(width: 12), // space between avatar and name
