@@ -7,11 +7,14 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        centerTitle: true,
-        elevation: 0,
-      ),
+     appBar: AppBar(
+      title: const Text('Settings'),
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black, // text and icon color
+  
+      elevation: 0,
+    ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

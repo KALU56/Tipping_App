@@ -5,10 +5,9 @@ import 'package:tip_employee/src/app/routes/route_generator.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
 
 void main() {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-  statusBarColor: Colors.transparent,
-
-));
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  );
   runApp(const MyApp());
 }
 
@@ -21,20 +20,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Tip Management',
       theme: AppTheme.lightTheme,
-    
+
       initialRoute: AppRoutes.welcome,
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
-}  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF4CAF50), // same green
-          title: const Text("Home"),
-        ),
-        body: const Center(child: Text("Hello World")),
-      ),
-    );
-  }
+}
+
+
