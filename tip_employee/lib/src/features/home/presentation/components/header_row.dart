@@ -15,9 +15,7 @@ class _HeaderRow extends StatelessWidget {
           children: [
             // Avatar + Name
             GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, AppRoutes.settings);
-              },
+              onTap: () {},
               child: Row(
                 children: [
                   // Avatar with border
