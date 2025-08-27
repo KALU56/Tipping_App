@@ -1,62 +1,62 @@
-// balance_card.dart
-part of '../../transaction.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 
-class BalanceCard extends StatelessWidget {
-  final double totalBalance;
+class BalanceChart extends StatelessWidget {
   final double income;
   final double expenses;
 
-  const BalanceCard({
+  const BalanceChart({
     super.key,
-    required this.totalBalance,
     required this.income,
     required this.expenses,
   });
 
   @override
   Widget build(BuildContext context) {
+    double total = income + expenses;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, spreadRadius: 2)],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Total Balance', style: TextStyle(color: Colors.grey)),
-          const SizedBox(height: 8),
-          Text('\$${totalBalance.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              _buildItem(Icons.arrow_downward, 'Income', income, Colors.green),
-              const SizedBox(width: 12),
-              _buildItem(Icons.arrow_upward, 'Expenses', expenses, Colors.red),
-            ],
-          ),
+        boxShadow: [
+          BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, spreadRadius: 2),
         ],
       ),
-    );
-  }
-
-  Widget _buildItem(IconData icon, String title, double amount, Color color) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-        child: Column(
-          children: [
-            Icon(icon, color: color),
-            const SizedBox(height: 8),
-            Text(title, style: TextStyle(color: color, fontSize: 12)),
-            const SizedBox(height: 4),
-            Text('\$${amount.toStringAsFixed(2)}',
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            "Balance Overview",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 200,
+            child: PieChart(
+              PieChartData(
+                sectionsSpace: 4,
+                centerSpaceRadius: 40,
+                sections: [
+                  PieChartSectionData(
+                    value: income,
+                    color: Colors.green,
+                    title: "Income\n${((income / total) * 100).toStringAsFixed(1)}%",
+                    radius: 60,
+                    titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  PieChartSectionData(
+                    value: expenses,
+                    color: Colors.red,
+                    title: "Expenses\n${((expenses / total) * 100).toStringAsFixed(1)}%",
+                    radius: 60,
+                    titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

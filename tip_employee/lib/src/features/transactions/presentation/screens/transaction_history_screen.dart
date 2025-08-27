@@ -29,29 +29,15 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Balance Card
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: BalanceCard(
-                totalBalance: _repository.getTotalBalance(),
-                income: _repository.getTotalIncome(),
-                expenses: _repository.getTotalExpenses(),
-              ),
-            ),
-            // Filter Chips
+          // Balance Chart
+            // Padding(
+            //   padding: const EdgeInsets.all(16),
+            //   child: BalanceChart(
+            //     income: _totalIncome,
+            //     expenses: _totalExpenses,
+            //   ),
+            // ),
           
-            Align(
-               alignment: Alignment.center,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: FilterChips(
-                  filters: _filters,
-                  onFilterChanged: (index) {
-                    setState(() => _selectedFilter = index);
-                  },
-                ),
-              ),
-            ),
             // Search Bar
             Padding(
               padding: const EdgeInsets.all(16),
@@ -71,15 +57,20 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
-            // Expanded(
-            //   child: ListView.builder(
-            //     padding: const EdgeInsets.all(16),
-            //     itemCount: _transactions.length,
-            //     itemBuilder: (context, index) {
-            //       return TransactionItem(transaction: _transactions[index]);
-            //     },
-            //   ),
-            // ),
+          
+
+            Align(
+               alignment: Alignment.center,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: FilterChips(
+                  filters: _filters,
+                  onFilterChanged: (index) {
+                    setState(() => _selectedFilter = index);
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),
