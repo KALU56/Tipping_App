@@ -23,8 +23,8 @@ class BottomNavBar extends StatelessWidget {
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.account_balance_wallet),
-          label: 'Withdraw',
+          icon: Icon(Icons.settings),
+          label: 'settings',
         ),
       ],
       currentIndex: currentIndex,
