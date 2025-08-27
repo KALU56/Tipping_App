@@ -13,7 +13,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
   String _searchQuery = '';
   int _selectedFilter = 0;
 
-  List<String> get _filters => ['Tip', 'withdrawal'];
+  List<String> get _filters => ['today', 'this week', 'this month', 'all'];
 
   List<TransactionModel> get _transactions {
     final all = _repository.getTransactions();
@@ -71,15 +71,15 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _transactions.length,
-                itemBuilder: (context, index) {
-                  return TransactionItem(transaction: _transactions[index]);
-                },
-              ),
-            ),
+            // Expanded(
+            //   child: ListView.builder(
+            //     padding: const EdgeInsets.all(16),
+            //     itemCount: _transactions.length,
+            //     itemBuilder: (context, index) {
+            //       return TransactionItem(transaction: _transactions[index]);
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),

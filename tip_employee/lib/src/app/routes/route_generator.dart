@@ -10,7 +10,7 @@ import 'package:tip_employee/mainscreen.dart';
 import 'package:tip_employee/src/features/settings/settings.dart';
 
 import 'package:tip_employee/src/features/transactions/transaction.dart';
-import 'package:tip_employee/src/features/withdraw/presentation/screens/withdraw_screen.dart';
+
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -26,8 +26,7 @@ class RouteGenerator {
 
       case AppRoutes.transactions:
         return MaterialPageRoute(builder: (_) => const TransactionHistoryScreen());
-      case AppRoutes.withdraw:
-        return MaterialPageRoute(builder: (_) => const WithdrawScreen());
+
         case AppRoutes.settings:
   return MaterialPageRoute(builder: (_) => const Setting());
       case AppRoutes.home:

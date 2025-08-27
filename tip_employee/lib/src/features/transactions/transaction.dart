@@ -12,7 +12,7 @@ import 'domain/repositories/transaction_repository.dart';
 part 'presentation/screens/transaction_history_screen.dart';
 part 'presentation/components/balance_card.dart';
 part 'presentation/components/filter_chips.dart';
-part 'presentation/components/transaction_item.dart';
+// part 'presentation/components/transaction_item.dart';
 part 'presentation/components/search_bar.dart';
 
 class TransactionFeature extends StatelessWidget {
