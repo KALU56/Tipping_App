@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tip_employee/src/features/home/home.dart';
+import 'package:tip_employee/src/features/settings/settings.dart';
 import 'package:tip_employee/src/features/transactions/transaction.dart';
-import 'package:tip_employee/src/features/withdraw/presentation/screens/withdraw_screen.dart';
+
 import 'package:tip_employee/src/features/home/presentation/widgets/bottom_nav_bar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = const [
     TransactionHistoryScreen(),
     Home(),
-    WithdrawScreen(),
+    Setting(),
   ];
 
   void _onTap(int index) {
