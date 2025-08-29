@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../models/employee.dart';
 import '../widgets/tip_input_field.dart';
 import 'loading_screen.dart';
 
 class PaymentPage extends StatefulWidget {
   final Employee employee;
-
   const PaymentPage({super.key, required this.employee});
 
   @override
@@ -22,7 +22,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     if (tipAmount == null || tipAmount <= 0) {
       setState(() {
-        _errorText = "Please enter a valid amount";
+        _errorText = tr('enter_valid_amount'); // localized error
       });
       return;
     }
@@ -38,14 +38,17 @@ class _PaymentPageState extends State<PaymentPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Confirm Tip'),
+        title: Text('confirm_tip'.tr()),
         content: Text(
-          'Are you sure you want to tip \$${amount.toStringAsFixed(2)} to ${widget.employee.name}?',
+          tr('confirm_tip_message', args: [
+            amount.toStringAsFixed(2),
+            widget.employee.name
+          ]),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('cancel'.tr()),
           ),
           ElevatedButton(
             onPressed: () {
@@ -60,7 +63,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 ),
               );
             },
-            child: const Text('Confirm'),
+            child: Text('confirm'.tr()),
           ),
         ],
       ),
@@ -69,12 +72,12 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size; // for responsive layout
+    final size = MediaQuery.of(context).size;
 
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(), // dismiss keyboard
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Payment')),
+        appBar: AppBar(title: Text('send_tip'.tr())),
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
             horizontal: size.width * 0.05,
@@ -83,14 +86,11 @@ class _PaymentPageState extends State<PaymentPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Employee avatar
               CircleAvatar(
                 radius: size.width * 0.12,
                 backgroundImage: NetworkImage(widget.employee.pictureUrl),
               ),
               SizedBox(height: size.height * 0.02),
-
-              // Employee details
               Text(
                 widget.employee.name,
                 style: TextStyle(
@@ -114,18 +114,12 @@ class _PaymentPageState extends State<PaymentPage> {
                     ),
                   ),
                 ),
-
               SizedBox(height: size.height * 0.04),
-
-              // Tip input
               TipInputField(
                 controller: _tipController,
                 errorText: _errorText,
               ),
-
               SizedBox(height: size.height * 0.03),
-
-              // Send Tip button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -133,7 +127,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
                   ),
-                  child: const Text('Send Tip', style: TextStyle(fontSize: 18)),
+                  child: Text('send_tip'.tr(), style: TextStyle(fontSize: 18)),
                 ),
               ),
             ],

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class TipInputField extends StatelessWidget {
   final TextEditingController controller;
+  final String? errorText;
 
-  const TipInputField({required this.controller, String? errorText});
+  const TipInputField({
+    super.key,
+    required this.controller,
+    this.errorText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +17,9 @@ class TipInputField extends StatelessWidget {
       controller: controller,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        labelText: 'Enter tip amount',
-        border: OutlineInputBorder(),
+        labelText: 'enter_tip_amount'.tr(),
+        border: const OutlineInputBorder(),
+        errorText: errorText,
       ),
     );
   }

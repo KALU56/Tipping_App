@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 void main() {
-  runApp(const BarcodeScannerApp());
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('am')],
+      path: 'assets/langs', // <- your translation files
+      fallbackLocale: const Locale('en'),
+      child: const BarcodeScannerApp(),
+    ),
+  );
 }
 
 class BarcodeScannerApp extends StatelessWidget {
@@ -10,9 +18,13 @@ class BarcodeScannerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BarcodeScannerScreen(),
+      title: 'barcode_scanner'.tr(),
+      home: const BarcodeScannerScreen(),
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
     );
   }
 }
@@ -26,16 +38,16 @@ class BarcodeScannerScreen extends StatefulWidget {
 
 class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   final MobileScannerController controller = MobileScannerController();
-  bool _isScanned = false; // prevent multiple detections
+  bool _isScanned = false;
 
   @override
   void dispose() {
-    controller.dispose(); // clean up camera resources
+    controller.dispose();
     super.dispose();
   }
 
   void _handleBarcode(BarcodeCapture capture) {
-    if (_isScanned) return; // ignore further detections
+    if (_isScanned) return;
     _isScanned = true;
 
     final barcode = capture.barcodes.first;
@@ -43,12 +55,12 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
 
     if (rawValue != null) {
       debugPrint("Barcode found: $rawValue");
-      Navigator.pop(context, rawValue); // return value to previous screen
+      Navigator.pop(context, rawValue);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to read barcode")),
+        SnackBar(content: Text('barcode_read_failed'.tr())),
       );
-      _isScanned = false; // allow retry
+      _isScanned = false;
     }
   }
 
@@ -58,7 +70,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Barcode Scanner"),
+        title: Text('barcode_scanner'.tr()),
         actions: [
           IconButton(
             icon: const Icon(Icons.flash_on),
@@ -72,42 +84,28 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
       ),
       body: Stack(
         children: [
-          // Camera preview
           MobileScanner(
             controller: controller,
             onDetect: _handleBarcode,
           ),
-
-          // Semi-transparent overlay for scan guidance
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.3),
-            ),
-          ),
-
-          // Center scan frame
+          Container(color: Colors.black.withOpacity(0.3)),
           Align(
             alignment: Alignment.center,
             child: Container(
               width: size.width * 0.7,
               height: size.width * 0.7,
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.white,
-                  width: 3,
-                ),
+                border: Border.all(color: Colors.white, width: 3),
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
-
-          // Instruction text at bottom
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Text(
-                "Align QR/Barcode inside the frame",
+                'align_qr_barcode'.tr(),
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme

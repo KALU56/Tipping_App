@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../models/employee.dart';
 import '../../../../services/chapa_service.dart';
 import 'tip_confirmation_screen.dart';
@@ -47,10 +48,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
           ),
         );
       } else {
-        _showError("Payment failed. Please try again.");
+        _showError(tr('payment_failed'));
       }
     } catch (e) {
-      if (mounted) _showError("An error occurred: $e");
+      if (mounted) _showError('${tr('error_occurred')}: $e');
     }
   }
 
@@ -64,7 +65,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size; // for responsiveness
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       body: Center(
@@ -73,26 +74,20 @@ class _LoadingScreenState extends State<LoadingScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Circular loading indicator
               SizedBox(
                 height: size.width * 0.15,
                 width: size.width * 0.15,
                 child: const CircularProgressIndicator(strokeWidth: 5),
               ),
               SizedBox(height: size.height * 0.03),
-
-              // Status text
               Text(
-                'Processing your payment...',
+                tr('processing_payment'), // translated text
                 textAlign: TextAlign.center,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w500,
                 ),
               ),
-
               SizedBox(height: size.height * 0.02),
-
-              // Optional motivational icon
               Icon(
                 Icons.monetization_on,
                 size: size.width * 0.1,
