@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
@@ -13,9 +12,9 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(12), // space from edges
+      margin: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white, // background color of the bar
+        color: Theme.of(context).colorScheme.surface, // ✅ updated
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -28,7 +27,7 @@ class BottomNavBar extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
         child: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.receipt),
               label: 'Transactions',
@@ -46,8 +45,8 @@ class BottomNavBar extends StatelessWidget {
           selectedItemColor: Theme.of(context).primaryColor,
           unselectedItemColor: Colors.grey,
           onTap: onTap,
-          backgroundColor: Colors.transparent, // 👈 remove default rectangle
-          elevation: 0, // 👈 remove shadow from BottomNavigationBar itself
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           type: BottomNavigationBarType.fixed,
         ),
       ),

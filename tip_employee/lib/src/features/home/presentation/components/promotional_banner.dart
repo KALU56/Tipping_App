@@ -1,4 +1,3 @@
-// lib/src/features/home/presentation/components/promotional_banner.dart
 part of '../../home.dart';
 
 class _PromotionalBanner extends StatelessWidget {
@@ -6,6 +5,8 @@ class _PromotionalBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       width: double.infinity,
       height: 220,
@@ -22,7 +23,7 @@ class _PromotionalBanner extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: theme.shadowColor.withOpacity(0.1),
             spreadRadius: 2,
             blurRadius: 10,
             offset: const Offset(0, 3),
@@ -34,21 +35,20 @@ class _PromotionalBanner extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Earnings info
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Total money earned',
-                  style: TextStyle(
-                    fontSize: 16,
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
                 Text(
                   '\$1,234.56',
-                  style: TextStyle(
-                    fontSize: 20,
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -56,16 +56,14 @@ class _PromotionalBanner extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   'Total withdrawn',
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: theme.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
                 Text(
                   '\$1,200.00',
-                  style: TextStyle(
-                    fontSize: 18,
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -73,16 +71,14 @@ class _PromotionalBanner extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   'Available balance',
-                  style: TextStyle(
-                    fontSize: 14,
+                  style: theme.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
                 Text(
                   '\$34.56',
-                  style: TextStyle(
-                    fontSize: 18,
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -91,19 +87,21 @@ class _PromotionalBanner extends StatelessWidget {
             ),
 
             const Spacer(),
+
+            // "Show all transactions" button
             Align(
               alignment: Alignment.centerRight,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardColor, // adaptive background
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   'Show all transactions',
-                  style: TextStyle(
+                  style: theme.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryColor,
+                    color: theme.colorScheme.primary,
                     fontSize: 12,
                   ),
                 ),

@@ -13,22 +13,30 @@ class BalanceChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double total = income + expenses;
+    final theme = Theme.of(context);
+    final total = income + expenses;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor, // adaptive background
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, spreadRadius: 2),
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
+          Text(
             "Balance Overview",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -40,17 +48,25 @@ class BalanceChart extends StatelessWidget {
                 sections: [
                   PieChartSectionData(
                     value: income,
-                    color: Colors.green,
-                    title: "Income\n${((income / total) * 100).toStringAsFixed(1)}%",
+                    color: theme.colorScheme.primary, // adaptive income color
+                    title:
+                        "Income\n${((income / total) * 100).toStringAsFixed(1)}%",
                     radius: 60,
-                    titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                    titleStyle: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onPrimary,
+                    ),
                   ),
                   PieChartSectionData(
                     value: expenses,
-                    color: Colors.red,
-                    title: "Expenses\n${((expenses / total) * 100).toStringAsFixed(1)}%",
+                    color: theme.colorScheme.error, // adaptive expenses color
+                    title:
+                        "Expenses\n${((expenses / total) * 100).toStringAsFixed(1)}%",
                     radius: 60,
-                    titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                    titleStyle: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onError,
+                    ),
                   ),
                 ],
               ),

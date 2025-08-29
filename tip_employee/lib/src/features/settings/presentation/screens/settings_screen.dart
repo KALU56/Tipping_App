@@ -3,10 +3,13 @@ part of '../../settings.dart';
 class _SettingState extends State<Setting> {
   bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.grey[100], // page background
+      backgroundColor: theme.scaffoldBackgroundColor, // adaptive background
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,11 +30,13 @@ class _SettingState extends State<Setting> {
             ),
 
             // Other Settings Title
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'Other Settings',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -42,7 +47,7 @@ class _SettingState extends State<Setting> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 children: [
                   SettingsOption(
-                    color: AppTheme.primaryColor,
+                    color: theme.colorScheme.primary,
                     icon: Icons.person_outline,
                     title: 'Edit Profile',
                     onTap: () {
@@ -54,7 +59,7 @@ class _SettingState extends State<Setting> {
                     },
                   ),
                   SettingsOption(
-                    color: AppTheme.primaryColor,
+                    color: theme.colorScheme.primary,
                     icon: Icons.lock_outline,
                     title: 'Password',
                     onTap: () {
@@ -65,30 +70,22 @@ class _SettingState extends State<Setting> {
                       );
                     },
                   ),
-                  SettingsSwitchOption(
-                    icon: Icons.notifications_none,
-                    title: 'Notifications',
-                    value: _notificationsEnabled,
-                    onChanged: (value) {
-                      setState(() => _notificationsEnabled = value);
-                    },
-                  ),
-                  SettingsSwitchOption(
-                    icon: Icons.dark_mode_outlined,
-                    title: 'Dark Mode',
-                    value: _darkModeEnabled,
-                    onChanged: (value) {
-                      setState(() => _darkModeEnabled = value);
-                    },
-                  ),
-                  const Divider(height: 32),
+                  // SettingsSwitchOption(
+                  //   icon: Icons.notifications_none,
+                  //   title: 'Notifications',
+                  //   value: _notificationsEnabled,
+                  //   onChanged: (value) {
+                  //     setState(() => _notificationsEnabled = value);
+                  //   },
+                  // ),
+                 
+                  Divider(height: 32, color: theme.dividerColor),
                   SettingsOption(
-                    color: AppTheme.primaryColor,
+                    color: theme.colorScheme.primary,
                     icon: Icons.info_outline,
                     title: 'About Application',
                     onTap: () {},
                   ),
-                  
                   SettingsOption(
                     icon: Icons.delete_outline,
                     title: 'Delete Account',
@@ -107,8 +104,8 @@ class _SettingState extends State<Setting> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
+                        backgroundColor: theme.colorScheme.error,
+                        foregroundColor: theme.colorScheme.onError,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

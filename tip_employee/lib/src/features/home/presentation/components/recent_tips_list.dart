@@ -1,4 +1,3 @@
-// lib/src/features/home/presentation/components/recent_tips_list.dart
 part of '../../home.dart';
 
 class RecentTipsList extends StatefulWidget {
@@ -21,15 +20,31 @@ class _RecentTipsListState extends State<RecentTipsList> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return FutureBuilder<List<Tip>>(
       future: _tipsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: CircularProgressIndicator(
+              color: theme.colorScheme.primary,
+            ),
+          );
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: theme.textTheme.bodyMedium,
+            ),
+          );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No tips yet'));
+          return Center(
+            child: Text(
+              'No tips yet',
+              style: theme.textTheme.bodyMedium,
+            ),
+          );
         }
 
         final tips = snapshot.data!;
@@ -38,45 +53,51 @@ class _RecentTipsListState extends State<RecentTipsList> {
           itemCount: tips.length,
           itemBuilder: (context, index) {
             final tip = tips[index];
+
             return Container(
               margin: const EdgeInsets.only(bottom: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.cardColor, // ✅ adaptive
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.05),
+                    color: theme.shadowColor.withOpacity(0.05),
                     spreadRadius: 1,
                     blurRadius: 5,
                     offset: const Offset(0, 2),
-                  )
+                  ),
                 ],
               ),
               child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 8),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 leading: Container(
                   width: 45,
                   height: 45,
                   decoration: BoxDecoration(
-                    color:AppTheme.primaryColor, 
+                    color: theme.colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.person, color: Colors.white),
                 ),
                 title: Text(
                   tip.customerName,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 subtitle: Text(
                   '${tip.minutesAgo} minutes ago',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                    fontSize: 12,
+                  ),
                 ),
                 trailing: Text(
                   '\$${tip.amount}',
-                  style: const TextStyle(
+                  style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color:AppTheme.primaryColor, 
+                    color: theme.colorScheme.primary,
                   ),
                 ),
               ),

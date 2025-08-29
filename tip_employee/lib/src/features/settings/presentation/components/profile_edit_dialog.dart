@@ -1,6 +1,5 @@
 part of '../../settings.dart';
 
-
 class ProfileEditDialog extends StatefulWidget {
   const ProfileEditDialog({super.key});
 
@@ -74,9 +73,12 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardColor,
+
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))],
+              boxShadow: const [
+                BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4)),
+              ],
             ),
             child: SingleChildScrollView(
               child: Form(
@@ -89,30 +91,9 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
-                    _buildTextField('Name', _nameController),
-                    const SizedBox(height: 12),
-                    _buildTextField('Username', _usernameController),
-                    const SizedBox(height: 12),
-                    _buildTextField('Email', _emailController),
-                    const SizedBox(height: 12),
-                    _buildTextField('Description', _descController),
-                    const SizedBox(height: 12),
-                    _buildTextField('Account Number', _accountController),
+                    ..._buildTextFields(),
                     const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: _saveProfile,
-                          child: const Text('Save'),
-                        ),
-                      ],
-                    ),
+                    _buildActionButtons(),
                   ],
                 ),
               ),
@@ -123,6 +104,25 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
     );
   }
 
+  List<Widget> _buildTextFields() {
+    final fields = {
+      'Name': _nameController,
+      'Username': _usernameController,
+      'Email': _emailController,
+      'Description': _descController,
+      'Account Number': _accountController,
+    };
+
+    return fields.entries
+        .map(
+          (e) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: _buildTextField(e.key, e.value),
+          ),
+        )
+        .toList();
+  }
+
   Widget _buildTextField(String label, TextEditingController controller) {
     return TextFormField(
       controller: controller,
@@ -130,6 +130,23 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
         labelText: label,
         border: const OutlineInputBorder(),
       ),
+    );
+  }
+
+  Widget _buildActionButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        const SizedBox(width: 8),
+        ElevatedButton(
+          onPressed: _saveProfile,
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }

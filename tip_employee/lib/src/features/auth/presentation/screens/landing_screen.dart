@@ -17,7 +17,8 @@ class _LandingScreen extends State<LandingScreen> {
   final List<Map<String, String>> onboardingData = [
     {
       'title': 'Your Effort, Rewarded',
-      'desc': 'Earn tips directly from customers who value your service. Quick, secure, and transparent.',
+      'desc':
+          'Earn tips directly from customers who value your service. Quick, secure, and transparent.',
       'image': Assets.image2,
     },
     {
@@ -56,8 +57,10 @@ class _LandingScreen extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.scaffoldBackground,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -80,14 +83,14 @@ class _LandingScreen extends State<LandingScreen> {
                 const SizedBox(width: 15),
                 Text(
                   'Tip-tip',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w900,
-                    color: AppTheme.primaryColor,
+                    color: AppTheme.primaryColor, // brand color override
                   ),
                 ),
               ],
             ),
-    
+
             // Image carousel
             Expanded(
               child: PageView.builder(
@@ -110,9 +113,9 @@ class _LandingScreen extends State<LandingScreen> {
                 },
               ),
             ),
-    
+
             const SizedBox(height: 30),
-    
+
             // Indicator dots
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -126,21 +129,21 @@ class _LandingScreen extends State<LandingScreen> {
                   decoration: BoxDecoration(
                     color: _currentIndex == index
                         ? AppTheme.primaryColor
-                        : AppTheme.borderColor,
+                        : theme.dividerColor.withOpacity(0.4), // ✅ adaptive
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
               ),
             ),
-    
+
             const SizedBox(height: 24),
-    
+
             // Title and description
             Column(
               children: [
                 Text(
                   onboardingData[_currentIndex]['title']!,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
@@ -148,34 +151,29 @@ class _LandingScreen extends State<LandingScreen> {
                 const SizedBox(height: 12),
                 Text(
                   onboardingData[_currentIndex]['desc']!,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: theme.textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
               ],
             ),
-    
+
             const SizedBox(height: 24),
-    
+
             // Next/Continue button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
                 onPressed: _nextPage,
                 child: Text(
-                  _currentIndex == onboardingData.length - 1 ? 'Continue' : 'Next',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  _currentIndex == onboardingData.length - 1
+                      ? 'Continue'
+                      : 'Next',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
-    
+
             // Skip button
             TextButton(
               onPressed: _skip,

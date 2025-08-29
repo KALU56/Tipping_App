@@ -1,21 +1,31 @@
-// search_bar.dart
 part of '../../transaction.dart';
 
 class SearchBar extends StatelessWidget {
   final ValueChanged<String> onSearchChanged;
-  const SearchBar({super.key, required this.onSearchChanged, required Null Function(dynamic query) onChanged});
+
+  const SearchBar({
+    super.key,
+    required this.onSearchChanged,
+    required Null Function(dynamic query) onChanged, // keep signature intact
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return TextField(
       decoration: InputDecoration(
         hintText: 'Search transactions...',
-        prefixIcon: const Icon(Icons.search, color: Colors.grey),
+        prefixIcon: Icon(Icons.search, color: theme.iconTheme.color?.withOpacity(0.6)),
         filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+        fillColor: theme.cardColor, // adaptive background
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
       ),
       onChanged: onSearchChanged,
+      style: theme.textTheme.bodyMedium, // adaptive text color
     );
   }
 }

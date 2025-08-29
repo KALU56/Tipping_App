@@ -18,30 +18,30 @@ class SettingsOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = isDestructive ? Colors.red : (color ?? Colors.black);
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white, // white card
+       color: Theme.of(context).cardColor,
+
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black12,
             blurRadius: 4,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
       child: ListTile(
         contentPadding: EdgeInsets.zero,
-        leading: Icon(
-          icon,
-          color: isDestructive ? Colors.red : (color ?? Colors.black),
-        ),
+        leading: Icon(icon, color: effectiveColor),
         title: Text(
           title,
           style: TextStyle(
-            color: isDestructive ? Colors.red : Colors.black,
+            color: effectiveColor,
             fontWeight: FontWeight.w500,
           ),
         ),

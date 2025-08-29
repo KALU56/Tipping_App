@@ -1,4 +1,5 @@
 part of '../../settings.dart';
+
 class ProfileSection extends StatelessWidget {
   final VoidCallback onTap;
 
@@ -13,11 +14,11 @@ class ProfileSection extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppTheme.primaryColor,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black12,
               blurRadius: 4,
-              offset: const Offset(0, 2),
+              offset: Offset(0, 2),
             ),
           ],
         ),
@@ -25,7 +26,7 @@ class ProfileSection extends StatelessWidget {
           children: [
             const CircleAvatar(
               radius: 30,
-              backgroundImage: AssetImage('assets/images/avatar.png'), // replace with user's image
+              backgroundImage: AssetImage('assets/images/avatar.png'),
             ),
             const SizedBox(width: 16),
             Column(
@@ -33,12 +34,18 @@ class ProfileSection extends StatelessWidget {
               children: const [
                 Text(
                   'kal',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18, 
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 4),
                 Text(
                   'View and edit profile',
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),

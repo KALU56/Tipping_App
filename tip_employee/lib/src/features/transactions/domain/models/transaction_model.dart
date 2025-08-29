@@ -17,4 +17,6 @@ class TransactionModel {
   });
 
   bool get isIncome => amount >= 0;
+
+  String? get dateString => null;
 }

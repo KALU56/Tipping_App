@@ -1,4 +1,3 @@
-// lib/src/features/home/presentation/components/recent_tips_header.dart
 part of '../../home.dart';
 
 class _RecentTipsHeader extends StatelessWidget {
@@ -6,19 +5,23 @@ class _RecentTipsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             'Recent Tips',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Text(
             'View All',
-            style: TextStyle(
-              color: AppTheme.primaryColor, 
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.primary,
               fontWeight: FontWeight.w600,
             ),
           ),

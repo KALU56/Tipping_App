@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tip_employee/src/app/routes/app_routes.dart';
 import 'package:tip_employee/src/core/assets/assets.dart';
+import 'package:tip_employee/src/app/themes/app_theme.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -22,16 +25,21 @@ class Welcome extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(Assets.tag),
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
+                const SizedBox(width: 15),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(context, AppRoutes.landing);
                   },
                   child: Text(
                     'Tip-tip',
-                    style: Theme.of(context).textTheme.displayMedium,
+                    style: theme.textTheme.displayMedium?.copyWith(
+                      color: AppTheme.primaryColor, // brand color
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -39,11 +47,15 @@ class Welcome extends StatelessWidget {
             const SizedBox(height: 30),
             SizedBox(
               width: 200,
+              height: 50,
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, AppRoutes.landing);
                 },
-                child: const Text('Get Started'),
+                child: const Text(
+                  'Get Started',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
               ),
             ),
           ],

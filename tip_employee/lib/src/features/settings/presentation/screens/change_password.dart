@@ -11,7 +11,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController _currentPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  
+
   bool _obscureCurrentPassword = true;
   bool _obscureNewPassword = true;
   bool _obscureConfirmPassword = true;
@@ -26,6 +26,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Change Password'),
@@ -36,69 +38,73 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            _buildPasswordFields(),
+            _buildPasswordFields(theme),
             const SizedBox(height: 24),
-            _buildPasswordRequirements(),
+            _buildPasswordRequirements(theme),
             const SizedBox(height: 24),
-            _buildUpdateButton(),
+            _buildUpdateButton(theme),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPasswordFields() {
+  Widget _buildPasswordFields(ThemeData theme) {
     return Column(
       children: [
-        TextFormField(
+        _buildPasswordField(
           controller: _currentPasswordController,
+          label: 'Current Password',
           obscureText: _obscureCurrentPassword,
-          decoration: InputDecoration(
-            labelText: 'Current Password',
-            border: const OutlineInputBorder(),
-            prefixIcon: const Icon(Icons.lock),
-            suffixIcon: IconButton(
-              icon: Icon(_obscureCurrentPassword ? Icons.visibility : Icons.visibility_off),
-              onPressed: () => setState(() => _obscureCurrentPassword = !_obscureCurrentPassword),
-            ),
-          ),
+          toggleObscure: () => setState(() => _obscureCurrentPassword = !_obscureCurrentPassword),
+          icon: Icons.lock,
         ),
         const SizedBox(height: 16),
-        TextFormField(
+        _buildPasswordField(
           controller: _newPasswordController,
+          label: 'New Password',
           obscureText: _obscureNewPassword,
-          decoration: InputDecoration(
-            labelText: 'New Password',
-            border: const OutlineInputBorder(),
-            prefixIcon: const Icon(Icons.lock_outline),
-            suffixIcon: IconButton(
-              icon: Icon(_obscureNewPassword ? Icons.visibility : Icons.visibility_off),
-              onPressed: () => setState(() => _obscureNewPassword = !_obscureNewPassword),
-            ),
-          ),
+          toggleObscure: () => setState(() => _obscureNewPassword = !_obscureNewPassword),
+          icon: Icons.lock_outline,
         ),
         const SizedBox(height: 16),
-        TextFormField(
+        _buildPasswordField(
           controller: _confirmPasswordController,
+          label: 'Confirm New Password',
           obscureText: _obscureConfirmPassword,
-          decoration: InputDecoration(
-            labelText: 'Confirm New Password',
-            border: const OutlineInputBorder(),
-            prefixIcon: const Icon(Icons.lock_outline),
-            suffixIcon: IconButton(
-              icon: Icon(_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off),
-              onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
-            ),
-          ),
+          toggleObscure: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+          icon: Icons.lock_outline,
         ),
       ],
     );
   }
 
-  Widget _buildPasswordRequirements() {
-    return const Column(
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required bool obscureText,
+    required VoidCallback toggleObscure,
+    required IconData icon,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+        prefixIcon: Icon(icon),
+        suffixIcon: IconButton(
+          icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+          onPressed: toggleObscure,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordRequirements(ThemeData theme) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: const [
         Text(
           'Password must contain:',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -112,7 +118,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  Widget _buildUpdateButton() {
+  Widget _buildUpdateButton(ThemeData theme) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -135,7 +141,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       );
       return;
     }
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Password updated successfully')),
     );

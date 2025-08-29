@@ -5,10 +5,15 @@ class ProfileDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile Details'),
         centerTitle: true,
+        backgroundColor: theme.colorScheme.primary,
+        foregroundColor: theme.colorScheme.onPrimary,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -20,26 +25,31 @@ class ProfileDetailsScreen extends StatelessWidget {
               backgroundImage: AssetImage('assets/images/avatar.png'),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'maron',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               'manager',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+              ),
             ),
             const SizedBox(height: 24),
-            _buildDetailItem('Email', 'kal@gmail.com'),
-            _buildDetailItem('Phone', '0912345678'),
-            _buildDetailItem('Location', 'AA, Ethiopia'),
+            _buildDetailItem(context, 'Email', 'kal@gmail.com'),
+            _buildDetailItem(context, 'Phone', '0912345678'),
+            _buildDetailItem(context, 'Location', 'AA, Ethiopia'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDetailItem(String title, String value) {
+  Widget _buildDetailItem(BuildContext context, String title, String value) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -47,9 +57,12 @@ class ProfileDetailsScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          Text(value),
+          Text(
+            value,
+            style: theme.textTheme.bodyMedium,
+          ),
         ],
       ),
     );

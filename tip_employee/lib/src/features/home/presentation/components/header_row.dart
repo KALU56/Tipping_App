@@ -1,12 +1,21 @@
-// lib/src/features/home/presentation/components/header_row.dart
 part of '../../home.dart';
-class _HeaderRow extends StatelessWidget {
-  final String userName; // <-- add this
 
-  const _HeaderRow({this.userName = "Kali"}); // default name
+class _HeaderRow extends StatefulWidget {
+  final String userName;
+
+  const _HeaderRow({this.userName = "Kali", Key? key}) : super(key: key);
+
+  @override
+  State<_HeaderRow> createState() => _HeaderRowState();
+}
+
+class _HeaderRowState extends State<_HeaderRow> {
+  bool _darkModeEnabled = false;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         // Top row: Avatar + Name + Notification
@@ -15,7 +24,9 @@ class _HeaderRow extends StatelessWidget {
           children: [
             // Avatar + Name
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                // TODO: Navigate to profile or settings
+              },
               child: Row(
                 children: [
                   // Avatar with border
@@ -23,7 +34,7 @@ class _HeaderRow extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: AppTheme.primaryColor,
+                        color: theme.colorScheme.primary,
                         width: 2,
                       ),
                     ),
@@ -32,14 +43,13 @@ class _HeaderRow extends StatelessWidget {
                       backgroundImage: AssetImage('assets/images/avatar.png'),
                     ),
                   ),
-                  const SizedBox(width: 12), // space between avatar and name
-                  // User name text
+                  const SizedBox(width: 12),
+                  // User name
                   Text(
-                    userName,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+                    widget.userName,
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.onPrimary,
                     ),
                   ),
                 ],
@@ -51,11 +61,11 @@ class _HeaderRow extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.cardColor,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: theme.shadowColor.withOpacity(0.1),
                     spreadRadius: 1,
                     blurRadius: 5,
                     offset: const Offset(0, 2),
@@ -65,10 +75,12 @@ class _HeaderRow extends StatelessWidget {
               child: IconButton(
                 icon: Icon(
                   Icons.notifications_none,
-                  color: AppTheme.primaryColor,
+                  color: theme.colorScheme.primary,
                   size: 24,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  // TODO: Handle notification tap
+                },
               ),
             ),
           ],
@@ -76,24 +88,37 @@ class _HeaderRow extends StatelessWidget {
 
         const SizedBox(height: 16),
 
-        // Search box below
+        // Search box with Dark Mode Icon
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Container(
             height: 44,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.cardColor,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const TextField(
+            child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search tips or customers...',
                 border: InputBorder.none,
                 prefixIcon: Icon(
                   Icons.search,
-                  color: AppTheme.primaryColor,
+                  color: theme.colorScheme.primary,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 12),
+                // Dark Mode icon inside search field
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _darkModeEnabled
+                        ? Icons.wb_sunny   // sun for light mode
+                        : Icons.nightlight_round, // crescent moon for dark
+                    color: theme.colorScheme.primary,
+                  ),
+                  onPressed: () {
+                    setState(() => _darkModeEnabled = !_darkModeEnabled);
+                    themeNotifier.toggleTheme(_darkModeEnabled);
+                  },
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
               ),
             ),
           ),

@@ -1,4 +1,3 @@
-// lib/src/features/home/presentation/screens/home_screen.dart
 part of '../../home.dart';
 
 class _HomeScreen extends StatefulWidget {
@@ -13,38 +12,50 @@ class _HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<_HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      
+      backgroundColor: theme.scaffoldBackgroundColor, // ✅ adaptive
+
       body: Stack(
         children: [
           // 1️⃣ Header background including status bar
           Container(
-            height: 100, // total height for header + status bar
-            color: AppTheme.primaryColor,
+            height: 100,
+            color: AppTheme.primaryColor, // brand color, stays consistent
           ),
-      SafeArea(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: AppTheme.primaryColor, // header background color
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
+          SafeArea(
+            child: Column(
+              children: [
+                // Header row
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(24),
+                      bottomRight: Radius.circular(24),
+                    ),
+                  ),
+                  padding: const EdgeInsets.only(
+                      top: 16, left: 16, right: 16, bottom: 16),
+                  child: const _HeaderRow(),
                 ),
-              ),
-              padding: const EdgeInsets.only(top: 40, left: 16, right: 16, bottom: 16), // add top padding for status bar
-              child: const _HeaderRow(),
+
+                // Promotional banner
+                const _PromotionalBanner(),
+
+                // Recent tips section header
+                const _RecentTipsHeader(),
+                const SizedBox(height: 8),
+
+                // Recent tips list
+                Expanded(
+                  child: RecentTipsList(repository: widget.repository),
+                ),
+              ],
             ),
-            const _PromotionalBanner(),
-            const _RecentTipsHeader(),
-            const SizedBox(height: 8),
-            Expanded(child: RecentTipsList(repository: widget.repository)),
-          ],
-        ),
-      ),
+          ),
         ],
       ),
     );
