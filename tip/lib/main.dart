@@ -1,24 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:tip/app/themes/app_theme.dart';
-import 'screens/employee_selection/employee_selection_screen.dart';
+import 'package:tip/features/givetip/presentation/screens/employee_selection_screen.dart';
 
 
 void main() {
   runApp(const CustomerPaymentApp());
 }
 
-class CustomerPaymentApp extends StatelessWidget {
+class CustomerPaymentApp extends StatefulWidget {
   const CustomerPaymentApp({super.key});
+
+  @override
+  State<CustomerPaymentApp> createState() => _CustomerPaymentAppState();
+}
+
+class _CustomerPaymentAppState extends State<CustomerPaymentApp> {
+  ThemeMode _themeMode = ThemeMode.light; // default light mode
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode =
+          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Customer Payment',
-      theme: AppTheme.lightTheme,   // ✅ Light theme
-      darkTheme: AppTheme.darkTheme, // ✅ Dark theme
-      themeMode: ThemeMode.system,   // ✅ Auto switch based on system
-      home: EmployeeSelectionScreen(),
-      debugShowCheckedModeBanner: false, // optional, removes debug banner
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: _themeMode, // dynamically changes theme
+      home: EmployeeSelectionScreen(toggleTheme: _toggleTheme),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
