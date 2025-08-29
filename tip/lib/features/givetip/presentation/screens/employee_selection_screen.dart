@@ -4,7 +4,8 @@ import '../../../../models/employee.dart';
 import 'payment_page.dart';
 
 class EmployeeSelectionScreen extends StatefulWidget {
-  final VoidCallback toggleTheme; // callback to switch theme
+  final VoidCallback toggleTheme;
+
   const EmployeeSelectionScreen({super.key, required this.toggleTheme});
 
   @override
@@ -44,33 +45,37 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Header
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hello Customer!',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Select an employee to tip:',
-                  style: theme.textTheme.titleLarge,
-                ),
-              ],
+            // Motivational gift image
+            Center(
+              child: Image.asset(
+                'assets/images/gift.png',
+                height: 250,
+                fit: BoxFit.contain,
+              ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
+
+            // // Header texts
+            // Text(
+            //   'Hello Customer!',
+            //   style: theme.textTheme.titleLarge
+            //       ?.copyWith(fontWeight: FontWeight.bold),
+            // ),
+            // const SizedBox(height: 4),
+            // Text(
+            //   'Select an employee to tip:',
+            //   style: theme.textTheme.titleLarge,
+            // ),
+            // const SizedBox(height: 20),
 
             // QR scanner button
             ElevatedButton.icon(
               onPressed: () async {
                 final scannedValue = await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
+                  MaterialPageRoute(
+                      builder: (_) => const BarcodeScannerScreen()),
                 );
-
                 if (scannedValue != null) {
                   _goToPayment(scannedValue.toString());
                 }

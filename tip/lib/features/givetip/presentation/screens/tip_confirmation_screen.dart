@@ -81,26 +81,7 @@ class TipConfirmationScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Action buttons
-              ElevatedButton.icon(
-                onPressed: () {
-                  // Navigator.pushAndRemoveUntil(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (_) => const EmployeeSelectionScreen(
-                  //       // toggleTheme: null, // pass toggleTheme if needed
-                  //     ),
-                  //   ),
-                  //   (route) => false,
-                  // );
-                },
-                icon: const Icon(Icons.send),
-                label: const Text('Send Another Tip'),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                ),
-              ),
-              const SizedBox(height: 10),
+            
               OutlinedButton.icon(
                 onPressed: () {
                   Navigator.popUntil(context, (route) => route.isFirst);
