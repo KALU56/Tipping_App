@@ -69,38 +69,72 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size; // for responsive layout
+
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(), // ✅ dismiss keyboard
+      onTap: () => FocusScope.of(context).unfocus(), // dismiss keyboard
       child: Scaffold(
         appBar: AppBar(title: const Text('Payment')),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: size.width * 0.05,
+            vertical: size.height * 0.03,
+          ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Employee avatar
               CircleAvatar(
-                radius: 40,
+                radius: size.width * 0.12,
                 backgroundImage: NetworkImage(widget.employee.pictureUrl),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: size.height * 0.02),
+
+              // Employee details
               Text(
                 widget.employee.name,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: size.width * 0.06,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              Text(widget.employee.workspace),
+              SizedBox(height: size.height * 0.005),
+              Text(
+                widget.employee.workspace,
+                style: TextStyle(fontSize: size.width * 0.045, color: Colors.grey[700]),
+              ),
               if (widget.employee.note != null)
-                Text(widget.employee.note!, style: const TextStyle(color: Colors.grey)),
-              const SizedBox(height: 20),
+                Padding(
+                  padding: EdgeInsets.only(top: size.height * 0.005),
+                  child: Text(
+                    widget.employee.note!,
+                    style: TextStyle(
+                      color: Colors.grey[500],
+                      fontSize: size.width * 0.04,
+                    ),
+                  ),
+                ),
 
-              /// Tip Input
+              SizedBox(height: size.height * 0.04),
+
+              // Tip input
               TipInputField(
                 controller: _tipController,
-                // errorText: _errorText, // ✅ inline error
+                errorText: _errorText,
               ),
 
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _validateAndProceed,
-                child: const Text('Send Tip'),
+              SizedBox(height: size.height * 0.03),
+
+              // Send Tip button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _validateAndProceed,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
+                  ),
+                  child: const Text('Send Tip', style: TextStyle(fontSize: 18)),
+                ),
               ),
             ],
           ),

@@ -25,6 +25,7 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final size = MediaQuery.of(context).size; // get screen size
 
     return Scaffold(
       appBar: AppBar(
@@ -42,69 +43,66 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Motivational gift image
-            Center(
-              child: Image.asset(
-                'assets/images/gift.png',
-                height: 250,
-                fit: BoxFit.contain,
+        child: SingleChildScrollView( // make it scrollable on small screens
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Motivational gift image
+              Center(
+                child: Image.asset(
+                  'assets/images/gift.png',
+                  height: size.height * 0.3, // 30% of screen height
+                  fit: BoxFit.contain,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
+              SizedBox(height: size.height * 0.02),
 
-            // // Header texts
-            // Text(
-            //   'Hello Customer!',
-            //   style: theme.textTheme.titleLarge
-            //       ?.copyWith(fontWeight: FontWeight.bold),
-            // ),
-            // const SizedBox(height: 4),
-            // Text(
-            //   'Select an employee to tip:',
-            //   style: theme.textTheme.titleLarge,
-            // ),
-            // const SizedBox(height: 20),
-
-            // QR scanner button
-            ElevatedButton.icon(
-              onPressed: () async {
-                final scannedValue = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const BarcodeScannerScreen()),
-                );
-                if (scannedValue != null) {
-                  _goToPayment(scannedValue.toString());
-                }
-              },
-              icon: const Icon(Icons.qr_code_scanner),
-              label: const Text('Scan Employee QR'),
-            ),
-            const SizedBox(height: 20),
-
-            // Manual search field
-            TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                labelText: 'Enter Employee ID or Name',
-                prefixIcon: Icon(Icons.search),
+              // QR scanner button
+              ElevatedButton.icon(
+                onPressed: () async {
+                  final scannedValue = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const BarcodeScannerScreen()),
+                  );
+                  if (scannedValue != null) {
+                    _goToPayment(scannedValue.toString());
+                  }
+                },
+                icon: const Icon(Icons.qr_code_scanner),
+                label: const Text('Scan Employee QR'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                      vertical: size.height * 0.02), // responsive padding
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
+              SizedBox(height: size.height * 0.02),
 
-            ElevatedButton(
-              onPressed: () {
-                final employeeName = _searchController.text.isEmpty
-                    ? "John Doe"
-                    : _searchController.text;
-                _goToPayment(employeeName);
-              },
-              child: const Text('Proceed to Payment'),
-            ),
-          ],
+              // Manual search field
+              TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  labelText: 'Enter Employee ID or Name',
+                  prefixIcon: Icon(Icons.search),
+                ),
+              ),
+              SizedBox(height: size.height * 0.015),
+
+              ElevatedButton(
+                onPressed: () {
+                  final employeeName = _searchController.text.isEmpty
+                      ? "John Doe"
+                      : _searchController.text;
+                  _goToPayment(employeeName);
+                },
+                child: const Text('Proceed to Payment'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                      vertical: size.height * 0.02), // responsive padding
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

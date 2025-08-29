@@ -26,16 +26,16 @@ class BarcodeScannerScreen extends StatefulWidget {
 
 class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   final MobileScannerController controller = MobileScannerController();
-  bool _isScanned = false; // ✅ prevent multiple detections
+  bool _isScanned = false; // prevent multiple detections
 
   @override
   void dispose() {
-    controller.dispose(); // ✅ cleanup camera resources
+    controller.dispose(); // clean up camera resources
     super.dispose();
   }
 
   void _handleBarcode(BarcodeCapture capture) {
-    if (_isScanned) return; // ✅ ignore further detections
+    if (_isScanned) return; // ignore further detections
     _isScanned = true;
 
     final barcode = capture.barcodes.first;
@@ -43,23 +43,19 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
 
     if (rawValue != null) {
       debugPrint("Barcode found: $rawValue");
-
-      // Example: return value to previous screen
-      Navigator.pop(context, rawValue);
-
-      // Or show it:
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text("Scanned: $rawValue")),
-      // );
+      Navigator.pop(context, rawValue); // return value to previous screen
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Failed to read barcode")),
       );
+      _isScanned = false; // allow retry
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Barcode Scanner"),
@@ -76,16 +72,43 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
       ),
       body: Stack(
         children: [
+          // Camera preview
           MobileScanner(
             controller: controller,
             onDetect: _handleBarcode,
           ),
+
+          // Semi-transparent overlay for scan guidance
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+            ),
+          ),
+
+          // Center scan frame
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: size.width * 0.7,
+              height: size.width * 0.7,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.white,
+                  width: 3,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+
+          // Instruction text at bottom
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Text(
                 "Align QR/Barcode inside the frame",
+                textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class TipInputField extends StatelessWidget {
   final TextEditingController controller;
 
-  const TipInputField({required this.controller});
+  const TipInputField({required this.controller, String? errorText});
 
   @override
   Widget build(BuildContext context) {
