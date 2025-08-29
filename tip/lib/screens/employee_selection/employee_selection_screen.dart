@@ -49,22 +49,7 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
                   icon: Icon(Icons.mobile_screen_share),
                   label: Text('Mobile Scanner'),
                 ),
-                // ElevatedButton.icon(
-                //   onPressed: () async {
-                //     // Open File Picker
-                //     FilePickerResult? result =
-                //         await FilePicker.platform.pickFiles(
-                //       type: FileType.any,
-                //     );
-
-                //     if (result != null) {
-                //       String fileName = result.files.single.name;
-                //       _goToPayment(fileName);
-                //     }
-                //   },
-                //   icon: Icon(Icons.upload_file),
-                //   label: Text('Upload QR'),
-                // ),
+         
               ],
             ),
             SizedBox(height: 20),
