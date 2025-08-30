@@ -1,0 +1,1 @@
+export 'tip_model.dart';
