@@ -1,3 +1,4 @@
+// tip_event.dart
 abstract class TipEvent {}
 
 class EmployeeIdEntered extends TipEvent {

@@ -1,12 +1,12 @@
+// tip_bloc.dart
 import 'package:bloc/bloc.dart';
+import 'package:tip_/tip/domain/repository.dart';
 
-import 'package:tip_/tip/data/repository_imp.dart';
 import 'tip_event.dart';
 import 'tip_state.dart';
 
-
 class TipBloc extends Bloc<TipEvent, TipState> {
-  final TipRepositoryImpl repository;
+  final TipRepository repository;
 
   TipBloc(this.repository) : super(TipState()) {
     on<EmployeeIdEntered>(_onEmployeeIdEntered);
@@ -15,31 +15,35 @@ class TipBloc extends Bloc<TipEvent, TipState> {
   }
 
   void _onEmployeeIdEntered(EmployeeIdEntered event, Emitter<TipState> emit) async {
-    emit(TipState(isSubmitting: true));
+    emit(state.copyWith(isSubmitting: true, errorMessage: null));
     final exists = await repository.checkEmployee(event.employeeId);
-    emit(TipState(
+    emit(state.copyWith(
+      isSubmitting: false,
       employeeId: event.employeeId,
       employeeExists: exists,
-      isSubmitting: false,
+      errorMessage: exists ? null : 'Employee not found',
     ));
   }
 
   void _onTipAmountEntered(TipAmountEntered event, Emitter<TipState> emit) {
-    emit(TipState(tipAmount: event.amount));
+    emit(state.copyWith(tipAmount: event.amount, errorMessage: null));
   }
 
   void _onTipSubmitted(TipSubmitted event, Emitter<TipState> emit) async {
     if (!state.employeeExists) {
-      emit(TipState(errorMessage: 'Employee not found'));
+      emit(state.copyWith(errorMessage: 'Employee not found'));
       return;
     }
     if (state.tipAmount <= 0) {
-      emit(TipState(errorMessage: 'Enter a valid tip amount'));
+      emit(state.copyWith(errorMessage: 'Enter a valid tip amount'));
       return;
     }
 
-    emit(TipState(isSubmitting: true));
+    emit(state.copyWith(isSubmitting: true, errorMessage: null));
     final result = await repository.submitTip(state.employeeId, state.tipAmount);
-    emit(TipState(isSuccess: result.status == 'success'));
+    emit(state.copyWith(
+      isSubmitting: false,
+      isSuccess: result.status == 'success',
+    ));
   }
 }

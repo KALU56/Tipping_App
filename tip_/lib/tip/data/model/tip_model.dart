@@ -1,3 +1,4 @@
+// tip_model.dart
 import 'package:json_annotation/json_annotation.dart';
 
 part 'tip_model.g.dart';
@@ -14,4 +15,8 @@ class TipModel {
     required this.status,
   });
 
+  factory TipModel.fromJson(Map<String, dynamic> json) =>
+      _$TipModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TipModelToJson(this);
 }
