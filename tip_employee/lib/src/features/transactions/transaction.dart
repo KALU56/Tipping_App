@@ -6,7 +6,7 @@ import 'package:tip_employee/src/features/transactions/presentation/components/b
 
 // Data + Domain
 import 'domain/models/transaction_model.dart';
-import 'data/mock/mock_transactions.dart';
+
 import 'domain/repositories/transaction_repository.dart';
 
 // Presentation
