@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tip_employee/src/app/routes/app_routes.dart';
+import 'package:tip_employee/src/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:tip_employee/src/features/auth/presentation/blocs/auth_state.dart';
+import '../../data/models/auth_model.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+import '../blocs/auth_event.dart';
+
+
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupState extends State<Signup> {
+class _SignupScreenState extends State<SignupScreen> {
   bool _obscurePassword = true;
-  bool _obscurePasscode = true;
+  bool _obscureEmployCode = true;
+
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController employCodeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,175 +32,121 @@ class _SignupState extends State<Signup> {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-          
-                SvgPicture.asset(
-                  'assets/images/Signup.svg',
-                  height: 100,
-                ),
-                const SizedBox(height: 10),
-
-                // Title
-                Text(
-                  'Create Your Account',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
+        child: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is SignupSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Signup successful!")));
+              Navigator.pushReplacementNamed(context, AppRoutes.login);
+            } else if (state is SignupFailure) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(state.message)));
+            }
+          },
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset('assets/images/Signup.svg', height: 100),
+                  const SizedBox(height: 10),
+                  Text('Create Your Account',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  _buildTextField('First name', firstNameController),
+                  const SizedBox(height: 8),
+                  _buildTextField('Last name', lastNameController),
+                  const SizedBox(height: 8),
+                  _buildTextField('Email', emailController),
+                  const SizedBox(height: 16),
+                  _buildPasswordField('Password', passwordController, _obscurePassword, (v) {
+                    setState(() => _obscurePassword = !_obscurePassword);
+                  }),
+                  const SizedBox(height: 16),
+                  _buildPasswordField('Employ-code', employCodeController, _obscureEmployCode, (v) {
+                    setState(() => _obscureEmployCode = !_obscureEmployCode);
+                  }),
+                  const SizedBox(height: 25),
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      return state is AuthLoading
+                          ? const CircularProgressIndicator()
+                          : ElevatedButton(
+                              onPressed: () {
+                                context.read<AuthBloc>().add(SignupRequested(
+                                      SignupModel(
+                                        firstName: firstNameController.text,
+                                        lastName: lastNameController.text,
+                                        email: emailController.text,
+                                        password: passwordController.text,
+                                        employCode: employCodeController.text,
+                                      ),
+                                    ));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 50),
+                              ),
+                              child: const Text('Signup'),
+                            );
+                    },
                   ),
-                  textAlign: TextAlign.center,
-                ),
-            
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'First name',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your first name',
-                  ),
-                ),
-                const SizedBox(height: 8),
-                                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Last name',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your last name',
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Email
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Email',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your email',
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Password',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your password',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Already have an account? ", style: theme.textTheme.bodyMedium),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.login);
+                        },
+                        child: Text("Login",
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold)),
                       ),
-                      onPressed: () =>
-                          setState(() => _obscurePassword = !_obscurePassword),
-                    ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 20),
-
-                // Passcode
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Employ-code',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  obscureText: _obscurePasscode,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your employ-code',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePasscode
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () =>
-                          setState(() => _obscurePasscode = !_obscurePasscode),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 25),
-
-                // Signup button
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, AppRoutes.home);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                  ),
-                  child: const Text('Signup'),
-                ),
-                const SizedBox(height: 20),
-
-                // Login link
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Already have an account? ",
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.login);
-                      },
-                      child: Text(
-                        "Login",
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        TextField(controller: controller, decoration: InputDecoration(hintText: 'Enter your $label')),
+      ],
+    );
+  }
+
+  Widget _buildPasswordField(String label, TextEditingController controller, bool obscureText, void Function(bool) toggle) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          obscureText: obscureText,
+          decoration: InputDecoration(
+            hintText: 'Enter your $label',
+            suffixIcon: IconButton(
+              icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
+              onPressed: () => toggle(obscureText),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

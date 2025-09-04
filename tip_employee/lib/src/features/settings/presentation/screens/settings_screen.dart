@@ -1,8 +1,7 @@
 part of '../../settings.dart';
 
 class _SettingState extends State<Setting> {
-  bool _notificationsEnabled = true;
-  bool _darkModeEnabled = false;
+
 
   @override
   Widget build(BuildContext context) {

@@ -43,7 +43,7 @@ class _LandingScreen extends State<LandingScreen> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const Signup()),
+        MaterialPageRoute(builder: (context) => const SignupScreen()),
       );
     }
   }
@@ -51,7 +51,7 @@ class _LandingScreen extends State<LandingScreen> {
   void _skip() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const Signup()),
+      MaterialPageRoute(builder: (context) => const SignupScreen()),
     );
   }
 

@@ -1,8 +1,8 @@
 // lib/src/features/transactions/transaction.dart
 import 'package:flutter/material.dart';
-import 'package:tip_employee/src/app/themes/app_theme.dart';
+
 import 'package:tip_employee/src/features/transactions/data/repositories/mock_transaction_repository.dart';
-import 'package:tip_employee/src/features/transactions/presentation/components/balance_card.dart';
+
 
 // Data + Domain
 import 'domain/models/transaction_model.dart';

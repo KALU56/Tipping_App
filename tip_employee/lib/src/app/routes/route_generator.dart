@@ -20,9 +20,9 @@ class RouteGenerator {
       case AppRoutes.landing:
         return MaterialPageRoute(builder: (_) => const LandingScreen());
       case AppRoutes.login:
-        return MaterialPageRoute(builder: (_) => const Login());
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
       case AppRoutes.signup:
-        return MaterialPageRoute(builder: (_) => const Signup());
+        return MaterialPageRoute(builder: (_) => const SignupScreen());
 
       case AppRoutes.transactions:
         return MaterialPageRoute(builder: (_) => const TransactionHistoryScreen());
