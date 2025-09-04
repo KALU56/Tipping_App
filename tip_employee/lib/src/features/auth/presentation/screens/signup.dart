@@ -26,12 +26,12 @@ class _SignupState extends State<Signup> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // ✅ SVG at the top
+          
                 SvgPicture.asset(
                   'assets/images/Signup.svg',
-                  height: 150,
+                  height: 100,
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 10),
 
                 // Title
                 Text(
@@ -41,19 +41,11 @@ class _SignupState extends State<Signup> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Sign up with your email, username, and password to get started.',
-                  style: theme.textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 25),
-
-                // Username
+            
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Username',
+                    'First name',
                     style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -62,7 +54,23 @@ class _SignupState extends State<Signup> {
                 const SizedBox(height: 8),
                 TextField(
                   decoration: const InputDecoration(
-                    hintText: 'Enter your username',
+                    hintText: 'Enter your first name',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Last name',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your last name',
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -85,7 +93,6 @@ class _SignupState extends State<Signup> {
                 ),
                 const SizedBox(height: 20),
 
-                // Password
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -117,7 +124,7 @@ class _SignupState extends State<Signup> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Passcode',
+                    'Employ-code',
                     style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -127,7 +134,7 @@ class _SignupState extends State<Signup> {
                 TextField(
                   obscureText: _obscurePasscode,
                   decoration: InputDecoration(
-                    hintText: 'Enter your passcode',
+                    hintText: 'Enter your employ-code',
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePasscode
