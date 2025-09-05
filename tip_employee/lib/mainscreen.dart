@@ -16,7 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 1;
 
   final List<Widget> _pages = const [
-    TransactionHistoryScreen(),
+    TipHistoryScreen(),
     Home(),
     Setting(),
   ];

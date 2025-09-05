@@ -9,13 +9,13 @@ part of 'tip_model.dart';
 Tip _$TipFromJson(Map<String, dynamic> json) => Tip(
   customerName: json['customerName'] as String,
   amount: (json['amount'] as num).toDouble(),
-  time: (json['time'] as num).toInt(),
+  time: const TimeOfDayConverter().fromJson(json['time'] as String),
   date: DateTime.parse(json['date'] as String),
 );
 
 Map<String, dynamic> _$TipToJson(Tip instance) => <String, dynamic>{
   'customerName': instance.customerName,
   'amount': instance.amount,
-  'time': instance.time,
+  'time': const TimeOfDayConverter().toJson(instance.time),
   'date': instance.date.toIso8601String(),
 };

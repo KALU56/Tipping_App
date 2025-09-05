@@ -4,11 +4,10 @@ import 'package:tip_employee/src/app/routes/app_routes.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
 import 'package:tip_employee/src/app/themes/themeNotifier.dart';
 import 'package:tip_employee/src/features/settings/settings.dart';
+import 'package:tip_employee/src/shared/data/mock_tip_repository.dart';
+import 'package:tip_employee/src/shared/data/models/tip_model.dart';
+import 'package:tip_employee/src/shared/domain/repositories/tip_repository.dart';
 
-// Bring in repository + model
-import 'data/mock_tip_repository.dart';
-import 'domain/repositories/tip_repository.dart';
-import 'domain/models/tip.dart';
 
 // UI parts
 part './presentation/screens/home_screen.dart';

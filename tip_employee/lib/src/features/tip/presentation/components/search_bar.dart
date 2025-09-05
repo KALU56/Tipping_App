@@ -1,4 +1,4 @@
-part of '../../tip.dart';
+import 'package:flutter/material.dart';
 
 class SearchBar extends StatelessWidget {
   final ValueChanged<String> onSearchChanged;
@@ -6,7 +6,6 @@ class SearchBar extends StatelessWidget {
   const SearchBar({
     super.key,
     required this.onSearchChanged,
-    required Null Function(dynamic query) onChanged, // keep signature intact
   });
 
   @override
@@ -18,14 +17,14 @@ class SearchBar extends StatelessWidget {
         hintText: 'Search tip...',
         prefixIcon: Icon(Icons.search, color: theme.iconTheme.color?.withOpacity(0.6)),
         filled: true,
-        fillColor: theme.cardColor, // adaptive background
+        fillColor: theme.cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
       ),
-      onChanged: onSearchChanged,
-      style: theme.textTheme.bodyMedium, // adaptive text color
+      onChanged: onSearchChanged, // <- matches ValueChanged<String>
+      style: theme.textTheme.bodyMedium,
     );
   }
 }

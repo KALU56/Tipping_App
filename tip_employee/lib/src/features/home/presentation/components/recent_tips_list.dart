@@ -80,26 +80,7 @@ class _RecentTipsListState extends State<RecentTipsList> {
                   ),
                   child: const Icon(Icons.person, color: Colors.white),
                 ),
-                title: Text(
-                  tip.customerName,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                subtitle: Text(
-                  '${tip.minutesAgo} minutes ago',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
-                    fontSize: 12,
-                  ),
-                ),
-                trailing: Text(
-                  '\$${tip.amount}',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
+              
               ),
             );
           },

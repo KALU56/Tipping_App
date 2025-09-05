@@ -29,36 +29,39 @@ class ProfileSection extends StatelessWidget {
                 ),
               ],
             ),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  radius: 30,
-                  backgroundImage: AssetImage('assets/images/avatar.png'),
-                ),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user != null
-                          ? "${user.firstname} ${user.lastname}"
-                          : "Loading...",
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage('assets/images/avatar.png'),
+                  ),
+                  const SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user != null
+                            ? "${user.firstname} ${user.lastname}"
+                            : "Loading...",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      user != null ? user.email : "",
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 253, 252, 252),
-                        fontSize: 14,
+                      const SizedBox(height: 4),
+                      Text(
+                        user != null ? user.work : "",
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 253, 252, 252),
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

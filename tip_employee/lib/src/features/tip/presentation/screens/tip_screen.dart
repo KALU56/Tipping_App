@@ -1,20 +1,21 @@
 part of '../../tip.dart';
 
-class TransactionHistoryScreen extends StatefulWidget {
-  const TransactionHistoryScreen({super.key});
+class TipHistoryScreen extends StatefulWidget {
+  const TipHistoryScreen({super.key});
 
   @override
-  State<TransactionHistoryScreen> createState() =>
-      _TransactionHistoryScreenState();
+  State<TipHistoryScreen> createState() => _TipHistoryScreenState();
 }
+class _TipHistoryScreenState extends State<TipHistoryScreen> {
+  int _selectedFilter = 3; // default "All"
 
-class _TransactionHistoryScreenState
-    extends State<TransactionHistoryScreen> {
+  final List<String> _filters = ['Today', 'This Week', 'This Month', 'All'];
 
-  String _searchQuery = '';
-  int _selectedFilter = 0;
-
-  List<String> get _filters => ['today', 'this week', 'this month', 'all'];
+  @override
+  void initState() {
+    super.initState();
+    context.read<TipBloc>().add(LoadTips());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,50 +24,46 @@ class _TransactionHistoryScreenState
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Search Bar
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: SearchBar(
-                onChanged: (query) {
-                  setState(() => _searchQuery = query);
-                },
-                onSearchChanged: (query) {
-                  setState(() => _searchQuery = query);
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // Search Bar
+              SearchBar(
+  onSearchChanged: (query) {
+    context.read<TipBloc>().add(SearchTips(query));
+  },
+),
+              const SizedBox(height: 12),
+
+              // Filter Chips
+              FilterChips(
+                filters: _filters,
+                selectedIndex: _selectedFilter,
+                onFilterChanged: (index) {
+                  setState(() => _selectedFilter = index);
+                  context.read<TipBloc>().add(FilterTips(index));
                 },
               ),
-            ),
+              const SizedBox(height: 16),
 
-          
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'All tip',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // Filter Chips
-            Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: FilterChips(
-                  filters: _filters,
-                  onFilterChanged: (index) {
-                    setState(() => _selectedFilter = index);
+              // Tip List
+              Expanded(
+                child: BlocBuilder<TipBloc, TipState>(
+                  builder: (context, state) {
+                    if (state is TipLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is TipLoaded) {
+                      return TipList(tips: state.tips);
+                    } else if (state is TipError) {
+                      return Center(child: Text('Error: ${state.message}'));
+                    }
+                    return const SizedBox.shrink();
                   },
-              
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

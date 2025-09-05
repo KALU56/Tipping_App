@@ -1,21 +1,16 @@
-part of '../../tip.dart';
+import 'package:flutter/material.dart';
 
-class FilterChips extends StatefulWidget {
+class FilterChips extends StatelessWidget {
   final List<String> filters;
+  final int selectedIndex;
   final ValueChanged<int> onFilterChanged;
 
   const FilterChips({
     super.key,
     required this.filters,
+    required this.selectedIndex,
     required this.onFilterChanged,
   });
-
-  @override
-  State<FilterChips> createState() => _FilterChipsState();
-}
-
-class _FilterChipsState extends State<FilterChips> {
-  int _selectedFilter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -25,31 +20,19 @@ class _FilterChipsState extends State<FilterChips> {
       height: 50,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: widget.filters.length,
+        itemCount: filters.length,
         itemBuilder: (context, index) {
-          final bool isSelected = _selectedFilter == index;
-
+          final isSelected = index == selectedIndex;
           return Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: FilterChip(
-              label: Text(
-                widget.filters[index],
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: isSelected
-                      ? theme.colorScheme.onPrimary
-                      : theme.textTheme.bodyMedium?.color,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+            child: ChoiceChip(
+              label: Text(filters[index]),
               selected: isSelected,
-              onSelected: (bool selected) {
-                setState(() => _selectedFilter = selected ? index : 0);
-                widget.onFilterChanged(_selectedFilter);
-              },
+              onSelected: (_) => onFilterChanged(index),
               selectedColor: theme.colorScheme.primary,
               backgroundColor: theme.cardColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+              labelStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: isSelected ? theme.colorScheme.onPrimary : theme.textTheme.bodyMedium?.color,
               ),
             ),
           );
