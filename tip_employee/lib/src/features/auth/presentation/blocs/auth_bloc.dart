@@ -1,18 +1,17 @@
-// auth_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tip_employee/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:tip_employee/src/features/auth/data/models/login_model.dart';
-import 'package:tip_employee/src/features/auth/data/repositories/auth_repository_impl.dart';
 
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepositoryImpl authRepository;
+  final AuthRepository authRepository; // ✅ depend on abstraction, not impl
 
   // Dummy service provider employ code for validation
   final String correctEmployCode = "SP001";
 
-  AuthBloc(this.authRepository) : super(AuthInitial()) {
+  AuthBloc({required this.authRepository}) : super(AuthInitial()) {
     on<SignupRequested>(_onSignupRequested);
     on<LoginRequested>(_onLoginRequested);
   }
@@ -31,7 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await authRepository.signup(event.signupModel);
       emit(SignupSuccess());
     } catch (e) {
-      emit(SignupFailure("Signup failed"));
+      emit(SignupFailure("Signup failed: ${e.toString()}"));
     }
   }
 
@@ -45,7 +44,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.loginModel.password,
       ));
 
-      // Simple check: in real app, check DB/email/password
       if (user.email == event.loginModel.email &&
           user.password == event.loginModel.password) {
         emit(LoginSuccess());
@@ -53,7 +51,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(LoginFailure("Incorrect email or password"));
       }
     } catch (e) {
-      emit(LoginFailure("Login failed"));
+      emit(LoginFailure("Login failed: ${e.toString()}"));
     }
   }
 }
