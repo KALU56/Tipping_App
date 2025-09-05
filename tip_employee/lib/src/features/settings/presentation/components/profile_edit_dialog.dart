@@ -1,67 +1,45 @@
 part of '../../settings.dart';
 
 class ProfileEditDialog extends StatefulWidget {
-  const ProfileEditDialog({super.key});
+  final User user;
+  const ProfileEditDialog({super.key, required this.user});
 
   @override
   State<ProfileEditDialog> createState() => _ProfileEditDialogState();
 }
 
 class _ProfileEditDialogState extends State<ProfileEditDialog> {
-  final _repo = MockUserRepository();
   final _formKey = GlobalKey<FormState>();
 
-  late TextEditingController _nameController;
-  late TextEditingController _usernameController;
+  late TextEditingController _firstnameController;
+  late TextEditingController _lastnameController;
   late TextEditingController _emailController;
-  late TextEditingController _descController;
+  late TextEditingController _workController;
   late TextEditingController _accountController;
-
-  User? _user;
 
   @override
   void initState() {
     super.initState();
-    _loadUser();
+    _firstnameController = TextEditingController(text: widget.user.firstname);
+    _lastnameController = TextEditingController(text: widget.user.lastname);
+    _emailController = TextEditingController(text: widget.user.email);
+    _workController = TextEditingController(text: widget.user.work);
+    _accountController =
+        TextEditingController(text: widget.user.accountNumber);
   }
 
-  Future<void> _loadUser() async {
-    final user = await _repo.getProfile();
-    setState(() {
-      _user = user;
-      _nameController = TextEditingController(text: user.name);
-      _usernameController = TextEditingController(text: user.username);
-      _emailController = TextEditingController(text: user.email);
-      _descController = TextEditingController(text: user.description);
-      _accountController = TextEditingController(text: user.accountNumber);
-    });
-  }
-
-  Future<void> _saveProfile() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final updated = _user!.copyWith(
-      name: _nameController.text,
-      username: _usernameController.text,
-      email: _emailController.text,
-      description: _descController.text,
-      accountNumber: _accountController.text,
-    );
-
-    await _repo.updateProfile(updated);
-
-    if (mounted) {
-      Navigator.pop(context, updated);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Profile updated!")),
-      );
-    }
+  @override
+  void dispose() {
+    _firstnameController.dispose();
+    _lastnameController.dispose();
+    _emailController.dispose();
+    _workController.dispose();
+    _accountController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_user == null) return const Center(child: CircularProgressIndicator());
-
     return Center(
       child: Material(
         color: Colors.transparent,
@@ -74,10 +52,12 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
-
               borderRadius: BorderRadius.circular(16),
               boxShadow: const [
-                BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4)),
+                BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 4)),
               ],
             ),
             child: SingleChildScrollView(
@@ -88,10 +68,19 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
                   children: [
                     const Text(
                       'Edit Profile',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
-                    ..._buildTextFields(),
+                    _buildTextField("First Name", _firstnameController),
+                    const SizedBox(height: 12),
+                    _buildTextField("Last Name", _lastnameController),
+                    const SizedBox(height: 12),
+                    _buildTextField("Email", _emailController),
+                    const SizedBox(height: 12),
+                    _buildTextField("Work", _workController),
+                    const SizedBox(height: 12),
+                    _buildTextField("Account Number", _accountController),
                     const SizedBox(height: 16),
                     _buildActionButtons(),
                   ],
@@ -104,25 +93,6 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
     );
   }
 
-  List<Widget> _buildTextFields() {
-    final fields = {
-      'Name': _nameController,
-      'Username': _usernameController,
-      'Email': _emailController,
-      'Description': _descController,
-      'Account Number': _accountController,
-    };
-
-    return fields.entries
-        .map(
-          (e) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _buildTextField(e.key, e.value),
-          ),
-        )
-        .toList();
-  }
-
   Widget _buildTextField(String label, TextEditingController controller) {
     return TextFormField(
       controller: controller,
@@ -130,6 +100,8 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
         labelText: label,
         border: const OutlineInputBorder(),
       ),
+      validator: (v) =>
+          (v == null || v.isEmpty) ? "Please enter $label" : null,
     );
   }
 
@@ -148,5 +120,20 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
         ),
       ],
     );
+  }
+
+  void _saveProfile() {
+    if (!_formKey.currentState!.validate()) return;
+
+    final updated = widget.user.copyWith(
+      firstname: _firstnameController.text,
+      lastname: _lastnameController.text,
+      email: _emailController.text,
+      work: _workController.text,
+      accountNumber: _accountController.text,
+    );
+
+    context.read<SettingBloc>().add(UpdateProfile(updated));
+    Navigator.pop(context);
   }
 }

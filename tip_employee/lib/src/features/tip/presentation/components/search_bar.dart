@@ -1,4 +1,4 @@
-part of '../../transaction.dart';
+part of '../../tip.dart';
 
 class SearchBar extends StatelessWidget {
   final ValueChanged<String> onSearchChanged;
@@ -15,7 +15,7 @@ class SearchBar extends StatelessWidget {
 
     return TextField(
       decoration: InputDecoration(
-        hintText: 'Search transactions...',
+        hintText: 'Search tip...',
         prefixIcon: Icon(Icons.search, color: theme.iconTheme.color?.withOpacity(0.6)),
         filled: true,
         fillColor: theme.cardColor, // adaptive background

@@ -9,7 +9,7 @@ import 'package:tip_employee/mainscreen.dart';
 
 import 'package:tip_employee/src/features/settings/settings.dart';
 
-import 'package:tip_employee/src/features/transactions/transaction.dart';
+import 'package:tip_employee/src/features/tip/tip.dart';
 
 
 class RouteGenerator {

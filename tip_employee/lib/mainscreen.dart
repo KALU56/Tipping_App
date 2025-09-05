@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tip_employee/src/features/home/home.dart';
 import 'package:tip_employee/src/features/settings/settings.dart';
-import 'package:tip_employee/src/features/transactions/transaction.dart';
+import 'package:tip_employee/src/features/tip/tip.dart';
 
 import 'package:tip_employee/src/features/home/presentation/widgets/bottom_nav_bar.dart';
 

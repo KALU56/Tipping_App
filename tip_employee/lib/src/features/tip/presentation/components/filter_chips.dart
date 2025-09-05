@@ -1,4 +1,4 @@
-part of '../../transaction.dart';
+part of '../../tip.dart';
 
 class FilterChips extends StatefulWidget {
   final List<String> filters;

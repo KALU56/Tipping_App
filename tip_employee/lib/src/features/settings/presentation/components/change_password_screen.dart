@@ -1,4 +1,5 @@
 part of '../../settings.dart';
+
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
 
@@ -25,56 +26,86 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Material(
-        color: Colors.transparent, // keeps background visible
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.8,
-            maxWidth: MediaQuery.of(context).size.width * 0.9,
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))],
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Change Password', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
-                  _buildPasswordField('Current Password', _currentPasswordController, _obscureCurrentPassword, () {
-                    setState(() => _obscureCurrentPassword = !_obscureCurrentPassword);
-                  }),
-                  const SizedBox(height: 12),
-                  _buildPasswordField('New Password', _newPasswordController, _obscureNewPassword, () {
-                    setState(() => _obscureNewPassword = !_obscureNewPassword);
-                  }),
-                  const SizedBox(height: 12),
-                  _buildPasswordField('Confirm New Password', _confirmPasswordController, _obscureConfirmPassword, () {
-                    setState(() => _obscureConfirmPassword = !_obscureConfirmPassword);
-                  }),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+    return BlocConsumer<SettingBloc, SettingState>(
+      listener: (context, state) {
+        if (state is PasswordChanged) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Password changed successfully')),
+          );
+          Navigator.pop(context);
+        } else if (state is SettingError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is SettingLoading;
+
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.9,
+                maxHeight: MediaQuery.of(context).size.height * 0.8,
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))],
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: _updatePassword,
-                        child: const Text('Update'),
+                      const Text(
+                        'Change Password',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildPasswordField('Current Password', _currentPasswordController, _obscureCurrentPassword, () {
+                        setState(() => _obscureCurrentPassword = !_obscureCurrentPassword);
+                      }),
+                      const SizedBox(height: 12),
+                      _buildPasswordField('New Password', _newPasswordController, _obscureNewPassword, () {
+                        setState(() => _obscureNewPassword = !_obscureNewPassword);
+                      }),
+                      const SizedBox(height: 12),
+                      _buildPasswordField('Confirm New Password', _confirmPasswordController, _obscureConfirmPassword, () {
+                        setState(() => _obscureConfirmPassword = !_obscureConfirmPassword);
+                      }),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Cancel'),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: isLoading ? null : _updatePassword,
+                            child: isLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  )
+                                : const Text('Update'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -86,7 +117,10 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         labelText: label,
         border: const OutlineInputBorder(),
         prefixIcon: const Icon(Icons.lock_outline),
-        suffixIcon: IconButton(icon: Icon(obscure ? Icons.visibility : Icons.visibility_off), onPressed: toggle),
+        suffixIcon: IconButton(
+          icon: Icon(obscure ? Icons.visibility : Icons.visibility_off),
+          onPressed: toggle,
+        ),
       ),
     );
   }
@@ -99,9 +133,11 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Password updated successfully')),
-    );
-    Navigator.pop(context);
+    context.read<SettingBloc>().add(
+          ChangePassword(
+            _currentPasswordController.text,
+            _newPasswordController.text,
+          ),
+        );
   }
 }

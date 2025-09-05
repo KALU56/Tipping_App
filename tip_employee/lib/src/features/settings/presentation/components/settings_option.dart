@@ -3,7 +3,7 @@ part of '../../settings.dart';
 class SettingsOption extends StatelessWidget {
   final IconData icon;
   final String title;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final Color? color;
   final bool isDestructive;
 
@@ -11,7 +11,7 @@ class SettingsOption extends StatelessWidget {
     super.key,
     required this.icon,
     required this.title,
-    required this.onTap,
+    this.onTap,
     this.color,
     this.isDestructive = false,
   });
@@ -24,8 +24,7 @@ class SettingsOption extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-       color: Theme.of(context).cardColor,
-
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(12),
         boxShadow: const [
           BoxShadow(

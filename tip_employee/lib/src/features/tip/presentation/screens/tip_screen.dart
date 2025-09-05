@@ -1,4 +1,4 @@
-part of '../../transaction.dart';
+part of '../../tip.dart';
 
 class TransactionHistoryScreen extends StatefulWidget {
   const TransactionHistoryScreen({super.key});
@@ -10,19 +10,11 @@ class TransactionHistoryScreen extends StatefulWidget {
 
 class _TransactionHistoryScreenState
     extends State<TransactionHistoryScreen> {
-  final TransactionRepository _repository = MockTransactionRepository();
+
   String _searchQuery = '';
   int _selectedFilter = 0;
 
   List<String> get _filters => ['today', 'this week', 'this month', 'all'];
-
-  List<TransactionModel> get _transactions {
-    final all = _repository.getTransactions();
-    return all
-        .where((tx) =>
-            tx.title.toLowerCase().contains(_searchQuery.toLowerCase()))
-        .toList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +39,11 @@ class _TransactionHistoryScreenState
               ),
             ),
 
-            // Recent Transactions Header
+          
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Recent Transactions',
+                'All tip',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -70,9 +62,7 @@ class _TransactionHistoryScreenState
                   onFilterChanged: (index) {
                     setState(() => _selectedFilter = index);
                   },
-                  // selectedColor: theme.colorScheme.primary,
-                  // unselectedColor: theme.cardColor,
-                  // textColor: theme.textTheme.bodyMedium?.color,
+              
                 ),
               ),
             ),

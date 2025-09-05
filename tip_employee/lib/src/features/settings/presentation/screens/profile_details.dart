@@ -1,7 +1,8 @@
 part of '../../settings.dart';
 
 class ProfileDetailsScreen extends StatelessWidget {
-  const ProfileDetailsScreen({super.key});
+  final User user;
+  const ProfileDetailsScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +27,22 @@ class ProfileDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'maron',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              "${user.firstname} ${user.lastname}",
+              style: theme.textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              'manager',
+              user.work,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 24),
-            _buildDetailItem(context, 'Email', 'kal@gmail.com'),
-            _buildDetailItem(context, 'Phone', '0912345678'),
-            _buildDetailItem(context, 'Location', 'AA, Ethiopia'),
+            _buildDetailItem(context, 'Email', user.email),
+            _buildDetailItem(context, 'Firstname', user.firstname),
+            _buildDetailItem(context, 'Lastname', user.lastname),
+            _buildDetailItem(context, 'Account number', user.accountNumber),
           ],
         ),
       ),
@@ -57,12 +58,10 @@ class ProfileDetailsScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            style:
+                theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          Text(
-            value,
-            style: theme.textTheme.bodyMedium,
-          ),
+          Text(value, style: theme.textTheme.bodyMedium),
         ],
       ),
     );

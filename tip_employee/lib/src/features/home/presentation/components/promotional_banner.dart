@@ -39,6 +39,7 @@ class _PromotionalBanner extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 16),
                 Text(
                   'Total money earned',
                   style: theme.textTheme.bodyMedium?.copyWith(
@@ -55,7 +56,7 @@ class _PromotionalBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Total withdrawn',
+                  'Total in this week',
                   style: theme.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -70,7 +71,7 @@ class _PromotionalBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Available balance',
+                  'total today',
                   style: theme.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -98,11 +99,11 @@ class _PromotionalBanner extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'Show all transactions',
+                  'Show all tip',
                   style: theme.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.primary,
-                    fontSize: 12,
+                    fontSize: 18,
                   ),
                 ),
               ),

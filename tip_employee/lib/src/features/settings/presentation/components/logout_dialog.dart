@@ -1,7 +1,8 @@
 part of '../../settings.dart';
 
 class LogoutDialog extends StatelessWidget {
-  const LogoutDialog({super.key});
+  final VoidCallback onConfirm;
+  const LogoutDialog({super.key, required this.onConfirm});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class LogoutDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
-            // Add your logout logic here
+            onConfirm();
           },
           child: const Text(
             'Logout',
