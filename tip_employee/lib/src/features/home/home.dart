@@ -8,12 +8,12 @@ import 'package:tip_employee/src/features/home/presentation/blocs/home_bloc.dart
 import 'package:tip_employee/src/features/home/presentation/blocs/home_event.dart';
 import 'package:tip_employee/src/features/home/presentation/blocs/home_state.dart';
 import 'package:tip_employee/src/shared/data/models/tip_model.dart';
+import 'package:tip_employee/src/shared/widgets/tip_list.dart';
 
 // UI parts
 part './presentation/screens/home_screen.dart';
 part './presentation/components/promotional_banner.dart';
 part './presentation/components/recent_tips_header.dart';
-part './presentation/components/recent_tips_list.dart';
 part './presentation/components/header_row.dart';
 
 class Home extends StatelessWidget {

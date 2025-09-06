@@ -38,7 +38,7 @@ class MockUserRepository implements UserRepository {
   @override
   Future<void> logout() async {
     await Future.delayed(const Duration(milliseconds: 500));
-    // For mock: just "clear" user (in real API you'd delete token/session)
+
     _user = User(
       firstname: '',
       lastname: '',

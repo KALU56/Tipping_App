@@ -29,8 +29,8 @@ class BottomNavBar extends StatelessWidget {
         child: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.receipt),
-              label: 'Transactions',
+              icon: Icon(Icons.money),
+              label: 'Tip',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.home),

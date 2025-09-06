@@ -19,6 +19,9 @@ class MockTipRepository implements TipRepository {
       Tip(customerName: 'Alice', amount: 12.5, time: TimeOfDay(hour: 10, minute: 0), date: DateTime.now()),
       Tip(customerName: 'Bob', amount: 8.0, time: TimeOfDay(hour: 11, minute: 45), date: DateTime.now()),
       Tip(customerName: 'Charlie', amount: 15.0, time: TimeOfDay(hour: 12, minute: 30), date: DateTime.now()),
+      Tip(customerName: 'Alice', amount: 12.5, time: TimeOfDay(hour: 10, minute: 0), date: DateTime.now()),
+      Tip(customerName: 'Bob', amount: 8.0, time: TimeOfDay(hour: 11, minute: 45), date: DateTime.now()),
+      Tip(customerName: 'Charlie', amount: 15.0, time: TimeOfDay(hour: 12, minute: 30), date: DateTime.now()),
     ];
   }
 }

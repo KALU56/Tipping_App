@@ -50,7 +50,7 @@ class _HomeScreen extends StatelessWidget {
                       if (state.filteredTips.isEmpty) {
                         return const Center(child: Text('No tips found'));
                       }
-                      return RecentTipsList(tips: state.filteredTips);
+                      return TipList(tips: state.filteredTips);
                     },
                   ),
                 ),
