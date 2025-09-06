@@ -1,33 +1,24 @@
 part of '../../home.dart';
 
-class _HomeScreen extends StatefulWidget {
-  final TipRepository repository;
+class _HomeScreen extends StatelessWidget {
+  const _HomeScreen();
 
-  const _HomeScreen({required this.repository});
-
-  @override
-  State<_HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<_HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor, // ✅ adaptive
-
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
-          // 1️⃣ Header background including status bar
           Container(
             height: 100,
-            color: AppTheme.primaryColor, // brand color, stays consistent
+            color: AppTheme.primaryColor,
           ),
           SafeArea(
             child: Column(
               children: [
-                // Header row
+                // Header row with username from state
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -37,21 +28,31 @@ class _HomeScreenState extends State<_HomeScreen> {
                       bottomRight: Radius.circular(24),
                     ),
                   ),
-                  padding: const EdgeInsets.only(
-                      top: 16, left: 16, right: 16, bottom: 16),
+                  padding: const EdgeInsets.all(16),
                   child: const _HeaderRow(),
                 ),
 
-                // Promotional banner
                 const _PromotionalBanner(),
 
-                // Recent tips section header
                 const _RecentTipsHeader(),
                 const SizedBox(height: 8),
 
-                // Recent tips list
+                // Recent tips list driven by bloc
                 Expanded(
-                  child: RecentTipsList(repository: widget.repository),
+                  child: BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      if (state.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state.error != null) {
+                        return Center(child: Text('Error: ${state.error}'));
+                      }
+                      if (state.filteredTips.isEmpty) {
+                        return const Center(child: Text('No tips found'));
+                      }
+                      return RecentTipsList(tips: state.filteredTips);
+                    },
+                  ),
                 ),
               ],
             ),

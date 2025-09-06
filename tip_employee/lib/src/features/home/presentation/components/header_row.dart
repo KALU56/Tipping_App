@@ -1,9 +1,7 @@
 part of '../../home.dart';
 
 class _HeaderRow extends StatefulWidget {
-  final String userName;
-
-  const _HeaderRow({this.userName = "Kali", Key? key}) : super(key: key);
+  const _HeaderRow({Key? key}) : super(key: key);
 
   @override
   State<_HeaderRow> createState() => _HeaderRowState();
@@ -18,45 +16,45 @@ class _HeaderRowState extends State<_HeaderRow> {
 
     return Column(
       children: [
-        // Top row: Avatar + Name + Notification
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Avatar + Name
-            GestureDetector(
-              onTap: () {
-                // TODO: Navigate to profile or settings
-              },
-              child: Row(
-                children: [
-                  // Avatar with border
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: theme.colorScheme.primary,
-                        width: 2,
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                final userName =
+                    state.user != null ? state.user!.firstname : "Guest";
+                return GestureDetector(
+                  onTap: () {},
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: theme.colorScheme.primary,
+                            width: 2,
+                          ),
+                        ),
+                        child: const CircleAvatar(
+                          radius: 20,
+                          backgroundImage: AssetImage('assets/images/avatar.png'),
+                        ),
                       ),
-                    ),
-                    child: const CircleAvatar(
-                      radius: 20,
-                      backgroundImage: AssetImage('assets/images/avatar.png'),
-                    ),
+                      const SizedBox(width: 12),
+                      Text(
+                        userName,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  // User name
-                  Text(
-                    widget.userName,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
 
-            // Notification icon
+            // Notification
             Container(
               width: 44,
               height: 44,
@@ -73,14 +71,9 @@ class _HeaderRowState extends State<_HeaderRow> {
                 ],
               ),
               child: IconButton(
-                icon: Icon(
-                  Icons.notifications_none,
-                  color: theme.colorScheme.primary,
-                  size: 24,
-                ),
-                onPressed: () {
-                  // TODO: Handle notification tap
-                },
+                icon: Icon(Icons.notifications_none,
+                    color: theme.colorScheme.primary),
+                onPressed: () {},
               ),
             ),
           ],
@@ -88,7 +81,7 @@ class _HeaderRowState extends State<_HeaderRow> {
 
         const SizedBox(height: 16),
 
-        // Search box with Dark Mode Icon
+        // Search box
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Container(
@@ -101,16 +94,12 @@ class _HeaderRowState extends State<_HeaderRow> {
               decoration: InputDecoration(
                 hintText: 'Search tips or customers...',
                 border: InputBorder.none,
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: theme.colorScheme.primary,
-                ),
-                // Dark Mode icon inside search field
+                prefixIcon: Icon(Icons.search, color: theme.colorScheme.primary),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _darkModeEnabled
-                        ? Icons.wb_sunny   // sun for light mode
-                        : Icons.nightlight_round, // crescent moon for dark
+                        ? Icons.wb_sunny
+                        : Icons.nightlight_round,
                     color: theme.colorScheme.primary,
                   ),
                   onPressed: () {
@@ -120,6 +109,9 @@ class _HeaderRowState extends State<_HeaderRow> {
                 ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
               ),
+              onChanged: (value) {
+                context.read<HomeBloc>().add(SearchTips(value));
+              },
             ),
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tip_employee/src/features/home/domain/models/tip.dart';
-import 'package:tip_employee/src/features/home/domain/repositories/tip_repository.dart';
+import 'package:tip_employee/src/shared/data/models/tip_model.dart';
+import 'package:tip_employee/src/shared/domain/repositories/tip_repository.dart';
+
 class MockTipRepository implements TipRepository {
   @override
   Future<List<Tip>> getRecentTips() async {

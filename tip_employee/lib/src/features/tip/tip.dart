@@ -5,7 +5,7 @@ import 'package:tip_employee/src/features/tip/presentation/blocs/tip_bloc.dart';
 import 'package:tip_employee/src/features/tip/presentation/blocs/tip_event.dart';
 import 'package:tip_employee/src/features/tip/presentation/blocs/tip_state.dart';
 import 'package:tip_employee/src/features/tip/presentation/components/filter_chips.dart';
-import 'package:tip_employee/src/features/tip/presentation/components/tip_list.dart';
+import 'package:tip_employee/src/shared/widgets/tip_list.dart';
 import 'package:tip_employee/src/features/tip/presentation/components/search_bar.dart';
 
 
