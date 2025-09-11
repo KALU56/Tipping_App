@@ -7,7 +7,6 @@ import 'package:tip_employee/src/features/auth/presentation/blocs/auth_event.dar
 import 'package:tip_employee/src/features/auth/presentation/blocs/auth_state.dart';
 import '../../data/models/login_model.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -44,29 +43,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   SvgPicture.asset('assets/images/login.svg', height: 150),
                   const SizedBox(height: 30),
                   Text('Welcome Back',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold),
+                      style: theme.textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center),
                   const SizedBox(height: 8),
                   Text('Sign in to continue managing your tips',
                       style: theme.textTheme.bodyMedium,
                       textAlign: TextAlign.center),
                   const SizedBox(height: 25),
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('Email',
-                          style: theme.textTheme.bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.w600))),
-                  const SizedBox(height: 8),
-                  TextField(controller: emailController, decoration: const InputDecoration(hintText: 'Enter your email')),
+                  _buildTextField('Email', emailController),
                   const SizedBox(height: 20),
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('Password',
-                          style: theme.textTheme.bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.w600))),
-                  const SizedBox(height: 8),
-                  TextField(controller: passwordController, obscureText: true, decoration: const InputDecoration(hintText: 'Enter your password')),
+                  _buildPasswordField('Password', passwordController),
                   const SizedBox(height: 25),
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
@@ -92,7 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Don't have an account? ", style: theme.textTheme.bodyMedium),
+                      Text("Don't have an account? ",
+                          style: theme.textTheme.bodyMedium),
                       GestureDetector(
                         onTap: () {
                           Navigator.pushNamed(context, AppRoutes.signup);
@@ -110,6 +98,43 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(hintText: 'Enter your $label'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordField(String label, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          obscureText: true,
+          decoration: InputDecoration(hintText: 'Enter your $label'),
+        ),
+      ],
     );
   }
 }

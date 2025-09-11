@@ -1,12 +1,9 @@
-// auth_repository.dart
+import 'package:tip_employee/src/features/auth/data/models/siginup_model.dart';
 
-import '../../data/models/auth_model.dart';
+import '../../data/models/login_model.dart';
 
 
 abstract class AuthRepository {
-  /// Login with email and password
   Future<LoginModel> login(LoginModel model);
-
-  /// Signup a new user
   Future<SignupModel> signup(SignupModel model);
 }

@@ -1,26 +1,28 @@
-// auth_repository_impl.dart
+import 'package:tip_employee/src/core/service/auth_service.dart';
 
-import 'dart:async';
-import 'package:tip_employee/src/features/auth/domain/repositories/auth_repository.dart';
-
+import '../../domain/repositories/auth_repository.dart';
 import '../models/auth_model.dart';
+import '../models/login_model.dart';
+
 
 class AuthRepositoryImpl implements AuthRepository {
+  final AuthService _authService;
+
+  AuthRepositoryImpl(this._authService);
+
   @override
-  Future<LoginModel> login(LoginModel model) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return LoginModel(email: model.email, password: model.password);
+  Future<LoginModel> login(LoginModel model) {
+    return _authService.login(model.email, model.password);
   }
 
   @override
-  Future<SignupModel> signup(SignupModel model) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return SignupModel(
+  Future<SignupModel> signup(SignupModel model) {
+    return _authService.signup(
       firstName: model.firstName,
       lastName: model.lastName,
       email: model.email,
       password: model.password,
-      employCode: model.employCode,
+      employeeCode: model.employeeCode,
     );
   }
 }

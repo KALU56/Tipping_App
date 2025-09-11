@@ -5,6 +5,8 @@ import 'package:tip_employee/src/app/routes/app_routes.dart';
 import 'package:tip_employee/src/app/routes/route_generator.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
 import 'package:tip_employee/src/app/themes/themeNotifier.dart';
+import 'package:tip_employee/src/core/service/auth_service.dart';
+import 'package:tip_employee/src/core/service/http_service/http_service.dart';
 
 // Auth imports
 import 'package:tip_employee/src/features/auth/domain/repositories/auth_repository.dart';
@@ -24,13 +26,24 @@ import 'package:tip_employee/src/shared/data/mock_tip_repository.dart';
 import 'package:tip_employee/src/shared/domain/repositories/user_repository.dart';
 import 'package:tip_employee/src/shared/domain/repositories/tip_repository.dart';
 
+// HttpService
+
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
-  final authRepository = AuthRepositoryImpl();
+  // 1️⃣ Create HttpService
+  final httpService = HttpServiceImpl();
+
+  // 2️⃣ Create AuthService (depends on HttpService)
+  final authService = AuthService(httpService);
+
+  // 3️⃣ Create AuthRepositoryImpl (depends on AuthService)
+  final authRepository = AuthRepositoryImpl(authService);
+
+  // Mock repos
   final userRepository = MockUserRepository(); 
   final tipRepository = MockTipRepository();
 
@@ -40,6 +53,7 @@ void main() {
     tipRepository: tipRepository,
   ));
 }
+
 
 class MyApp extends StatelessWidget {
   final AuthRepository authRepository;
@@ -56,40 +70,39 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-  providers: [
-    BlocProvider<AuthBloc>(
-      create: (_) => AuthBloc(authRepository: authRepository),
-    ),
-    BlocProvider<SettingBloc>(
-      create: (_) => SettingBloc(userRepository),
-    ),
-    BlocProvider<HomeBloc>(
-      create: (_) => HomeBloc(
-        userRepository: userRepository,
-        tipRepository: tipRepository,
-      )
-      ..add(FetchProfile())
-      ..add(FetchRecentTips()),
-    ),
-    BlocProvider<TipBloc>(
-      create: (_) => TipBloc(tipRepository)..add(LoadTips()),
-    ),
-  ],
-  child: ValueListenableBuilder<ThemeMode>(
-    valueListenable: themeNotifier,
-    builder: (_, mode, __) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Tip Management',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: mode,
-        initialRoute: AppRoutes.welcome,
-        onGenerateRoute: RouteGenerator.generateRoute,
-      );
-    },
-  ),
-);
-
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (_) => AuthBloc(authRepository: authRepository),
+        ),
+        BlocProvider<SettingBloc>(
+          create: (_) => SettingBloc(userRepository),
+        ),
+        BlocProvider<HomeBloc>(
+          create: (_) => HomeBloc(
+            userRepository: userRepository,
+            tipRepository: tipRepository,
+          )
+            ..add(FetchProfile())
+            ..add(FetchRecentTips()),
+        ),
+        BlocProvider<TipBloc>(
+          create: (_) => TipBloc(tipRepository)..add(LoadTips()),
+        ),
+      ],
+      child: ValueListenableBuilder<ThemeMode>(
+        valueListenable: themeNotifier,
+        builder: (_, mode, __) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Tip Management',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: mode,
+            initialRoute: AppRoutes.welcome,
+            onGenerateRoute: RouteGenerator.generateRoute,
+          );
+        },
+      ),
+    );
   }
 }

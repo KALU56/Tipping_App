@@ -3,31 +3,29 @@ class SignupModel {
   final String lastName;
   final String email;
   final String password;
-  final String employCode;
+  final String employeeCode; // ⚡ note: 'employeeCode'
 
   SignupModel({
     required this.firstName,
     required this.lastName,
     required this.email,
     required this.password,
-    required this.employCode,
+    required this.employeeCode,
   });
 
-  // Convert model to JSON (for API request)
   Map<String, dynamic> toJson() => {
         'first_name': firstName,
         'last_name': lastName,
         'email': email,
         'password': password,
-        'employ_code': employCode,
+        'employee_code': employeeCode, // ⚡ must match Laravel API exactly
       };
 
-  // Convert JSON to model (for API response)
   factory SignupModel.fromJson(Map<String, dynamic> json) => SignupModel(
-        firstName: json['first_name'],
-        lastName: json['last_name'],
-        email: json['email'],
-        password: json['password'],
-        employCode: json['employ_code'],
+        firstName: json['first_name'] ?? '',
+        lastName: json['last_name'] ?? '',
+        email: json['email'] ?? '',
+        password: '', // usually API doesn’t return password
+        employeeCode: json['employee_code'] ?? '',
       );
 }
