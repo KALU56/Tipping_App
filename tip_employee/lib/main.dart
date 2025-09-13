@@ -7,26 +7,29 @@ import 'package:tip_employee/src/app/themes/app_theme.dart';
 import 'package:tip_employee/src/app/themes/themeNotifier.dart';
 import 'package:tip_employee/src/core/service/auth_service.dart';
 import 'package:tip_employee/src/core/service/http_service/http_service.dart';
+import 'package:tip_employee/src/core/service/user_service.dart';
 
-// Auth imports
+// Auth
 import 'package:tip_employee/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:tip_employee/src/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:tip_employee/src/features/auth/presentation/blocs/auth_bloc.dart';
+
+// Home
 import 'package:tip_employee/src/features/home/presentation/blocs/home_bloc.dart';
 import 'package:tip_employee/src/features/home/presentation/blocs/home_event.dart';
 
-// Settings imports
+// Settings
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
+
+// Tip
 import 'package:tip_employee/src/features/tip/presentation/blocs/tip_bloc.dart';
 import 'package:tip_employee/src/features/tip/presentation/blocs/tip_event.dart';
+import 'package:tip_employee/src/shared/data/UserRepositoryImpl.dart';
 
 // Shared repos
-import 'package:tip_employee/src/shared/data/mock_user_repository.dart';
-import 'package:tip_employee/src/shared/data/mock_tip_repository.dart';
 import 'package:tip_employee/src/shared/domain/repositories/user_repository.dart';
 import 'package:tip_employee/src/shared/domain/repositories/tip_repository.dart';
-
-// HttpService
+import 'package:tip_employee/src/shared/data/mock_tip_repository.dart';
 
 
 void main() {
@@ -34,18 +37,15 @@ void main() {
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
-  // 1️⃣ Create HttpService
+  // 1️⃣ Core services
   final httpService = HttpServiceImpl();
-
-  // 2️⃣ Create AuthService (depends on HttpService)
   final authService = AuthService(httpService);
 
-  // 3️⃣ Create AuthRepositoryImpl (depends on AuthService)
+  // 2️⃣ Repositories
   final authRepository = AuthRepositoryImpl(authService);
-
-  // Mock repos
-  final userRepository = MockUserRepository(); 
-  final tipRepository = MockTipRepository();
+  final userService = UserService(httpService);
+  final userRepository = UserRepositoryImpl(userService: userService);
+  final tipRepository = MockTipRepository(); // you can later replace with real TipRepositoryImpl
 
   runApp(MyApp(
     authRepository: authRepository,
@@ -53,7 +53,6 @@ void main() {
     tipRepository: tipRepository,
   ));
 }
-
 
 class MyApp extends StatelessWidget {
   final AuthRepository authRepository;

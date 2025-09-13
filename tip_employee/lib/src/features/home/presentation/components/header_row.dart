@@ -21,10 +21,21 @@ class _HeaderRowState extends State<_HeaderRow> {
           children: [
             BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
-                final userName =
-                    state.user != null ? state.user!.firstname : "Guest";
+                final user = state.user;
+
+                final fullName = user != null
+                    ? "${user.firstname} ${user.lastname}".trim()
+                    : "Guest";
+
+                final profileImage = user?.imageUrl?.isNotEmpty == true
+                    ? NetworkImage(user!.imageUrl!)
+                    : const AssetImage('assets/images/avatar.png')
+                        as ImageProvider;
+
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    // Navigate to profile page later if needed
+                  },
                   child: Row(
                     children: [
                       Container(
@@ -35,14 +46,14 @@ class _HeaderRowState extends State<_HeaderRow> {
                             width: 2,
                           ),
                         ),
-                        child: const CircleAvatar(
+                        child: CircleAvatar(
                           radius: 20,
-                          backgroundImage: AssetImage('assets/images/avatar.png'),
+                          backgroundImage: profileImage,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        userName,
+                        fullName,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.colorScheme.onPrimary,
@@ -54,7 +65,7 @@ class _HeaderRowState extends State<_HeaderRow> {
               },
             ),
 
-            // Notification
+            // Notification button
             Container(
               width: 44,
               height: 44,

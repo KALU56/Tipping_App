@@ -13,8 +13,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
 
   late TextEditingController _firstnameController;
   late TextEditingController _lastnameController;
-  late TextEditingController _emailController;
-  late TextEditingController _workController;
+
   late TextEditingController _accountController;
 
   @override
@@ -22,8 +21,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
     super.initState();
     _firstnameController = TextEditingController(text: widget.user.firstname);
     _lastnameController = TextEditingController(text: widget.user.lastname);
-    _emailController = TextEditingController(text: widget.user.email);
-    _workController = TextEditingController(text: widget.user.work);
+
     _accountController =
         TextEditingController(text: widget.user.accountNumber);
   }
@@ -32,8 +30,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
   void dispose() {
     _firstnameController.dispose();
     _lastnameController.dispose();
-    _emailController.dispose();
-    _workController.dispose();
+ 
     _accountController.dispose();
     super.dispose();
   }
@@ -76,9 +73,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
                     const SizedBox(height: 12),
                     _buildTextField("Last Name", _lastnameController),
                     const SizedBox(height: 12),
-                    _buildTextField("Email", _emailController),
-                    const SizedBox(height: 12),
-                    _buildTextField("Work", _workController),
+         
                     const SizedBox(height: 12),
                     _buildTextField("Account Number", _accountController),
                     const SizedBox(height: 16),
@@ -128,8 +123,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
     final updated = widget.user.copyWith(
       firstname: _firstnameController.text,
       lastname: _lastnameController.text,
-      email: _emailController.text,
-      work: _workController.text,
+ 
       accountNumber: _accountController.text,
     );
 
