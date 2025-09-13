@@ -50,14 +50,7 @@ class ProfileSection extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        user != null ? user.work : "",
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 253, 252, 252),
-                          fontSize: 14,
-                        ),
-                      ),
+                     
                     ],
                   ),
                 ],

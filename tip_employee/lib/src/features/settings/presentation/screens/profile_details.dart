@@ -31,14 +31,7 @@ class ProfileDetailsScreen extends StatelessWidget {
               style: theme.textTheme.titleLarge
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
-            Text(
-              user.work,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
-              ),
-            ),
-            const SizedBox(height: 24),
+             const SizedBox(height: 24),
             _buildDetailItem(context, 'Email', user.email),
             _buildDetailItem(context, 'Firstname', user.firstname),
             _buildDetailItem(context, 'Lastname', user.lastname),
