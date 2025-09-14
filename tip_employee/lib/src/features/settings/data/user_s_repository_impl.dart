@@ -34,9 +34,23 @@ class UserSettingRepositoryImpl implements UserSettingRepository {
     );
   }
 
+  /// Update employee password
   @override
-  Future<void> updatePassword({required String currentPassword, required String newPassword, required String confirmPassword}) async {
-    throw UnimplementedError();
+  Future<void> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      await userService.updatePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      );
+    } catch (e) {
+      print('Error updating password: $e');
+      rethrow;
+    }
   }
 
   @override
