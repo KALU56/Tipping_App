@@ -1,9 +1,6 @@
-
 import 'package:tip_employee/src/core/service/user_service.dart';
 import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
 import 'package:tip_employee/src/shared/data/models/user_model.dart';
-
-
 class UserSettingRepositoryImpl implements UserSettingRepository {
   final UserService userService;
 
@@ -15,60 +12,50 @@ class UserSettingRepositoryImpl implements UserSettingRepository {
     String? lastName,
     String? imageUrl,
   }) async {
-    final data = await userService.updateProfile(
+    // First, get the current profile
+    final currentData = await userService.getProfile();
+    final currentUser = User.fromJson(currentData);
+
+    // Call API to update
+    final updatedData = await userService.updateProfile(
       firstName: firstName,
       lastName: lastName,
       imageUrl: imageUrl,
     );
 
+    // Merge with current user
     return User(
-      firstname: data['first_name'],
-      lastname: data['last_name'],
-      email: '', // email won't change
-      accountNumber: data['bank_account']?['sub_account_id'] ?? '',
-      password: '',
-      imageUrl: data['image_url'],
+      firstname: updatedData['first_name'] ?? currentUser.firstname,
+      lastname: updatedData['last_name'] ?? currentUser.lastname,
+      email: currentUser.email,
+      accountNumber: updatedData['bank_account']?['sub_account_id'] ?? currentUser.accountNumber,
+      password: currentUser.password,
+      imageUrl: updatedData['image_url'] ?? currentUser.imageUrl,
     );
   }
 
   @override
-  Future<void> updatePassword({
-    required String currentPassword,
-    required String newPassword,
-    required String confirmPassword,
-  }) async {
-    await userService.updatePassword(
-      currentPassword: currentPassword,
-      newPassword: newPassword,
-      confirmPassword: confirmPassword,
-    );
+  Future<void> updatePassword({required String currentPassword, required String newPassword, required String confirmPassword}) async {
+    throw UnimplementedError();
   }
 
   @override
   Future<Map<String, dynamic>> getBankAccount() async {
-    return await userService.getBankAccount();
+    throw UnimplementedError();
   }
 
   @override
-  Future<Map<String, dynamic>> updateBankAccount({
-   
-    required String accountNumber,
-  }) async {
-    return await userService.updateBankAccount(
-      businessName: '', // keep empty if not needed
-      accountName: '',  // keep empty if not needed
-      bankCode: 0,
-      accountNumber: accountNumber,
-    );
+  Future<Map<String, dynamic>> updateBankAccount({required String accountNumber}) async {
+    throw UnimplementedError();
   }
 
   @override
   Future<void> deactivateAccount() async {
-    await userService.deactivateAccount();
+    throw UnimplementedError();
   }
 
   @override
   Future<void> logout() async {
-    await userService.logout();
+    throw UnimplementedError();
   }
 }
