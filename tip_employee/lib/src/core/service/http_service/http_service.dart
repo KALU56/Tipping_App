@@ -12,56 +12,56 @@ abstract interface class HttpService {
 class HttpServiceImpl implements HttpService {
   final Dio _dio;
 
-  HttpServiceImpl({Dio? dio})
-      : _dio = dio ?? Dio(BaseOptions(
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 10),
-          followRedirects: false,
-          validateStatus: (status) => status != null && status < 500,
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        )) {
-    // Interceptor to log requests and responses
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        final prefs = await SharedPreferences.getInstance();
-        final token = prefs.getString('auth_token');
+  /// ✅ Set baseUrl here so relative paths work automatically
+  HttpServiceImpl({Dio? dio, String baseUrl = 'http://127.0.0.1:8000'})
+      : _dio = dio ??
+            Dio(
+              BaseOptions(
+                baseUrl: baseUrl, // <-- baseUrl added
+                connectTimeout: const Duration(seconds: 10),
+                receiveTimeout: const Duration(seconds: 10),
+                followRedirects: false,
+                validateStatus: (status) => status != null && status < 500,
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                },
+              ),
+            )..interceptors.add(
+                LogInterceptor(
+                  request: true,
+                  requestHeader: true,
+                  requestBody: true,
+                  responseHeader: true,
+                  responseBody: true,
+                  error: true,
+                  logPrint: (obj) => print('[DIO DEBUG] $obj'),
+                ),
+              );
 
-        if (token != null) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
+  /// 🔑 Build request options with token from SharedPreferences
+  Future<Options> _withAuthHeaders(Map<String, String>? headers) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    print('🛠 AUTH TOKEN: $token'); // Debug token
 
-        print('--- HTTP REQUEST ---');
-        print('URL: ${options.uri}');
-        print('Method: ${options.method}');
-        print('Headers: ${options.headers}');
-        print('Body: ${options.data}');
-        return handler.next(options);
+    final authHeader = token != null ? {'Authorization': 'Bearer $token'} : {};
+
+    return Options(
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...?headers,
+        ...authHeader,
       },
-      onResponse: (response, handler) {
-        print('--- HTTP RESPONSE ---');
-        print('Status: ${response.statusCode}');
-        print('Data: ${response.data}');
-        return handler.next(response);
-      },
-      onError: (DioError e, handler) {
-        print('--- HTTP ERROR ---');
-        print('Error: ${e.message}');
-        if (e.response != null) {
-          print('Status: ${e.response?.statusCode}');
-          print('Data: ${e.response?.data}');
-        }
-        return handler.next(e);
-      },
-    ));
+    );
   }
 
   @override
   Future<HttpServiceResponseModel> get(String url, {Map<String, String>? headers}) async {
     try {
-      final response = await _dio.get(url, options: Options(headers: headers));
+      final options = await _withAuthHeaders(headers);
+      final response = await _dio.get(url, options: options);
       return _handleResponse(response);
     } on DioError catch (e) {
       return _handleError(e);
@@ -71,7 +71,8 @@ class HttpServiceImpl implements HttpService {
   @override
   Future<HttpServiceResponseModel> post(String url, dynamic data, {Map<String, String>? headers}) async {
     try {
-      final response = await _dio.post(url, data: data, options: Options(headers: headers));
+      final options = await _withAuthHeaders(headers);
+      final response = await _dio.post(url, data: data, options: options);
       return _handleResponse(response);
     } on DioError catch (e) {
       return _handleError(e);
@@ -81,7 +82,8 @@ class HttpServiceImpl implements HttpService {
   @override
   Future<HttpServiceResponseModel> put(String url, dynamic data, {Map<String, String>? headers}) async {
     try {
-      final response = await _dio.put(url, data: data, options: Options(headers: headers));
+      final options = await _withAuthHeaders(headers);
+      final response = await _dio.put(url, data: data, options: options);
       return _handleResponse(response);
     } on DioError catch (e) {
       return _handleError(e);
@@ -91,15 +93,21 @@ class HttpServiceImpl implements HttpService {
   @override
   Future<HttpServiceResponseModel> delete(String url, {Map<String, String>? headers}) async {
     try {
-      final response = await _dio.delete(url, options: Options(headers: headers));
+      final options = await _withAuthHeaders(headers);
+      final response = await _dio.delete(url, options: options);
       return _handleResponse(response);
     } on DioError catch (e) {
       return _handleError(e);
     }
   }
 
+  /// ✅ Handle success
   HttpServiceResponseModel _handleResponse(Response response) {
+    print('🔹 RESPONSE [${response.statusCode}] ${response.requestOptions.method} ${response.requestOptions.path}');
+    print('🔹 RESPONSE DATA: ${response.data}');
+
     dynamic body = response.data;
+
     if (response.statusCode == 302 && body is String) {
       body = {'redirect_url': response.headers.value('location') ?? ''};
     }
@@ -110,7 +118,12 @@ class HttpServiceImpl implements HttpService {
     );
   }
 
+  /// ❌ Handle error
   HttpServiceResponseModel _handleError(DioError e) {
+    print('❌ ERROR [${e.response?.statusCode ?? 'NO STATUS'}] ${e.requestOptions.method} ${e.requestOptions.path}');
+    print('❌ ERROR MESSAGE: ${e.message}');
+    print('❌ RESPONSE DATA: ${e.response?.data}');
+
     return HttpServiceResponseModel(
       staticCode: e.response?.statusCode ?? 500,
       data: {

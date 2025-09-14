@@ -1,15 +1,14 @@
-// lib/src/core/service/user_service.dart
 import 'package:tip_employee/src/core/service/http_service/http_service.dart';
+import 'package:tip_employee/src/core/service/http_service/http_service_response_model.dart';
 
 class UserService {
   final HttpService httpService;
 
   UserService(this.httpService);
 
-  /// ✅ Get profile
+  /// Get profile
   Future<Map<String, dynamic>> getProfile() async {
-    final response = await httpService.get('/employee/profile');
-
+    final response = await httpService.get('/api/employee/profile');
     if (response.staticCode == 200) {
       return response.data['data'];
     } else {
@@ -17,7 +16,7 @@ class UserService {
     }
   }
 
-  /// ✅ Update profile (first name, last name, image_url)
+  /// Update profile
   Future<Map<String, dynamic>> updateProfile({
     String? firstName,
     String? lastName,
@@ -29,8 +28,7 @@ class UserService {
       if (imageUrl != null) 'image_url': imageUrl,
     };
 
-    final response = await httpService.put('/employee/profile', body);
-
+    final response = await httpService.put('/api/employee/profile', body);
     if (response.staticCode == 200) {
       return response.data['data'];
     } else {
@@ -38,7 +36,7 @@ class UserService {
     }
   }
 
-  /// ✅ Update password
+  /// Update password
   Future<void> updatePassword({
     required String currentPassword,
     required String newPassword,
@@ -49,18 +47,15 @@ class UserService {
       'new_password': newPassword,
       'confirm_password': confirmPassword,
     };
-
-    final response = await httpService.put('/employee/password', body);
-
+    final response = await httpService.put('/api/employee/password', body);
     if (response.staticCode != 200) {
       throw Exception('Failed to update password: ${response.data}');
     }
   }
 
-  /// ✅ Get bank account info
+  /// Get bank account
   Future<Map<String, dynamic>> getBankAccount() async {
-    final response = await httpService.get('/employee/bank-account');
-
+    final response = await httpService.get('/api/employee/bank-account');
     if (response.staticCode == 200) {
       return response.data['data'];
     } else {
@@ -68,7 +63,7 @@ class UserService {
     }
   }
 
-  /// ✅ Update bank account info
+  /// Update bank account
   Future<Map<String, dynamic>> updateBankAccount({
     required String businessName,
     required String accountName,
@@ -81,9 +76,7 @@ class UserService {
       'bank_code': bankCode,
       'account_number': accountNumber,
     };
-
-    final response = await httpService.put('/employee/bank-account', body);
-
+    final response = await httpService.put('/api/employee/bank-account', body);
     if (response.staticCode == 200) {
       return response.data['data'];
     } else {
@@ -91,19 +84,17 @@ class UserService {
     }
   }
 
-  /// ✅ Deactivate account
+  /// Deactivate account
   Future<void> deactivateAccount() async {
-    final response = await httpService.delete('/employee/account');
-
+    final response = await httpService.delete('/api/employee/account');
     if (response.staticCode != 200) {
       throw Exception('Failed to deactivate account: ${response.data}');
     }
   }
 
-  /// ✅ Logout
+  /// Logout
   Future<void> logout() async {
-    final response = await httpService.post('/employees/logout', {});
-
+    final response = await httpService.post('/api/employees/logout', {});
     if (response.staticCode != 200) {
       throw Exception('Failed to logout: ${response.data}');
     }
