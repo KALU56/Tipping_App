@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'http_service_response_model.dart';
 
 abstract interface class HttpService {
@@ -15,13 +16,47 @@ class HttpServiceImpl implements HttpService {
       : _dio = dio ?? Dio(BaseOptions(
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
-          followRedirects: false, // important for Laravel 302 redirects
-          validateStatus: (status) => status != null && status < 500, // accept 200–499
+          followRedirects: false,
+          validateStatus: (status) => status != null && status < 500,
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           },
-        ));
+        )) {
+    // Interceptor to log requests and responses
+    _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('auth_token');
+
+        if (token != null) {
+          options.headers['Authorization'] = 'Bearer $token';
+        }
+
+        print('--- HTTP REQUEST ---');
+        print('URL: ${options.uri}');
+        print('Method: ${options.method}');
+        print('Headers: ${options.headers}');
+        print('Body: ${options.data}');
+        return handler.next(options);
+      },
+      onResponse: (response, handler) {
+        print('--- HTTP RESPONSE ---');
+        print('Status: ${response.statusCode}');
+        print('Data: ${response.data}');
+        return handler.next(response);
+      },
+      onError: (DioError e, handler) {
+        print('--- HTTP ERROR ---');
+        print('Error: ${e.message}');
+        if (e.response != null) {
+          print('Status: ${e.response?.statusCode}');
+          print('Data: ${e.response?.data}');
+        }
+        return handler.next(e);
+      },
+    ));
+  }
 
   @override
   Future<HttpServiceResponseModel> get(String url, {Map<String, String>? headers}) async {
@@ -65,7 +100,6 @@ class HttpServiceImpl implements HttpService {
 
   HttpServiceResponseModel _handleResponse(Response response) {
     dynamic body = response.data;
-    // If Laravel redirected (302), body may not be JSON, so fallback
     if (response.statusCode == 302 && body is String) {
       body = {'redirect_url': response.headers.value('location') ?? ''};
     }

@@ -17,17 +17,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<SearchTips>(_onSearchTips);
   }
 
-  Future<void> _onFetchProfile(
-      FetchProfile event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(isLoading: true));
-    try {
-      final user = await userRepository.getProfile();
-      emit(state.copyWith(isLoading: false, user: user));
-    } catch (e) {
-      emit(state.copyWith(isLoading: false, error: e.toString()));
-    }
+Future<void> _onFetchProfile(FetchProfile event, Emitter<HomeState> emit) async {
+  emit(state.copyWith(isLoading: true));
+  try {
+    final user = await userRepository.getProfile();
+    emit(state.copyWith(isLoading: false, user: user, error: null));
+  } catch (e) {
+    print('Profile fetch error: $e');
+    emit(state.copyWith(
+      isLoading: false, 
+      error: 'Failed to load profile: ${e.toString()}'
+    ));
   }
-
+}
   Future<void> _onFetchRecentTips(
       FetchRecentTips event, Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoading: true));

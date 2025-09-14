@@ -5,14 +5,14 @@ import 'package:tip_employee/src/features/tip/tip.dart';
 
 import 'package:tip_employee/src/features/home/presentation/widgets/bottom_nav_bar.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class App extends StatefulWidget {
+  const App({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<App> createState() => _AppState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _AppState extends State<App> {
   int _selectedIndex = 1;
 
   final List<Widget> _pages = const [

@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../features/auth/data/models/auth_model.dart';
 
 import '../service/http_service/http_service.dart';
@@ -10,14 +12,20 @@ class AuthService {
 
   final String baseUrl = 'http://127.0.0.1:8000/api/employees';
 
-  // LOGIN
+   // LOGIN
   Future<LoginModel> login(String email, String password) async {
     final data = {'email': email, 'password': password};
 
     final response = await _httpService.post('$baseUrl/login', data);
 
     if (response.staticCode == 200 || response.staticCode == 201) {
-      return LoginModel.fromJson(response.data);
+      final loginModel = LoginModel.fromJson(response.data);
+
+      // ⚡ Save token locally
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', loginModel.token!);
+
+      return loginModel;
     } else {
       throw Exception('Login failed: ${response.data}');
     }

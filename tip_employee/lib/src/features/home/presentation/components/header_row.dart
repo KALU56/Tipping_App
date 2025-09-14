@@ -1,5 +1,4 @@
 part of '../../home.dart';
-
 class _HeaderRow extends StatefulWidget {
   const _HeaderRow({Key? key}) : super(key: key);
 
@@ -14,27 +13,31 @@ class _HeaderRowState extends State<_HeaderRow> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        // Show loading placeholders if still loading
+        final isLoading = state.isLoading;
+        final user = state.user;
+
+        final fullName = user != null
+            ? "${user.firstname} ${user.lastname}".trim()
+            : isLoading
+                ? "Loading..." // placeholder while fetching
+                : "Guest";
+
+        final profileImage = (user?.imageUrl != null && user!.imageUrl!.isNotEmpty)
+            ? NetworkImage(user.imageUrl!)
+            : const AssetImage('assets/images/avatar.png') as ImageProvider;
+
+        return Column(
           children: [
-            BlocBuilder<HomeBloc, HomeState>(
-              builder: (context, state) {
-                final user = state.user;
-
-                final fullName = user != null
-                    ? "${user.firstname} ${user.lastname}".trim()
-                    : "Guest";
-
-                final profileImage = user?.imageUrl?.isNotEmpty == true
-                    ? NetworkImage(user!.imageUrl!)
-                    : const AssetImage('assets/images/avatar.png')
-                        as ImageProvider;
-
-                return GestureDetector(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Profile info
+                GestureDetector(
                   onTap: () {
-                    // Navigate to profile page later if needed
+                    // Navigate to profile page if needed
                   },
                   child: Row(
                     children: [
@@ -61,72 +64,72 @@ class _HeaderRowState extends State<_HeaderRow> {
                       ),
                     ],
                   ),
-                );
-              },
+                ),
+
+                // Notification button
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.shadowColor.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
+                      )
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.notifications_none,
+                        color: theme.colorScheme.primary),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
             ),
 
-            // Notification button
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: theme.shadowColor.withOpacity(0.1),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(0, 2),
-                  )
-                ],
-              ),
-              child: IconButton(
-                icon: Icon(Icons.notifications_none,
-                    color: theme.colorScheme.primary),
-                onPressed: () {},
+            const SizedBox(height: 16),
+
+            // Search box
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Container(
+                height: 44,
+                decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search tips or customers...',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.search, color: theme.colorScheme.primary),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _darkModeEnabled
+                            ? Icons.wb_sunny
+                            : Icons.nightlight_round,
+                        color: theme.colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        setState(() => _darkModeEnabled = !_darkModeEnabled);
+                        themeNotifier.toggleTheme(_darkModeEnabled);
+                      },
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  onChanged: (value) {
+                    context.read<HomeBloc>().add(SearchTips(value));
+                  },
+                ),
               ),
             ),
           ],
-        ),
-
-        const SizedBox(height: 16),
-
-        // Search box
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Container(
-            height: 44,
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search tips or customers...',
-                border: InputBorder.none,
-                prefixIcon: Icon(Icons.search, color: theme.colorScheme.primary),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _darkModeEnabled
-                        ? Icons.wb_sunny
-                        : Icons.nightlight_round,
-                    color: theme.colorScheme.primary,
-                  ),
-                  onPressed: () {
-                    setState(() => _darkModeEnabled = !_darkModeEnabled);
-                    themeNotifier.toggleTheme(_darkModeEnabled);
-                  },
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              onChanged: (value) {
-                context.read<HomeBloc>().add(SearchTips(value));
-              },
-            ),
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 }

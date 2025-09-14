@@ -5,7 +5,7 @@ import 'package:tip_employee/src/features/auth/presentation/screens/login.dart';
 import 'package:tip_employee/src/features/auth/presentation/screens/signup.dart';
 import 'package:tip_employee/src/features/auth/presentation/screens/welcome.dart';
 
-import 'package:tip_employee/mainscreen.dart';
+import 'package:tip_employee/app.dart';
 
 import 'package:tip_employee/src/features/settings/settings.dart';
 
@@ -30,7 +30,7 @@ class RouteGenerator {
         case AppRoutes.settings:
   return MaterialPageRoute(builder: (_) => const Setting());
       case AppRoutes.home:
-  return MaterialPageRoute(builder: (_) => const MainScreen());
+  return MaterialPageRoute(builder: (_) => const App());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
