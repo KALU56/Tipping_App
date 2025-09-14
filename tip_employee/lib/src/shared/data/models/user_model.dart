@@ -12,9 +12,10 @@ class User {
 
   final String email;
 
+  @JsonKey(name: 'account_number')
   final String accountNumber; // comes from bank_account.sub_account_id
 
-  final String password;
+  final String password; // optional, default to empty
 
   @JsonKey(name: 'image_url')
   final String? imageUrl;
@@ -24,20 +25,21 @@ class User {
     required this.lastname,
     required this.email,
     required this.accountNumber,
-    required this.password,
+    this.password = '',
     this.imageUrl,
   });
 
-  // Custom fromJson to handle nested bank_account
+  /// Null-safe fromJson
   factory User.fromJson(Map<String, dynamic> json) => User(
         firstname: json['first_name'] as String,
         lastname: json['last_name'] as String,
         email: json['email'] as String,
         accountNumber: json['bank_account']?['sub_account_id'] as String? ?? '',
-        password: json['password'] as String,
-        imageUrl: json['image_url'] as String?,
+        password: '', // API does not provide password
+        imageUrl: json['image_url'] as String?, // nullable
       );
 
+  /// toJson for serialization
   Map<String, dynamic> toJson() => <String, dynamic>{
         'first_name': firstname,
         'last_name': lastname,
@@ -47,6 +49,7 @@ class User {
         'image_url': imageUrl,
       };
 
+  /// copyWith for easy modification
   User copyWith({
     String? firstname,
     String? lastname,
