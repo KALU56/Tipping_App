@@ -1,9 +1,8 @@
 part of '../../settings.dart';
-
 class ProfileSection extends StatelessWidget {
   final VoidCallback onTap;
 
-  const ProfileSection({super.key, required this.onTap, required User user});
+  const ProfileSection({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -29,32 +28,33 @@ class ProfileSection extends StatelessWidget {
                 ),
               ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage('assets/images/avatar.png'),
-                  ),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user != null
-                            ? "${user.firstname} ${user.lastname}"
-                            : "Loading...",
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: (user != null &&
+                          user.imageUrl != null &&
+                          user.imageUrl!.isNotEmpty)
+                      ? NetworkImage(user.imageUrl!)
+                      : const AssetImage('assets/images/avatar.png')
+                          as ImageProvider,
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user != null
+                          ? "${user.firstname} ${user.lastname}"
+                          : "Loading...",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                     
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         );

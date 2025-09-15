@@ -1,5 +1,4 @@
 part of '../../settings.dart';
-
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
 
@@ -29,10 +28,16 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     return BlocConsumer<SettingBloc, SettingState>(
       listener: (context, state) {
         if (state is PasswordChanged) {
+          // Close the dialog first
+          Navigator.pop(context);
+
+          // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Password changed successfully')),
           );
-          Navigator.pop(context);
+
+          // Optionally reload the profile or any necessary data
+          context.read<SettingBloc>().add(LoadProfile());
         } else if (state is SettingError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
@@ -66,17 +71,26 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16),
-                      _buildPasswordField('Current Password', _currentPasswordController, _obscureCurrentPassword, () {
-                        setState(() => _obscureCurrentPassword = !_obscureCurrentPassword);
-                      }),
+                      _buildPasswordField(
+                        'Current Password', 
+                        _currentPasswordController, 
+                        _obscureCurrentPassword, 
+                        () => setState(() => _obscureCurrentPassword = !_obscureCurrentPassword),
+                      ),
                       const SizedBox(height: 12),
-                      _buildPasswordField('New Password', _newPasswordController, _obscureNewPassword, () {
-                        setState(() => _obscureNewPassword = !_obscureNewPassword);
-                      }),
+                      _buildPasswordField(
+                        'New Password', 
+                        _newPasswordController, 
+                        _obscureNewPassword, 
+                        () => setState(() => _obscureNewPassword = !_obscureNewPassword),
+                      ),
                       const SizedBox(height: 12),
-                      _buildPasswordField('Confirm New Password', _confirmPasswordController, _obscureConfirmPassword, () {
-                        setState(() => _obscureConfirmPassword = !_obscureConfirmPassword);
-                      }),
+                      _buildPasswordField(
+                        'Confirm New Password', 
+                        _confirmPasswordController, 
+                        _obscureConfirmPassword, 
+                        () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                      ),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,

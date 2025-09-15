@@ -21,10 +21,13 @@ class ProfileDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const CircleAvatar(
+            CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage('assets/images/avatar.png'),
+              backgroundImage: (user.imageUrl != null && user.imageUrl!.isNotEmpty)
+                  ? NetworkImage(user.imageUrl!)
+                  : const AssetImage('assets/images/avatar.png') as ImageProvider,
             ),
+
             const SizedBox(height: 16),
             Text(
               "${user.firstname} ${user.lastname}",

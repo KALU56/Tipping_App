@@ -54,7 +54,7 @@ class _SettingState extends State<Setting> {
                           ),
                         );
                       },
-                      user: user,
+                  
                     ),
                   ),
 

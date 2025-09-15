@@ -29,7 +29,7 @@ class UserSettingRepositoryImpl implements UserSettingRepository {
       email: currentUser.email,
       password: currentUser.password,
       imageUrl: updatedData['image_url'] ?? currentUser.imageUrl,
-      accountNumber: currentUser.accountNumber,
+    
     );
   }
 
