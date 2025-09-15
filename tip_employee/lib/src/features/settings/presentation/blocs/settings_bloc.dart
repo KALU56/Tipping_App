@@ -23,21 +23,19 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
         emit(SettingError('Failed to load profile: ${e.toString()}'));
       }
     });
-
-    // Event: Update profile
-    on<UpdateProfile>((event, emit) async {
-      emit(SettingLoading());
-      try {
-        final updatedUser = await userSettingRepository.updateProfile(
-          firstName: event.user.firstname,
-          lastName: event.user.lastname,
-          imageUrl: event.user.imageUrl,
-        );
-        emit(ProfileLoaded(updatedUser));
-      } catch (e) {
-        emit(SettingError('Failed to update profile: ${e.toString()}'));
-      }
-    });
+on<UpdateProfile>((event, emit) async {
+  emit(SettingLoading());
+  try {
+    final updatedUser = await userSettingRepository.updateProfile(
+      firstName: event.user.firstname,
+      lastName: event.user.lastname,
+      imageFile: event.imageFile,
+    );
+    emit(ProfileLoaded(updatedUser));
+  } catch (e) {
+    emit(SettingError('Failed to update profile: ${e.toString()}'));
+  }
+});
 
     // Event: Change password
     on<ChangePassword>((event, emit) async {

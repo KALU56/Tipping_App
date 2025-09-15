@@ -1,12 +1,22 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:tip_employee/src/core/service/cloudinary_service.dart';
 import 'package:tip_employee/src/core/service/http_service/http_service.dart';
 import 'package:tip_employee/src/core/service/http_service/http_service_response_model.dart';
 
+
 class UserService {
   final HttpService httpService;
+  final CloudinaryService cloudinaryService;
 
-  UserService(this.httpService);
+  UserService({
+    required this.httpService,
+    required this.cloudinaryService,
+  });
 
-  /// Get profile
+  /// -----------------------------
+  /// GET PROFILE
+  /// -----------------------------
   Future<Map<String, dynamic>> getProfile() async {
     final response = await httpService.get('/api/employee/profile');
     if (response.staticCode == 200) {
@@ -16,27 +26,45 @@ class UserService {
     }
   }
 
-  /// Update profile
+  /// -----------------------------
+  /// UPDATE PROFILE
+  /// -----------------------------
+  /// Accepts optional firstName, lastName, and imageFile
+ 
+  /// Update profile with optional firstName, lastName, imageFile
   Future<Map<String, dynamic>> updateProfile({
     String? firstName,
     String? lastName,
-    String? imageUrl,
+    File? imageFile,
   }) async {
-    final body = {
-      if (firstName != null) 'first_name': firstName,
-      if (lastName != null) 'last_name': lastName,
-      if (imageUrl != null) 'image_url': imageUrl,
-    };
+    final Map<String, dynamic> payload = {};
 
-    final response = await httpService.put('/api/employee/profile', body);
+    if (firstName != null && firstName.isNotEmpty) payload['first_name'] = firstName;
+    if (lastName != null && lastName.isNotEmpty) payload['last_name'] = lastName;
+
+    if (imageFile != null) {
+      // Upload image to Cloudinary first
+      final imageUrl = await cloudinaryService.uploadImage(imageFile);
+      print('✅ Cloudinary uploaded URL: $imageUrl');
+      payload['image_url'] = imageUrl;
+    }
+
+    if (payload.isEmpty) throw Exception('No fields provided for update');
+
+    print('➡ Sending payload to backend: $payload');
+
+    final response = await httpService.put('/api/employee/profile', payload);
+
     if (response.staticCode == 200) {
+      print('✅ Profile updated successfully: ${response.data}');
       return response.data['data'];
     } else {
-      throw Exception('Failed to update profile: ${response.data}');
+      throw Exception('❌ Failed to update profile: ${response.data}');
     }
   }
-
-  /// Update password
+  /// -----------------------------
+  /// UPDATE PASSWORD
+  /// -----------------------------
   Future<void> updatePassword({
     required String currentPassword,
     required String newPassword,
@@ -53,7 +81,9 @@ class UserService {
     }
   }
 
-  /// Get bank account
+  /// -----------------------------
+  /// GET BANK ACCOUNT
+  /// -----------------------------
   Future<Map<String, dynamic>> getBankAccount() async {
     final response = await httpService.get('/api/employee/bank-account');
     if (response.staticCode == 200) {
@@ -63,7 +93,9 @@ class UserService {
     }
   }
 
-  /// Update bank account
+  /// -----------------------------
+  /// UPDATE BANK ACCOUNT
+  /// -----------------------------
   Future<Map<String, dynamic>> updateBankAccount({
     required String businessName,
     required String accountName,
@@ -84,7 +116,9 @@ class UserService {
     }
   }
 
-  /// Deactivate account
+  /// -----------------------------
+  /// DEACTIVATE ACCOUNT
+  /// -----------------------------
   Future<void> deactivateAccount() async {
     final response = await httpService.delete('/api/employee/account');
     if (response.staticCode != 200) {
@@ -92,7 +126,9 @@ class UserService {
     }
   }
 
-  /// Logout
+  /// -----------------------------
+  /// LOGOUT
+  /// -----------------------------
   Future<void> logout() async {
     final response = await httpService.post('/api/employees/logout', {});
     if (response.staticCode != 200) {

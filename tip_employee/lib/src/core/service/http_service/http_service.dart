@@ -12,12 +12,11 @@ abstract interface class HttpService {
 class HttpServiceImpl implements HttpService {
   final Dio _dio;
 
-  /// ✅ Set baseUrl here so relative paths work automatically
   HttpServiceImpl({Dio? dio, String baseUrl = 'http://127.0.0.1:8000'})
       : _dio = dio ??
             Dio(
               BaseOptions(
-                baseUrl: baseUrl, // <-- baseUrl added
+                baseUrl: baseUrl,
                 connectTimeout: const Duration(seconds: 10),
                 receiveTimeout: const Duration(seconds: 10),
                 followRedirects: false,
@@ -39,11 +38,10 @@ class HttpServiceImpl implements HttpService {
                 ),
               );
 
-  /// 🔑 Build request options with token from SharedPreferences
   Future<Options> _withAuthHeaders(Map<String, String>? headers) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
-    print('🛠 AUTH TOKEN: $token'); // Debug token
+    print('🛠 AUTH TOKEN: $token');
 
     final authHeader = token != null ? {'Authorization': 'Bearer $token'} : {};
 
@@ -101,7 +99,6 @@ class HttpServiceImpl implements HttpService {
     }
   }
 
-  /// ✅ Handle success
   HttpServiceResponseModel _handleResponse(Response response) {
     print('🔹 RESPONSE [${response.statusCode}] ${response.requestOptions.method} ${response.requestOptions.path}');
     print('🔹 RESPONSE DATA: ${response.data}');
@@ -118,7 +115,6 @@ class HttpServiceImpl implements HttpService {
     );
   }
 
-  /// ❌ Handle error
   HttpServiceResponseModel _handleError(DioError e) {
     print('❌ ERROR [${e.response?.statusCode ?? 'NO STATUS'}] ${e.requestOptions.method} ${e.requestOptions.path}');
     print('❌ ERROR MESSAGE: ${e.message}');

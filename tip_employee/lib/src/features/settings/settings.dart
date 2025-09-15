@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
+import 'package:tip_employee/src/features/settings/data/user_s_repository_impl.dart';
+import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
 
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_event.dart';

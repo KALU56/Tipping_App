@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:tip_employee/src/shared/data/models/user_model.dart';
 
@@ -9,14 +11,16 @@ abstract class SettingEvent extends Equatable {
 }
 
 class LoadProfile extends SettingEvent {}
-
 class UpdateProfile extends SettingEvent {
   final User user;
-  const UpdateProfile(this.user);
+  final File? imageFile;
+
+  const UpdateProfile(this.user, {this.imageFile});
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [user, imageFile];
 }
+
 
 class ChangePassword extends SettingEvent {
   final String oldPassword;

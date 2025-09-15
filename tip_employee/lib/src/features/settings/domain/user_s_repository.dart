@@ -1,13 +1,16 @@
+import 'dart:io';
+
 import 'package:tip_employee/src/core/service/user_service.dart';
 import 'package:tip_employee/src/shared/data/models/user_model.dart';
 
 abstract interface class UserSettingRepository {
   /// Update employee profile (first name, last name, image)
-  Future<User> updateProfile({
+    Future<User> updateProfile({
     String? firstName,
     String? lastName,
-    String? imageUrl,
+    File? imageFile,
   });
+
    /// Update password
   Future<void> updatePassword({
     required String currentPassword,

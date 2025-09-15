@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tip_employee/src/core/service/cloudinary_service.dart';
 
 // Core services
 import 'package:tip_employee/src/core/service/http_service/http_service.dart';
@@ -38,20 +39,29 @@ import 'package:tip_employee/src/app/themes/themeNotifier.dart';
 import 'package:tip_employee/src/shared/domain/repositories/user_repository.dart';
 
 void main() {
-  SystemChrome.setSystemUIOverlayStyle(
+   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
-  // 1️⃣ Core services
   final httpService = HttpServiceImpl();
   final authService = AuthService(httpService);
-  final userService = UserService(httpService);
+  
+  // Cloudinary service
+  final cloudinaryService = CloudinaryService(
+    cloudName: 'dvkismvdn',
+    uploadPreset: 'tiptop',
+  );
 
-  // 2️⃣ Repositories
+  // User service with both HTTP and Cloudinary
+  final userService = UserService(
+    httpService: httpService,
+    cloudinaryService: cloudinaryService,
+  );
+
   final authRepository = AuthRepositoryImpl(authService);
   final userRepository = UserRepositoryImpl(userService: userService);
   final userSettingRepository = UserSettingRepositoryImpl(userService: userService);
-  final tipRepository = MockTipRepository(); // replace with real implementation later
+  final tipRepository = MockTipRepository(); // replace with real repo
 
   runApp(MyApp(
     authRepository: authRepository,
