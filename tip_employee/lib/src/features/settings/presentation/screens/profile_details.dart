@@ -38,7 +38,7 @@ class ProfileDetailsScreen extends StatelessWidget {
             _buildDetailItem(context, 'Email', user.email),
             _buildDetailItem(context, 'Firstname', user.firstname),
             _buildDetailItem(context, 'Lastname', user.lastname),
-            _buildDetailItem(context, 'Account number', user.accountNumber),
+
           ],
         ),
       ),

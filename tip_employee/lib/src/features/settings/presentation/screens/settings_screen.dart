@@ -5,8 +5,8 @@ class _SettingState extends State<Setting> {
   @override
   void initState() {
     super.initState();
-    // Load profile at startup
     context.read<SettingBloc>().add(LoadProfile());
+    context.read<SettingBloc>().add(LoadBankAccount());
   }
 
   @override
@@ -28,6 +28,11 @@ class _SettingState extends State<Setting> {
                 const SnackBar(content: Text("Password updated!")),
               );
             }
+            if (state is BankAccountUpdated) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Bank account updated!")),
+              );
+            }
             if (state is LoggedOut) {
               Navigator.of(context).popUntil((route) => route.isFirst);
             }
@@ -37,126 +42,162 @@ class _SettingState extends State<Setting> {
               return const Center(child: CircularProgressIndicator());
             }
 
+            User? user;
+            String? accountNumber;
+            String? accountName;
+            String? bankCode;
+
             if (state is ProfileLoaded) {
-              final user = state.user;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Profile Section
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: ProfileSection(
-                      onTap: () {
+              user = state.user;
+            }
+            if (state is BankAccountLoaded) {
+              accountNumber = state.accountNumber;
+              accountName = state.accountName;
+              bankCode = state.bankCode;
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ProfileSection(
+                    onTap: () {
+                      if (user != null) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ProfileDetailsScreen(user: user),
+                            builder: (_) => ProfileDetailsScreen(user: user!),
                           ),
                         );
-                      },
-                  
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Profile not loaded yet")),
+                        );
+                      }
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Other Settings',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-
-                  // Other Settings Title
-                  Padding(
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Other Settings',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Settings Options
-                  Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      children: [
-                        SettingsOption(
-                          color: theme.colorScheme.primary,
-                          icon: Icons.person_outline,
-                          title: 'Edit Profile',
-                          onTap: () {
+                    children: [
+                      SettingsOption(
+                        color: theme.colorScheme.primary,
+                        icon: Icons.person_outline,
+                        title: 'Edit Profile',
+                        onTap: () {
+                          if (user != null) {
                             showDialog(
                               context: context,
                               barrierColor: Colors.transparent,
-                              builder: (_) =>
-                                  ProfileEditDialog(user: user),
+                              builder: (_) => ProfileEditDialog(user: user!),
                             ).then((updatedUser) {
                               if (updatedUser != null) {
                                 context.read<SettingBloc>().add(
-                                    UpdateProfile(updatedUser));
+                                      UpdateProfile(updatedUser),
+                                    );
                               }
                             });
-                          },
-                        ),
-                        SettingsOption(
-                          color: theme.colorScheme.primary,
-                          icon: Icons.lock_outline,
-                          title: 'Password',
-                          onTap: () {
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Profile not loaded yet")),
+                            );
+                          }
+                        },
+                      ),
+                      SettingsOption(
+                        color: theme.colorScheme.primary,
+                        icon: Icons.account_balance,
+                        title: 'Edit Bank Account',
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            barrierColor: Colors.transparent,
+                            builder: (_) => AccountEditDialog(
+                              accountNumber: accountNumber,
+                              accountName: accountName,
+                              bankCode: bankCode,
+                            ),
+                          ).then((result) {
+                            if (result != null) {
+                              context.read<SettingBloc>().add(
+                                    UpdateBankAccount(
+                                      accountName: result['accountName'],
+                                      accountNumber: result['accountNumber'],
+                                      bankCode: result['bankCode'],
+                                    ),
+                                  );
+                            }
+                          });
+                        },
+                      ),
+                      SettingsOption(
+                        color: theme.colorScheme.primary,
+                        icon: Icons.lock_outline,
+                        title: 'Password',
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            barrierColor: Colors.transparent,
+                            builder: (_) => ChangePasswordDialog(),
+                          );
+                        },
+                      ),
+                      SettingsOption(
+                        color: theme.colorScheme.primary,
+                        icon: Icons.info_outline,
+                        title: 'About Application',
+                        onTap: () {},
+                      ),
+                      SettingsOption(
+                        icon: Icons.delete_outline,
+                        title: 'Delete Account',
+                        onTap: () {
+                          // Add delete event if needed
+                        },
+                        isDestructive: true,
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
                             showDialog(
                               context: context,
-                              barrierColor: Colors.transparent,
-                              builder: (_) =>
-                                  ChangePasswordDialog(),
+                              builder: (_) => LogoutDialog(
+                                onConfirm: () {
+                                  context.read<SettingBloc>().add(Logout());
+                                },
+                              ),
                             );
                           },
-                        ),
-                        SettingsOption(
-                          color: theme.colorScheme.primary,
-                          icon: Icons.info_outline,
-                          title: 'About Application',
-                          onTap: () {},
-                        ),
-                        SettingsOption(
-                          icon: Icons.delete_outline,
-                          title: 'Delete Account',
-                          onTap: () {
-                            // add delete event if needed
-                          },
-                          isDestructive: true,
-                        ),
-                        const SizedBox(height: 24),
-                        // Logout Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (_) => LogoutDialog(
-                                  onConfirm: () {
-                                    context
-                                        .read<SettingBloc>()
-                                        .add(Logout());
-                                  },
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: theme.colorScheme.error,
-                              foregroundColor: theme.colorScheme.onError,
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.colorScheme.error,
+                            foregroundColor: theme.colorScheme.onError,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Text('Logout'),
                           ),
+                          child: const Text('Logout'),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              );
-            }
-
-            return const Center(child: Text("No profile loaded"));
+                ),
+              ],
+            );
           },
         ),
       ),

@@ -4,7 +4,6 @@ import 'package:tip_employee/src/core/service/cloudinary_service.dart';
 import 'package:tip_employee/src/core/service/http_service/http_service.dart';
 import 'package:tip_employee/src/core/service/http_service/http_service_response_model.dart';
 
-
 class UserService {
   final HttpService httpService;
   final CloudinaryService cloudinaryService;
@@ -14,9 +13,6 @@ class UserService {
     required this.cloudinaryService,
   });
 
-  /// -----------------------------
-  /// GET PROFILE
-  /// -----------------------------
   Future<Map<String, dynamic>> getProfile() async {
     final response = await httpService.get('/api/employee/profile');
     if (response.staticCode == 200) {
@@ -26,12 +22,6 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// UPDATE PROFILE
-  /// -----------------------------
-  /// Accepts optional firstName, lastName, and imageFile
- 
-  /// Update profile with optional firstName, lastName, imageFile
   Future<Map<String, dynamic>> updateProfile({
     String? firstName,
     String? lastName,
@@ -43,7 +33,6 @@ class UserService {
     if (lastName != null && lastName.isNotEmpty) payload['last_name'] = lastName;
 
     if (imageFile != null) {
-      // Upload image to Cloudinary first
       final imageUrl = await cloudinaryService.uploadImage(imageFile);
       print('✅ Cloudinary uploaded URL: $imageUrl');
       payload['image_url'] = imageUrl;
@@ -62,9 +51,7 @@ class UserService {
       throw Exception('❌ Failed to update profile: ${response.data}');
     }
   }
-  /// -----------------------------
-  /// UPDATE PASSWORD
-  /// -----------------------------
+
   Future<void> updatePassword({
     required String currentPassword,
     required String newPassword,
@@ -81,9 +68,6 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// GET BANK ACCOUNT
-  /// -----------------------------
   Future<Map<String, dynamic>> getBankAccount() async {
     final response = await httpService.get('/api/employee/bank-account');
     if (response.staticCode == 200) {
@@ -93,20 +77,24 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// UPDATE BANK ACCOUNT
-  /// -----------------------------
+  Future<List<Map<String, dynamic>>> getBanks() async {
+    final response = await httpService.get('/api/banks');
+    if (response.staticCode == 200) {
+      return List<Map<String, dynamic>>.from(response.data['data']);
+    } else {
+      throw Exception('Failed to load banks: ${response.data}');
+    }
+  }
+
   Future<Map<String, dynamic>> updateBankAccount({
-    required String businessName,
     required String accountName,
-    required int bankCode,
     required String accountNumber,
+    required String bankCode,
   }) async {
     final body = {
-      'business_name': businessName,
       'account_name': accountName,
-      'bank_code': bankCode,
       'account_number': accountNumber,
+      'bank_code': bankCode,
     };
     final response = await httpService.put('/api/employee/bank-account', body);
     if (response.staticCode == 200) {
@@ -116,9 +104,6 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// DEACTIVATE ACCOUNT
-  /// -----------------------------
   Future<void> deactivateAccount() async {
     final response = await httpService.delete('/api/employee/account');
     if (response.staticCode != 200) {
@@ -126,9 +111,6 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// LOGOUT
-  /// -----------------------------
   Future<void> logout() async {
     final response = await httpService.post('/api/employees/logout', {});
     if (response.staticCode != 200) {

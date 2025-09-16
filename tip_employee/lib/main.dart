@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tip_employee/src/core/service/account_service.dart';
 import 'package:tip_employee/src/core/service/cloudinary_service.dart';
 
 // Core services
@@ -16,14 +17,14 @@ import 'package:tip_employee/src/features/auth/presentation/blocs/auth_bloc.dart
 // Home
 import 'package:tip_employee/src/features/home/presentation/blocs/home_bloc.dart';
 import 'package:tip_employee/src/features/home/presentation/blocs/home_event.dart';
-import 'package:tip_employee/src/features/settings/data/user_s_repository_impl.dart';
 
 // Settings
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
-
 import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
+import 'package:tip_employee/src/features/settings/domain/account_repository.dart';
+import 'package:tip_employee/src/features/settings/data/repoitory/user_s_repository_impl.dart';
+import 'package:tip_employee/src/features/settings/data/repoitory/account_repository_impl.dart';
 import 'package:tip_employee/src/shared/data/UserRepositoryImpl.dart';
-
 
 // Tip
 import 'package:tip_employee/src/features/tip/presentation/blocs/tip_bloc.dart';
@@ -39,34 +40,37 @@ import 'package:tip_employee/src/app/themes/themeNotifier.dart';
 import 'package:tip_employee/src/shared/domain/repositories/user_repository.dart';
 
 void main() {
-   SystemChrome.setSystemUIOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
+  // Core services
   final httpService = HttpServiceImpl();
   final authService = AuthService(httpService);
-  
-  // Cloudinary service
+  final accountService = AccountService(httpService: httpService);
+
   final cloudinaryService = CloudinaryService(
     cloudName: 'dvkismvdn',
     uploadPreset: 'tiptop',
   );
 
-  // User service with both HTTP and Cloudinary
   final userService = UserService(
     httpService: httpService,
     cloudinaryService: cloudinaryService,
   );
 
+  // Repositories
   final authRepository = AuthRepositoryImpl(authService);
   final userRepository = UserRepositoryImpl(userService: userService);
   final userSettingRepository = UserSettingRepositoryImpl(userService: userService);
-  final tipRepository = MockTipRepository(); // replace with real repo
+  final accountRepository = AccountRepositoryImpl(accountService: accountService);
+  final tipRepository = MockTipRepository();
 
   runApp(MyApp(
     authRepository: authRepository,
     userRepository: userRepository,
     userSettingRepository: userSettingRepository,
+    accountRepository: accountRepository,
     tipRepository: tipRepository,
   ));
 }
@@ -75,6 +79,7 @@ class MyApp extends StatelessWidget {
   final AuthRepository authRepository;
   final UserRepository userRepository;
   final UserSettingRepository userSettingRepository;
+  final AccountRepository accountRepository;
   final TipRepository tipRepository;
 
   const MyApp({
@@ -82,6 +87,7 @@ class MyApp extends StatelessWidget {
     required this.authRepository,
     required this.userRepository,
     required this.userSettingRepository,
+    required this.accountRepository,
     required this.tipRepository,
   });
 
@@ -96,6 +102,7 @@ class MyApp extends StatelessWidget {
           create: (_) => SettingBloc(
             userRepository: userRepository,
             userSettingRepository: userSettingRepository,
+            accountRepository: accountRepository, // ✅ now exists
           ),
         ),
         BlocProvider<HomeBloc>(

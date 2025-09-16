@@ -1,13 +1,13 @@
 import 'dart:io';
-
 import 'package:tip_employee/src/core/service/user_service.dart';
-import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
 import 'package:tip_employee/src/shared/data/models/user_model.dart';
+import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
+
 class UserSettingRepositoryImpl implements UserSettingRepository {
   final UserService userService;
 
   UserSettingRepositoryImpl({required this.userService});
-  
+
   @override
   Future<User> updateProfile({
     String? firstName,
@@ -29,12 +29,10 @@ class UserSettingRepositoryImpl implements UserSettingRepository {
       email: currentUser.email,
       password: currentUser.password,
       imageUrl: updatedData['image_url'] ?? currentUser.imageUrl,
-    
+      accounts: currentUser.accounts,
     );
   }
 
-
-  /// Update employee password
   @override
   Future<void> updatePassword({
     required String currentPassword,
@@ -52,6 +50,7 @@ class UserSettingRepositoryImpl implements UserSettingRepository {
       rethrow;
     }
   }
+
   @override
   Future<Map<String, dynamic>> getBankAccount() async {
     try {
@@ -63,17 +62,28 @@ class UserSettingRepositoryImpl implements UserSettingRepository {
     }
   }
 
-    @override
+  @override
+  Future<List<Map<String, dynamic>>> getBanks() async {
+    try {
+      final banks = await userService.getBanks();
+      return banks;
+    } catch (e) {
+      print('Error fetching banks: $e');
+      rethrow;
+    }
+  }
+
+  @override
   Future<Map<String, dynamic>> updateBankAccount({
+    required String accountName,
     required String accountNumber,
+    required String bankCode,
   }) async {
     try {
-      // You may add businessName, accountName, bankCode here if required
       final updatedBankData = await userService.updateBankAccount(
-        businessName: '', // leave empty if not needed
-        accountName: '',  // leave empty if not needed
-        bankCode: 0,      // dummy, replace with real if required
+        accountName: accountName,
         accountNumber: accountNumber,
+        bankCode: bankCode,
       );
       return updatedBankData;
     } catch (e) {
@@ -82,7 +92,6 @@ class UserSettingRepositoryImpl implements UserSettingRepository {
     }
   }
 
-   /// Deactivate account
   @override
   Future<void> deactivateAccount() async {
     try {
@@ -94,7 +103,6 @@ class UserSettingRepositoryImpl implements UserSettingRepository {
     }
   }
 
-  /// Logout
   @override
   Future<void> logout() async {
     try {

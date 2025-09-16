@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
-import 'package:tip_employee/src/features/settings/data/user_s_repository_impl.dart';
+import 'package:tip_employee/src/features/settings/data/repoitory/user_s_repository_impl.dart';
 import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
 
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
@@ -16,7 +16,7 @@ part './presentation/screens/settings_screen.dart';
 part './presentation/screens/change_password.dart';
 part './presentation/screens/profile_details.dart';
 part './presentation/components/logout_dialog.dart';
-
+part './presentation/screens/account_edit.dart';
 part './presentation/components/settings_option.dart';
 part './presentation/components/profile_section.dart';
 part './presentation/components/profile_edit_dialog.dart';
