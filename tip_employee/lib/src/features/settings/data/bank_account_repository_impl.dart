@@ -2,6 +2,7 @@
 import 'package:tip_employee/src/core/service/account_service.dart';
 import 'package:tip_employee/src/features/settings/data/model/bank_account_request.dart';
 import 'package:tip_employee/src/features/settings/data/model/bank_account_response.dart';
+import 'package:tip_employee/src/features/settings/data/model/bank_model.dart';
 import 'package:tip_employee/src/features/settings/domain/bank_account_repository.dart';
 
 
@@ -18,5 +19,9 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
   @override
   Future<BankAccountResponse> updateBankAccount(BankAccountRequest request) async {
     return await accountService.updateBankAccount(request);
+  }
+  @override
+  Future<List<Bank>> getBanks() async {
+    return await accountService.getBanks();
   }
 }

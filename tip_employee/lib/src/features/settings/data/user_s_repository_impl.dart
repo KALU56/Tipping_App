@@ -63,24 +63,6 @@ class UserSettingRepositoryImpl implements UserSettingRepository {
     }
   }
 
-    @override
-  Future<Map<String, dynamic>> updateBankAccount({
-    required String accountNumber,
-  }) async {
-    try {
-      // You may add businessName, accountName, bankCode here if required
-      final updatedBankData = await userService.updateBankAccount(
-        businessName: '', // leave empty if not needed
-        accountName: '',  // leave empty if not needed
-        bankCode: 0,      // dummy, replace with real if required
-        accountNumber: accountNumber,
-      );
-      return updatedBankData;
-    } catch (e) {
-      print('Error updating bank account: $e');
-      rethrow;
-    }
-  }
 
    /// Deactivate account
   @override

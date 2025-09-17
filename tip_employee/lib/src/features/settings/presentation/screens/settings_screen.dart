@@ -112,6 +112,39 @@ class _SettingState extends State<Setting> {
                           title: 'About Application',
                           onTap: () {},
                         ),
+                      SettingsOption(
+                          color: theme.colorScheme.primary,
+                          icon: Icons.account_balance_wallet_outlined,
+                          title: 'Update Bank Account',
+                          onTap: () async {
+                            try {
+                              // Get banks from repository
+                              final banks = await context.read<SettingBloc>()
+                                .bankAccountRepository
+                                .getBanks();
+
+                              // Prepare default values from user
+                              final accountNumber = user.accountNumber;
+                              final accountName = ''; // if you have it in user, replace ''
+                              final bankCode = ''; // if you have it in user, replace ''
+
+                              showDialog(
+                                context: context,
+                                barrierColor: Colors.transparent,
+                                builder: (_) => AccountEditDialog(
+                                  accountName: accountName,
+                                  accountNumber: accountNumber,
+                                  bankCode: bankCode,
+                                  banks: banks,
+                                ),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Failed to load banks: $e')),
+                              );
+                            }
+                          },
+                        ),
                         SettingsOption(
                           icon: Icons.delete_outline,
                           title: 'Delete Account',

@@ -31,18 +31,22 @@ class ProfileDetailsScreen extends StatelessWidget {
               style: theme.textTheme.titleLarge
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
-             const SizedBox(height: 24),
+            const SizedBox(height: 24),
+
+            // Profile fields
             _buildDetailItem(context, 'Email', user.email),
             _buildDetailItem(context, 'Firstname', user.firstname),
             _buildDetailItem(context, 'Lastname', user.lastname),
-            _buildDetailItem(context, 'Account number', user.accountNumber),
+            _buildDetailItem(context, 'Account Name', user.accountName ?? 'N/A'),
+            _buildDetailItem(context, 'Account Number', user.accountNumber ?? 'N/A'),
+            _buildDetailItem(context, 'Bank Code', user.bankCode ?? 'N/A'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDetailItem(BuildContext context, String title, String value) {
+  Widget _buildDetailItem(BuildContext context, String title, String? value) {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -51,10 +55,9 @@ class ProfileDetailsScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style:
-                theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
-          Text(value, style: theme.textTheme.bodyMedium),
+          Text(value ?? 'N/A', style: theme.textTheme.bodyMedium),
         ],
       ),
     );

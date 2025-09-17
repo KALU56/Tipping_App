@@ -31,3 +31,22 @@ class SettingError extends SettingState {
   @override
   List<Object?> get props => [message];
 }
+class BankAccountUpdating extends SettingState {}
+
+class BankAccountUpdated extends SettingState {
+  final String subAccountId;
+
+  const BankAccountUpdated({required this.subAccountId});
+
+  @override
+  List<Object?> get props => [subAccountId];
+}
+
+class BankAccountError extends SettingState {
+  final String message;
+
+  const BankAccountError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

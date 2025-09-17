@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:tip_employee/src/core/service/user_service.dart';
+import 'package:tip_employee/src/features/settings/data/model/bank_account_request.dart';
 import 'package:tip_employee/src/shared/data/models/user_model.dart';
 
 abstract interface class UserSettingRepository {
@@ -19,14 +20,6 @@ abstract interface class UserSettingRepository {
   });
 
   /// Get bank account info
-  Future<Map<String, dynamic>> getBankAccount();
-
-  /// Update bank account info
-  Future<Map<String, dynamic>> updateBankAccount({
-
-    required String accountNumber,
-  });
-
   /// Deactivate account
   Future<void> deactivateAccount();
 

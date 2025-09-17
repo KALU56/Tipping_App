@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tip_employee/src/core/service/account_service.dart';
 import 'package:tip_employee/src/core/service/cloudinary_service.dart';
 
 // Core services
@@ -16,7 +17,9 @@ import 'package:tip_employee/src/features/auth/presentation/blocs/auth_bloc.dart
 // Home
 import 'package:tip_employee/src/features/home/presentation/blocs/home_bloc.dart';
 import 'package:tip_employee/src/features/home/presentation/blocs/home_event.dart';
+import 'package:tip_employee/src/features/settings/data/bank_account_repository_impl.dart';
 import 'package:tip_employee/src/features/settings/data/user_s_repository_impl.dart';
+import 'package:tip_employee/src/features/settings/domain/bank_account_repository.dart';
 
 // Settings
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
@@ -61,13 +64,17 @@ void main() {
   final authRepository = AuthRepositoryImpl(authService);
   final userRepository = UserRepositoryImpl(userService: userService);
   final userSettingRepository = UserSettingRepositoryImpl(userService: userService);
-  final tipRepository = MockTipRepository(); // replace with real repo
-
+  final tipRepository = MockTipRepository(); // repl(ace with real repo
+final bankAccountRepository = BankAccountRepositoryImpl(
+  accountService: AccountService(httpService: httpService),
+);
   runApp(MyApp(
     authRepository: authRepository,
     userRepository: userRepository,
     userSettingRepository: userSettingRepository,
     tipRepository: tipRepository,
+    bankAccountRepository: bankAccountRepository,
+    
   ));
 }
 
@@ -76,6 +83,7 @@ class MyApp extends StatelessWidget {
   final UserRepository userRepository;
   final UserSettingRepository userSettingRepository;
   final TipRepository tipRepository;
+  final BankAccountRepository bankAccountRepository;
 
   const MyApp({
     super.key,
@@ -83,6 +91,7 @@ class MyApp extends StatelessWidget {
     required this.userRepository,
     required this.userSettingRepository,
     required this.tipRepository,
+    required this.bankAccountRepository, 
   });
 
   @override
@@ -96,6 +105,7 @@ class MyApp extends StatelessWidget {
           create: (_) => SettingBloc(
             userRepository: userRepository,
             userSettingRepository: userSettingRepository,
+            bankAccountRepository: bankAccountRepository,
           ),
         ),
         BlocProvider<HomeBloc>(

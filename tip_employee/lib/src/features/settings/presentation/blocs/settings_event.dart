@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
+import 'package:tip_employee/src/features/settings/data/model/bank_account_request.dart';
 import 'package:tip_employee/src/shared/data/models/user_model.dart';
 
 abstract class SettingEvent extends Equatable {
@@ -33,3 +34,13 @@ class ChangePassword extends SettingEvent {
 }
 
 class Logout extends SettingEvent {}
+class LoadBankAccount extends SettingEvent {}
+
+class UpdateBankAccount extends SettingEvent {
+  final BankAccountRequest request;
+
+  const UpdateBankAccount(this.request);
+
+  @override
+  List<Object?> get props => [request];
+}
