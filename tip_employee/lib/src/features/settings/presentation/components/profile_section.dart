@@ -33,10 +33,16 @@ class ProfileSection extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 30,
-                    backgroundImage: AssetImage('assets/images/avatar.png'),
+                    backgroundImage: (user != null && user.imageUrl != null && user.imageUrl!.isNotEmpty)
+                        ? NetworkImage(user.imageUrl!)
+                        : null,
+                    child: (user == null || user.imageUrl == null || user.imageUrl!.isEmpty)
+                        ? const Icon(Icons.person)
+                        : null,
                   ),
+
                   const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
