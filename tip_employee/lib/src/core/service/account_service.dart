@@ -13,9 +13,7 @@ class AccountService {
 
   AccountService({required this.httpService});
 
-  /// -----------------------------
-  /// FETCH BANKS FROM CHAPA
-  /// -----------------------------
+
   Future<List<Bank>> fetchBanks() async {
     final headers = {'Authorization': 'Bearer $chapaApiKey'};
     final request = http.Request(
@@ -45,9 +43,7 @@ class AccountService {
       throw Exception('Failed to fetch banks: ${response.data}');
     }
   }
-  /// -----------------------------
-  /// GET CURRENT BANK ACCOUNT
-  /// -----------------------------
+ 
   Future<BankAccountResponse> getBankAccount() async {
     final response = await httpService.get('/api/employee/bank-account');
 
@@ -58,9 +54,6 @@ class AccountService {
     }
   }
 
-  /// -----------------------------
-  /// UPDATE BANK ACCOUNT
-  /// -----------------------------
   Future<BankAccountResponse> updateBankAccount(BankAccountRequest request) async {
     final response = await httpService.put(
       '/api/employee/bank-account',

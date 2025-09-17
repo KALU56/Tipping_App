@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tip_employee/src/shared/data/models/tip_model.dart';
+import 'package:tip_employee/src/shared/data/models/tip.dart';
+
 
 class TipList extends StatelessWidget {
-  final List<Tip> tips;
+  final List<TipModel> tips;
 
   const TipList({super.key, required this.tips});
 
@@ -40,8 +41,7 @@ class TipList extends StatelessWidget {
             ],
           ),
           child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             leading: Container(
               width: 45,
               height: 45,
@@ -49,22 +49,17 @@ class TipList extends StatelessWidget {
                 color: theme.colorScheme.primary,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.person, color: Colors.white),
+              child: const Icon(Icons.monetization_on, color: Colors.white),
             ),
             title: Text(
-              tip.customerName,
+              'Amount: \$${tip.netAmount?.toStringAsFixed(2)}',
               style: theme.textTheme.titleMedium,
             ),
             subtitle: Text(
-              'Amount: \$${tip.amount}',
+              tip.date.toLocal().toString(),
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
               ),
-            ),
-            trailing: Text(
-              '${tip.date.day}/${tip.date.month}/${tip.date.year}\n${tip.time.format(context)}',
-              textAlign: TextAlign.right,
-              style: theme.textTheme.bodySmall,
             ),
           ),
         );

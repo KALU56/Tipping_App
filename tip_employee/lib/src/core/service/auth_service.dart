@@ -12,7 +12,6 @@ class AuthService {
 
   final String baseUrl = 'http://127.0.0.1:8000/api/employees';
 
-   // LOGIN
   Future<LoginModel> login(String email, String password) async {
     final data = {'email': email, 'password': password};
 
@@ -31,7 +30,6 @@ class AuthService {
     }
   }
 
-  // SIGNUP
   Future<SignupModel> signup({
     required String firstName,
     required String lastName,
@@ -44,7 +42,7 @@ class AuthService {
       'last_name': lastName,
       'email': email,
       'password': password,
-      'employee_code': employeeCode, // ⚡ important
+      'employee_code': employeeCode, 
     };
 
     final response = await _httpService.post('$baseUrl/register', data);

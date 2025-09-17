@@ -2,7 +2,7 @@
 import 'package:tip_employee/src/core/service/tip_service.dart';
 import 'package:tip_employee/src/shared/data/models/tip.dart';
 
-import '../domain/tip_repository.dart';
+import '../domain/repositories/tip_repository.dart';
 
 class TipRepositoryImpl implements TipRepository {
   final TipService tipService;

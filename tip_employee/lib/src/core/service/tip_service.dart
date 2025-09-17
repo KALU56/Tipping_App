@@ -7,9 +7,7 @@ class TipService {
 
   TipService({required this.httpService});
 
-  /// -----------------------------
-  /// GET TIP HISTORY FOR EMPLOYEE
-  /// -----------------------------
+
   Future<List<TipModel>> getEmployeeTips() async {
     final response = await httpService.get('/api/employees/tips');
 

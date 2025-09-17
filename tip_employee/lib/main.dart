@@ -1,80 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tip_employee/src/core/service/account_service.dart';
-import 'package:tip_employee/src/core/service/cloudinary_service.dart';
 
-// Core services
+// Core Services
 import 'package:tip_employee/src/core/service/http_service/http_service.dart';
 import 'package:tip_employee/src/core/service/auth_service.dart';
 import 'package:tip_employee/src/core/service/user_service.dart';
-
-// Auth
-import 'package:tip_employee/src/features/auth/domain/repositories/auth_repository.dart';
-import 'package:tip_employee/src/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:tip_employee/src/features/auth/presentation/blocs/auth_bloc.dart';
-
-// Home
-import 'package:tip_employee/src/features/home/presentation/blocs/home_bloc.dart';
-import 'package:tip_employee/src/features/home/presentation/blocs/home_event.dart';
-import 'package:tip_employee/src/features/settings/data/bank_account_repository_impl.dart';
-import 'package:tip_employee/src/features/settings/data/user_s_repository_impl.dart';
-import 'package:tip_employee/src/features/settings/domain/bank_account_repository.dart';
-
-// Settings
-import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
-
-import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
-import 'package:tip_employee/src/shared/data/UserRepositoryImpl.dart';
-
-
-// Tip
+import 'package:tip_employee/src/core/service/account_service.dart';
+import 'package:tip_employee/src/core/service/cloudinary_service.dart';
 import 'package:tip_employee/src/features/tip/presentation/blocs/tip_bloc.dart';
 import 'package:tip_employee/src/features/tip/presentation/blocs/tip_event.dart';
+import 'package:tip_employee/src/shared/data/UserRepositoryImpl.dart';
+import 'package:tip_employee/src/shared/data/tip_repository_impl.dart';
+import 'package:tip_employee/src/features/settings/data/user_s_repository_impl.dart';
+import 'package:tip_employee/src/features/settings/data/bank_account_repository_impl.dart';
+import 'package:tip_employee/src/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:tip_employee/src/shared/domain/repositories/user_repository.dart';
 import 'package:tip_employee/src/shared/domain/repositories/tip_repository.dart';
-import 'package:tip_employee/src/shared/data/mock_tip_repository.dart';
+import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
+import 'package:tip_employee/src/features/settings/domain/bank_account_repository.dart';
+import 'package:tip_employee/src/features/auth/domain/repositories/auth_repository.dart';
 
-// App
+import 'package:tip_employee/src/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:tip_employee/src/features/home/presentation/blocs/home_bloc.dart';
+import 'package:tip_employee/src/features/home/presentation/blocs/home_event.dart';
+import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
+
 import 'package:tip_employee/src/app/routes/app_routes.dart';
 import 'package:tip_employee/src/app/routes/route_generator.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
 import 'package:tip_employee/src/app/themes/themeNotifier.dart';
-import 'package:tip_employee/src/shared/domain/repositories/user_repository.dart';
+
+import 'package:tip_employee/src/core/service/tip_service.dart';
 
 void main() {
-   SystemChrome.setSystemUIOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
   final httpService = HttpServiceImpl();
   final authService = AuthService(httpService);
-  
-  // Cloudinary service
   final cloudinaryService = CloudinaryService(
     cloudName: 'dvkismvdn',
     uploadPreset: 'tiptop',
   );
-
-  // User service with both HTTP and Cloudinary
   final userService = UserService(
     httpService: httpService,
     cloudinaryService: cloudinaryService,
   );
+  final accountService = AccountService(httpService: httpService);
+  final tipService = TipService(httpService: httpService);
 
   final authRepository = AuthRepositoryImpl(authService);
   final userRepository = UserRepositoryImpl(userService: userService);
   final userSettingRepository = UserSettingRepositoryImpl(userService: userService);
-  final tipRepository = MockTipRepository(); // repl(ace with real repo
-final bankAccountRepository = BankAccountRepositoryImpl(
-  accountService: AccountService(httpService: httpService),
-);
+  final bankAccountRepository = BankAccountRepositoryImpl(accountService: accountService);
+  final tipRepository = TipRepositoryImpl(tipService: tipService);
+
+ 
   runApp(MyApp(
     authRepository: authRepository,
     userRepository: userRepository,
     userSettingRepository: userSettingRepository,
     tipRepository: tipRepository,
     bankAccountRepository: bankAccountRepository,
-    
   ));
 }
 
@@ -91,7 +80,7 @@ class MyApp extends StatelessWidget {
     required this.userRepository,
     required this.userSettingRepository,
     required this.tipRepository,
-    required this.bankAccountRepository, 
+    required this.bankAccountRepository,
   });
 
   @override
@@ -114,11 +103,11 @@ class MyApp extends StatelessWidget {
             tipRepository: tipRepository,
           )
             ..add(FetchProfile())
-            ..add(FetchRecentTips()),
+            ..add(FetchTips()),
         ),
-        BlocProvider<TipBloc>(
-          create: (_) => TipBloc(tipRepository)..add(LoadTips()),
-        ),
+        // BlocProvider<TipBloc>(
+        //   create: (_) => TipBloc(tipRepository)..add(LoadTips()),
+        // ),
       ],
       child: ValueListenableBuilder<ThemeMode>(
         valueListenable: themeNotifier,

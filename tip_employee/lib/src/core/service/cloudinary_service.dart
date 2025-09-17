@@ -11,7 +11,7 @@ class CloudinaryService {
     required this.uploadPreset,
   });
 
-  /// Upload an image file to Cloudinary, returns secure_url
+
   Future<String> uploadImage(File file) async {
     final uri = Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
 

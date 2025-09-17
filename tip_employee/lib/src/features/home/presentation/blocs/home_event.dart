@@ -7,13 +7,11 @@ abstract class HomeEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-// 🔹 Fetch profile data
+
 class FetchProfile extends HomeEvent {}
 
-// 🔹 Fetch recent tips
-class FetchRecentTips extends HomeEvent {}
+class FetchTips extends HomeEvent {}
 
-// 🔹 Search tips by customer name
 class SearchTips extends HomeEvent {
   final String query;
 

@@ -26,12 +26,6 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// UPDATE PROFILE
-  /// -----------------------------
-  /// Accepts optional firstName, lastName, and imageFile
- 
-  /// Update profile with optional firstName, lastName, imageFile
   Future<Map<String, dynamic>> updateProfile({
     String? firstName,
     String? lastName,
@@ -43,7 +37,7 @@ class UserService {
     if (lastName != null && lastName.isNotEmpty) payload['last_name'] = lastName;
 
     if (imageFile != null) {
-      // Upload image to Cloudinary first
+   
       final imageUrl = await cloudinaryService.uploadImage(imageFile);
       print('✅ Cloudinary uploaded URL: $imageUrl');
       payload['image_url'] = imageUrl;
@@ -56,15 +50,13 @@ class UserService {
     final response = await httpService.put('/api/employee/profile', payload);
 
     if (response.staticCode == 200) {
-      print('✅ Profile updated successfully: ${response.data}');
+      print('Profile updated successfully: ${response.data}');
       return response.data['data'];
     } else {
-      throw Exception('❌ Failed to update profile: ${response.data}');
+      throw Exception('Failed to update profile: ${response.data}');
     }
   }
-  /// -----------------------------
-  /// UPDATE PASSWORD
-  /// -----------------------------
+ 
   Future<void> updatePassword({
     required String currentPassword,
     required String newPassword,
@@ -81,9 +73,7 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// GET BANK ACCOUNT
-  /// -----------------------------
+  
   Future<Map<String, dynamic>> getBankAccount() async {
     final response = await httpService.get('/api/employee/bank-account');
     if (response.staticCode == 200) {
@@ -93,9 +83,6 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// UPDATE BANK ACCOUNT
-  /// -----------------------------
   Future<Map<String, dynamic>> updateBankAccount({
     required String businessName,
     required String accountName,
@@ -116,9 +103,7 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// DEACTIVATE ACCOUNT
-  /// -----------------------------
+ 
   Future<void> deactivateAccount() async {
     final response = await httpService.delete('/api/employee/account');
     if (response.staticCode != 200) {
@@ -126,9 +111,6 @@ class UserService {
     }
   }
 
-  /// -----------------------------
-  /// LOGOUT
-  /// -----------------------------
   Future<void> logout() async {
     final response = await httpService.post('/api/employees/logout', {});
     if (response.staticCode != 200) {

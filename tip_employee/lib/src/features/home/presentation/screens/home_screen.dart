@@ -37,23 +37,16 @@ class _HomeScreen extends StatelessWidget {
                 const _RecentTipsHeader(),
                 const SizedBox(height: 8),
 
-                // Recent tips list driven by bloc
-                Expanded(
-                  child: BlocBuilder<HomeBloc, HomeState>(
-                    builder: (context, state) {
-                      if (state.isLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (state.error != null) {
-                        return Center(child: Text('Error: ${state.error}'));
-                      }
-                      if (state.filteredTips.isEmpty) {
-                        return const Center(child: Text('No tips found'));
-                      }
-                      return TipList(tips: state.filteredTips);
-                    },
-                  ),
-                ),
+              
+               Expanded(
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  if (state.isLoading) return const Center(child: CircularProgressIndicator());
+                  if (state.error != null) return Center(child: Text('Error: ${state.error}'));
+                  return TipList(tips: state.filteredTips);
+                },
+              ),
+            ),
               ],
             ),
           ),
