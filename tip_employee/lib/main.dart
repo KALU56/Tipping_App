@@ -105,9 +105,9 @@ class MyApp extends StatelessWidget {
             ..add(FetchProfile())
             ..add(FetchTips()),
         ),
-        // BlocProvider<TipBloc>(
-        //   create: (_) => TipBloc(tipRepository)..add(LoadTips()),
-        // ),
+        BlocProvider<TipBloc>(
+          create: (_) => TipBloc(tipRepository)..add(LoadTips()),
+        ),
       ],
       child: ValueListenableBuilder<ThemeMode>(
         valueListenable: themeNotifier,

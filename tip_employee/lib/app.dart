@@ -16,7 +16,7 @@ class _AppState extends State<App> {
   int _selectedIndex = 1;
 
   final List<Widget> _pages = const [
-    // TipHistoryScreen(),
+    TipHistoryScreen(),
     Home(),
     Setting(),
   ];

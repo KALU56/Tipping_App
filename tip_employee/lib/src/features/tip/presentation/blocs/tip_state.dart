@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:tip_employee/src/shared/data/models/tip_model.dart';
+import 'package:tip_employee/src/shared/data/models/tip.dart';
 
 
 abstract class TipState extends Equatable {
@@ -14,7 +14,7 @@ class TipInitial extends TipState {}
 class TipLoading extends TipState {}
 
 class TipLoaded extends TipState {
-  final List<Tip> tips;
+  final List<TipModel> tips;
   const TipLoaded(this.tips);
 
   @override

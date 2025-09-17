@@ -25,7 +25,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const SignupScreen());
 
       case AppRoutes.transactions:
-        // return MaterialPageRoute(builder: (_) => const TipHistoryScreen());
+        return MaterialPageRoute(builder: (_) => const TipHistoryScreen());
 
         case AppRoutes.settings:
   return MaterialPageRoute(builder: (_) => const Setting());

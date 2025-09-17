@@ -6,9 +6,9 @@ class TipHistoryScreen extends StatefulWidget {
   @override
   State<TipHistoryScreen> createState() => _TipHistoryScreenState();
 }
-class _TipHistoryScreenState extends State<TipHistoryScreen> {
-  int _selectedFilter = 3; // default "All"
 
+class _TipHistoryScreenState extends State<TipHistoryScreen> {
+  int _selectedFilter = 3; // Default "All"
   final List<String> _filters = ['Today', 'This Week', 'This Month', 'All'];
 
   @override
@@ -28,15 +28,11 @@ class _TipHistoryScreenState extends State<TipHistoryScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              // Search Bar
               SearchBar(
-  onSearchChanged: (query) {
-    context.read<TipBloc>().add(SearchTips(query));
-  },
-),
+                onSearchChanged: (query) =>
+                    context.read<TipBloc>().add(SearchTips(query)),
+              ),
               const SizedBox(height: 12),
-
-              // Filter Chips
               FilterChips(
                 filters: _filters,
                 selectedIndex: _selectedFilter,
@@ -46,8 +42,6 @@ class _TipHistoryScreenState extends State<TipHistoryScreen> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // Tip List
               Expanded(
                 child: BlocBuilder<TipBloc, TipState>(
                   builder: (context, state) {
