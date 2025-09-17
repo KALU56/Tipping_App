@@ -123,10 +123,10 @@ class _SettingState extends State<Setting> {
                                 .bankAccountRepository
                                 .getBanks();
 
-                              // Prepare default values from user
+                              
                               final accountNumber = user.accountNumber;
-                              final accountName = ''; // if you have it in user, replace ''
-                              final bankCode = ''; // if you have it in user, replace ''
+                              final accountName = ''; 
+                              final bankCode = ''; 
 
                               showDialog(
                                 context: context,

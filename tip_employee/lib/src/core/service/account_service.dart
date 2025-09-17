@@ -1,5 +1,6 @@
 // lib/src/core/service/account_service.dart
 import 'dart:convert';
+import 'dart:developer'; // for log()
 import 'package:http/http.dart' as http;
 import 'package:tip_employee/src/features/settings/data/model/bank_account_request.dart';
 import 'package:tip_employee/src/features/settings/data/model/bank_account_response.dart';
@@ -9,12 +10,14 @@ import 'http_service/http_service.dart';
 
 class AccountService {
   final HttpService httpService;
-  final String chapaApiKey = 'CHAPUBK_TEST-VjWm6wfJ6bUEaUXcr9SnCBBEibGjmAl8'; // secure in real app
+  final String chapaApiKey =
+      'CHASECK_TEST-HjvGXcCsyxMZW22QMXsG7LD8hbkfx1WI'; // secure in real app
 
   AccountService({required this.httpService});
 
+  Future<List<Bank>> getBanks() async {
+    log("🔍 [getBanks] Fetching banks from Chapa API...");
 
-  Future<List<Bank>> fetchBanks() async {
     final headers = {'Authorization': 'Bearer $chapaApiKey'};
     final request = http.Request(
       'GET',
@@ -23,29 +26,29 @@ class AccountService {
     request.headers.addAll(headers);
 
     final streamedResponse = await request.send();
+    log("✅ [getBanks] Response status: ${streamedResponse.statusCode}");
 
     if (streamedResponse.statusCode == 200) {
       final responseString = await streamedResponse.stream.bytesToString();
+      log("📦 [getBanks] Raw response: $responseString");
+
       final jsonData = json.decode(responseString);
       final List banksJson = jsonData['data'] ?? [];
+      log("🏦 [getBanks] Parsed ${banksJson.length} banks");
+
       return banksJson.map((e) => Bank.fromJson(e)).toList();
     } else {
-      throw Exception('Failed to fetch banks: ${streamedResponse.reasonPhrase}');
+      final reason = streamedResponse.reasonPhrase;
+      log("❌ [getBanks] Failed: $reason");
+      throw Exception('Failed to fetch banks: $reason');
     }
   }
-  Future<List<Bank>> getBanks() async {
-    final response = await httpService.get('/api/banks'); // your endpoint
 
-    if (response.staticCode == 200) {
-      final banksData = response.data['data'] as List;
-      return banksData.map((e) => Bank.fromJson(e)).toList();
-    } else {
-      throw Exception('Failed to fetch banks: ${response.data}');
-    }
-  }
- 
   Future<BankAccountResponse> getBankAccount() async {
+    log("🔍 [getBankAccount] Fetching employee bank account...");
+
     final response = await httpService.get('/api/employee/bank-account');
+    log("✅ [getBankAccount] Status: ${response.staticCode}, Data: ${response.data}");
 
     if (response.staticCode == 200) {
       return BankAccountResponse.fromJson(response.data);
@@ -54,11 +57,16 @@ class AccountService {
     }
   }
 
-  Future<BankAccountResponse> updateBankAccount(BankAccountRequest request) async {
+  Future<BankAccountResponse> updateBankAccount(
+      BankAccountRequest request) async {
+    log("🔍 [updateBankAccount] Updating bank account with: ${request.toJson()}");
+
     final response = await httpService.put(
       '/api/employee/bank-account',
       request.toJson(),
     );
+
+    log("✅ [updateBankAccount] Status: ${response.staticCode}, Data: ${response.data}");
 
     if (response.staticCode == 200) {
       return BankAccountResponse.fromJson(response.data);

@@ -18,7 +18,7 @@ part './presentation/screens/settings_screen.dart';
 part './presentation/screens/change_password.dart';
 part './presentation/screens/profile_details.dart';
 part './presentation/components/logout_dialog.dart';
-
+part './presentation/components/bank_dropdown.dart';
 part './presentation/components/settings_option.dart';
 part './presentation/components/accountedit.dart';
 part './presentation/components/profile_section.dart';

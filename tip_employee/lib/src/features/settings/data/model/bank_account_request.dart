@@ -2,7 +2,7 @@
 class BankAccountRequest {
   final String? accountName;
   final String? accountNumber;
-  final String? bankCode; // using string because your UI sends code as string
+  final String? bankCode; 
 
   BankAccountRequest({
     this.accountName,
@@ -10,7 +10,7 @@ class BankAccountRequest {
     this.bankCode,
   });
 
-  /// Convert model to JSON for API request
+  
   Map<String, dynamic> toJson() {
     return {
       if (accountName != null) "account_name": accountName,
