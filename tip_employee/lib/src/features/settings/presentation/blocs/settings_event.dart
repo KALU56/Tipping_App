@@ -44,3 +44,15 @@ class UpdateBankAccount extends SettingEvent {
   @override
   List<Object?> get props => [request];
 }
+class ResolveAccount extends SettingEvent {
+  final String accountNumber;
+  final String bankCode;
+
+  const ResolveAccount({
+    required this.accountNumber,
+    required this.bankCode,
+  });
+
+  @override
+  List<Object?> get props => [accountNumber, bankCode];
+}

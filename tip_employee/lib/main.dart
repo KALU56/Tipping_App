@@ -32,7 +32,6 @@ import 'package:tip_employee/src/app/themes/app_theme.dart';
 import 'package:tip_employee/src/app/themes/themeNotifier.dart';
 
 import 'package:tip_employee/src/core/service/tip_service.dart';
-
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
@@ -57,7 +56,6 @@ void main() {
   final bankAccountRepository = BankAccountRepositoryImpl(accountService: accountService);
   final tipRepository = TipRepositoryImpl(tipService: tipService);
 
- 
   runApp(MyApp(
     authRepository: authRepository,
     userRepository: userRepository,

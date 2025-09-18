@@ -1,4 +1,6 @@
 part of '../../settings.dart';
+
+
 class AccountEditDialog extends StatefulWidget {
   final String? accountNumber;
   final String? accountName;
@@ -28,12 +30,9 @@ class _AccountEditDialogState extends State<AccountEditDialog> {
     _numberController = TextEditingController(text: widget.accountNumber ?? '');
     _nameController = TextEditingController(text: widget.accountName ?? '');
     _selectedBankCode = widget.bankCode;
-    
-    debugPrint('📝 AccountEditDialog initialized with:');
-    debugPrint('  - accountNumber: "${widget.accountNumber}"');
-    debugPrint('  - accountName: "${widget.accountName}"');
-    debugPrint('  - bankCode: "${widget.bankCode}"');
-    debugPrint('  - banks count: ${widget.banks.length}');
+
+    // Load initial bank/account info if needed
+    context.read<SettingBloc>().add(LoadBankAccount());
   }
 
   @override
@@ -46,208 +45,138 @@ class _AccountEditDialogState extends State<AccountEditDialog> {
   bool _validateForm() {
     final name = _nameController.text.trim();
     final number = _numberController.text.trim();
-    
-    if (name.isEmpty) {
-      _showValidationError('Please enter account name');
-      return false;
-    }
-    if (number.isEmpty) {
-      _showValidationError('Please enter account number');
-      return false;
-    }
-    if (_selectedBankCode == null || _selectedBankCode!.isEmpty) {
-      _showValidationError('Please select a bank');
-      return false;
-    }
-    
-    debugPrint('✅ Form validation passed');
-    debugPrint('  - Name: "$name"');
-    debugPrint('  - Number: "$number"');
-    debugPrint('  - BankCode: "$_selectedBankCode"');
-    
+
+    if (name.isEmpty) return _showValidationError('Please enter account name');
+    if (number.isEmpty) return _showValidationError('Please enter account number');
+    if (_selectedBankCode == null) return _showValidationError('Please select a bank');
+
     return true;
   }
 
-  void _showValidationError(String message) {
-    if (mounted) {
+  bool _showValidationError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+    return false;
+  }
+
+  void _onBankChanged(String? code) {
+    setState(() => _selectedBankCode = code);
+  }
+
+  void _onAccountNameResolved(String? resolvedName) {
+    if (resolvedName != null && resolvedName.isNotEmpty && mounted) {
+      setState(() => _nameController.text = resolvedName);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 2),
+          content: Text('Account name auto-filled: $resolvedName'),
+          backgroundColor: Colors.green,
         ),
       );
     }
   }
 
-  void _onBankSelected(String? bankCode) {
-    setState(() {
-      _selectedBankCode = bankCode;
-    });
-    debugPrint('📝 Dialog received bank selection: "$bankCode"');
+  void _triggerAccountResolution(String accountNumber) {
+    if (accountNumber.length < 6 || _selectedBankCode == null) return;
+
+    context.read<SettingBloc>().add(ResolveAccount(
+      accountNumber: accountNumber,
+      bankCode: _selectedBankCode!,
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    // Safety check for empty banks
-    if (widget.banks.isEmpty) {
-      return _buildErrorDialog("No banks available. Please try again later.");
-    }
-
     return BlocConsumer<SettingBloc, SettingState>(
       listener: (context, state) {
-        if (state is BankAccountUpdated && mounted) {
+        if (state is BankAccountUpdated) Navigator.pop(context);
+        if (state is AccountResolved) _onAccountNameResolved(state.accountName);
+        if (state is AccountResolutionError) debugPrint('Resolution failed: ${state.message}');
+        if (state is BankAccountError)
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Bank account updated successfully!'),
-              backgroundColor: Colors.green,
-            ),
+            SnackBar(content: Text('Error: ${state.message}'), backgroundColor: Colors.red),
           );
-          Navigator.pop(context);
-        }
-        if (state is BankAccountError && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error: ${state.message}'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
       },
       builder: (context, state) {
-        final isLoading = state is BankAccountUpdating;
+        final isUpdating = state is BankAccountUpdating;
+        final isResolving = state is AccountResolving;
 
         return AlertDialog(
           title: const Text("Update Bank Account"),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Account Name Field
-                  TextField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: "Account Name",
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.account_balance_wallet),
-                      errorText: null,
-                    ),
-                    textCapitalization: TextCapitalization.words,
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Account Name
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Account Name',
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.account_balance_wallet),
+                    helperText: isResolving ? 'Detecting account details...' : null,
                   ),
-                  const SizedBox(height: 16),
-                  
-                  // Account Number Field
-                  TextField(
-                    controller: _numberController,
-                    decoration: const InputDecoration(
-                      labelText: "Account Number",
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.numbers),
-                      errorText: null,
-                    ),
-                    keyboardType: TextInputType.number,
-                    maxLength: 10,
+                  textCapitalization: TextCapitalization.words,
+                  enabled: !isUpdating,
+                ),
+                const SizedBox(height: 16),
+                
+                // Account Number
+                TextField(
+                  controller: _numberController,
+                  decoration: InputDecoration(
+                    labelText: 'Account Number',
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.numbers),
+                    helperText: 'Enter 6+ digits to auto-detect bank and name',
                   ),
-                  const SizedBox(height: 16),
-                  
-                  // Isolated Bank Dropdown
-                  BankDropdown(
-                    initialValue: _selectedBankCode,
-                    banks: widget.banks,
-                    onChanged: _onBankSelected,
-                    hint: _selectedBankCode == null ? "Choose a bank" : null,
-                  ),
-                  
-                  // Optional: Show warning if original bank code is invalid
-                  if (_selectedBankCode == null && 
-                      widget.bankCode != null && 
-                      widget.banks.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.only(top: 8),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.orange[50],
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.orange[200]!),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.warning_amber, 
-                               color: Colors.orange[700], 
-                               size: 16),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              'Original bank not available. Please select a new bank.',
-                              style: TextStyle(
-                                color: Colors.orange[700],
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
+                  keyboardType: TextInputType.number,
+                  maxLength: 16,
+                  enabled: !isUpdating,
+                  onChanged: _triggerAccountResolution,
+                ),
+                const SizedBox(height: 16),
+
+                // Bank Dropdown
+                BankDropdown(
+                  initialValue: _selectedBankCode,
+                  banks: widget.banks,
+                  accountNumber: _numberController.text,
+                  onBankChanged: _onBankChanged,
+                  onAccountNameResolved: _onAccountNameResolved,
+                  isResolving: isResolving,
+                ),
+              ],
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: isLoading ? null : () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
+            TextButton(onPressed: isUpdating ? null : () => Navigator.pop(context), child: const Text("Cancel")),
             ElevatedButton.icon(
-              onPressed: isLoading ? null : () {
-                if (_validateForm()) {
-                  final request = BankAccountRequest(
-                    accountName: _nameController.text.trim(),
-                    accountNumber: _numberController.text.trim(),
-                    bankCode: _selectedBankCode,
-                  );
-                  
-                  debugPrint('🚀 Submitting bank account update:');
-                  debugPrint('  ${request.toJson()}');
-                  
-                  if (mounted) {
-                    context.read<SettingBloc>().add(UpdateBankAccount(request));
-                  }
-                }
-              },
-              icon: isLoading 
+              onPressed: isUpdating
+                  ? null
+                  : () {
+                      if (_validateForm()) {
+                        context.read<SettingBloc>().add(UpdateBankAccount(
+                              BankAccountRequest(
+                                accountName: _nameController.text.trim(),
+                                accountNumber: _numberController.text.trim(),
+                                bankCode: _selectedBankCode,
+                              ),
+                            ));
+                      }
+                    },
+              icon: isUpdating
                   ? const SizedBox(
                       width: 16,
                       height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2, 
-                        color: Colors.white,
-                      ),
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                     )
-                  : const Icon(Icons.save, size: 18),
-              label: Text(isLoading ? "Updating..." : "Update"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.white,
-              ),
+                  : const Icon(Icons.save),
+              label: Text(isUpdating ? 'Updating...' : 'Update'),
             ),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildErrorDialog(String message) {
-    return AlertDialog(
-      title: const Text("Error", style: TextStyle(color: Colors.red)),
-      content: Text(message),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text("OK"),
-        ),
-      ],
     );
   }
 }

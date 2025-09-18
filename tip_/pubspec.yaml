@@ -19,6 +19,7 @@ dependencies:
   easy_localization: ^3.0.1
   mobile_scanner: ^6.0.2  # ← MOVE THIS FROM dev_dependencies
   webview_flutter: ^4.4.0
+  dio: ^5.9.0
 
 dev_dependencies:
   flutter_test:

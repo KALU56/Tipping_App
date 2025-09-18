@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tip_employee/src/features/settings/domain/bank_account_repository.dart';
 import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
@@ -10,12 +11,14 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
   final UserSettingRepository userSettingRepository;
   final UserRepository userRepository;
   final BankAccountRepository bankAccountRepository;
+
   SettingBloc({
     required this.userSettingRepository,
     required this.userRepository,
     required this.bankAccountRepository, 
   }) : super(SettingInitial()) {
-    // Event: Load profile
+    
+    // Your existing event handlers (unchanged)
     on<LoadProfile>((event, emit) async {
       emit(SettingLoading());
       try {
@@ -25,22 +28,21 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
         emit(SettingError('Failed to load profile: ${e.toString()}'));
       }
     });
-on<UpdateProfile>((event, emit) async {
-  emit(SettingLoading());
-  try {
-    final updatedUser = await userSettingRepository.updateProfile(
-      firstName: event.user.firstname,
-      lastName: event.user.lastname,
-      imageFile: event.imageFile,
-    );
-    emit(ProfileLoaded(updatedUser));
-  } catch (e) {
-    emit(SettingError('Failed to update profile: ${e.toString()}'));
-  }
-});
 
+    on<UpdateProfile>((event, emit) async {
+      emit(SettingLoading());
+      try {
+        final updatedUser = await userSettingRepository.updateProfile(
+          firstName: event.user.firstname,
+          lastName: event.user.lastname,
+          imageFile: event.imageFile,
+        );
+        emit(ProfileLoaded(updatedUser));
+      } catch (e) {
+        emit(SettingError('Failed to update profile: ${e.toString()}'));
+      }
+    });
 
-    // Event: Change password
     on<ChangePassword>((event, emit) async {
       emit(SettingLoading());
       try {
@@ -54,7 +56,19 @@ on<UpdateProfile>((event, emit) async {
         emit(SettingError('Failed to change password: ${e.toString()}'));
       }
     });
-          on<LoadBankAccount>((event, emit) async {
+
+    on<Logout>((event, emit) async {
+      emit(SettingLoading());
+      try {
+        await userSettingRepository.logout();
+        emit(LoggedOut());
+      } catch (e) {
+        emit(SettingError('Failed to logout: ${e.toString()}'));
+      }
+    });
+
+    // Your existing bank account handlers (unchanged)
+    on<LoadBankAccount>((event, emit) async {
       emit(BankAccountUpdating());
       try {
         final bankAccount = await bankAccountRepository.getBankAccount();
@@ -64,13 +78,10 @@ on<UpdateProfile>((event, emit) async {
       }
     });
 
-    // Update Bank Account
     on<UpdateBankAccount>((event, emit) async {
       emit(BankAccountUpdating());
       try {
-        final updatedAccount =
-            await bankAccountRepository.updateBankAccount(event.request);
-
+        final updatedAccount = await bankAccountRepository.updateBankAccount(event.request);
         emit(BankAccountUpdated(subAccountId: updatedAccount.subAccountId ?? ''));
 
         // Optionally reload profile
@@ -80,14 +91,39 @@ on<UpdateProfile>((event, emit) async {
         emit(BankAccountError('Failed to update bank account: ${e.toString()}'));
       }
     });
-    // Event: Logout
-    on<Logout>((event, emit) async {
-      emit(SettingLoading());
+
+    // NEW: Event handler for account resolution (auto-detection)
+    on<ResolveAccount>((event, emit) async {
+      // Emit loading state
+      emit(AccountResolving(
+        accountNumber: event.accountNumber,
+        bankCode: event.bankCode.isEmpty ? null : event.bankCode,
+      ));
+
       try {
-        await userSettingRepository.logout();
-        emit(LoggedOut());
+        debugPrint('🔍 BLoC: Resolving account ${event.accountNumber} for bank ${event.bankCode}');
+        
+        final resolution = await bankAccountRepository.resolveAccount(
+          accountNumber: event.accountNumber,
+          bankCode: event.bankCode,
+        );
+
+        debugPrint('✅ BLoC: Account resolution completed: ${resolution.isValid}');
+        
+        // Emit success state with resolution result
+        emit(AccountResolved(
+          resolution: resolution,
+          accountNumber: event.accountNumber,
+        ));
+
       } catch (e) {
-        emit(SettingError('Failed to logout: ${e.toString()}'));
+        debugPrint('❌ BLoC: Account resolution failed: $e');
+        
+        // Emit error state - but make it non-fatal for auto-detection
+        emit(AccountResolutionError(
+          message: e.toString(),
+          accountNumber: event.accountNumber,
+        ));
       }
     });
   }
