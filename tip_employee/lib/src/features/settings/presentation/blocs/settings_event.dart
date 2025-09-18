@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:tip_employee/src/features/settings/data/model/bank_account_request.dart';
+import 'package:tip_employee/src/features/settings/data/model/bank_model.dart';
 import 'package:tip_employee/src/shared/data/models/user_model.dart';
 
 abstract class SettingEvent extends Equatable {
@@ -11,6 +11,7 @@ abstract class SettingEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+// Profile Events
 class LoadProfile extends SettingEvent {}
 class UpdateProfile extends SettingEvent {
   final User user;
@@ -22,7 +23,7 @@ class UpdateProfile extends SettingEvent {
   List<Object?> get props => [user, imageFile];
 }
 
-
+// Password & Logout
 class ChangePassword extends SettingEvent {
   final String oldPassword;
   final String newPassword;
@@ -32,10 +33,10 @@ class ChangePassword extends SettingEvent {
   @override
   List<Object?> get props => [oldPassword, newPassword];
 }
-
 class Logout extends SettingEvent {}
-class LoadBankAccount extends SettingEvent {}
 
+// Bank Account Events
+class LoadBankAccount extends SettingEvent {}
 class UpdateBankAccount extends SettingEvent {
   final BankAccountRequest request;
 
@@ -44,6 +45,8 @@ class UpdateBankAccount extends SettingEvent {
   @override
   List<Object?> get props => [request];
 }
+
+// Account Resolution
 class ResolveAccount extends SettingEvent {
   final String accountNumber;
   final String bankCode;
@@ -56,3 +59,23 @@ class ResolveAccount extends SettingEvent {
   @override
   List<Object?> get props => [accountNumber, bankCode];
 }
+// Bank Account Validate & Create Event
+class ValidateAndCreateBankAccount extends SettingEvent {
+  final String businessName;
+  final String accountName;
+  final String accountNumber;
+  final Bank bank;
+
+  const ValidateAndCreateBankAccount({
+    required this.businessName,
+    required this.accountName,
+    required this.accountNumber,
+    required this.bank,
+  });
+
+  @override
+  List<Object?> get props => [businessName, accountName, accountNumber, bank];
+}
+
+class LoadBanks extends SettingEvent {}
+

@@ -1,6 +1,5 @@
 part of '../../settings.dart';
 
-
 class _SettingState extends State<Setting> {
   @override
   void initState() {
@@ -31,6 +30,11 @@ class _SettingState extends State<Setting> {
             if (state is LoggedOut) {
               Navigator.of(context).popUntil((route) => route.isFirst);
             }
+            if (state is BankAccountError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+              );
+            }
           },
           builder: (context, state) {
             if (state is SettingLoading) {
@@ -39,6 +43,7 @@ class _SettingState extends State<Setting> {
 
             if (state is ProfileLoaded) {
               final user = state.user;
+
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -83,12 +88,10 @@ class _SettingState extends State<Setting> {
                             showDialog(
                               context: context,
                               barrierColor: Colors.transparent,
-                              builder: (_) =>
-                                  ProfileEditDialog(user: user),
+                              builder: (_) => ProfileEditDialog(user: user),
                             ).then((updatedUser) {
                               if (updatedUser != null) {
-                                context.read<SettingBloc>().add(
-                                    UpdateProfile(updatedUser));
+                                context.read<SettingBloc>().add(UpdateProfile(updatedUser));
                               }
                             });
                           },
@@ -101,8 +104,7 @@ class _SettingState extends State<Setting> {
                             showDialog(
                               context: context,
                               barrierColor: Colors.transparent,
-                              builder: (_) =>
-                                  ChangePasswordDialog(),
+                              builder: (_) => ChangePasswordDialog(),
                             );
                           },
                         ),
@@ -112,25 +114,39 @@ class _SettingState extends State<Setting> {
                           title: 'About Application',
                           onTap: () {},
                         ),
-                    SettingsOption(
-                    color: theme.colorScheme.primary,
-                    icon: Icons.account_balance_wallet_outlined,
-                    title: 'Update Bank Account',
-                    onTap: () {
-                      // Use the bloc event to trigger bank account loading
-                      context.read<SettingBloc>().add(LoadBankAccount());
-                      // Open your AccountEditDialog after state emits BankAccountUpdated/Loaded
-                    },),
+                        SettingsOption(
+                          color: theme.colorScheme.primary,
+                          icon: Icons.account_balance_wallet_outlined,
+                          title: 'Update Bank Account',
+                          onTap: () {
+                            // Load banks first
+                            context.read<SettingBloc>().add(LoadBanks());
+
+                            // Open dialog
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return BlocBuilder<SettingBloc, SettingState>(
+                                  builder: (context, state) {
+                                    List<Bank> banks = [];
+                                    if (state is BankListLoaded) banks = state.banks;
+
+                                    return AccountEditDialog(
+                                      banks: banks,
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
                         SettingsOption(
                           icon: Icons.delete_outline,
                           title: 'Delete Account',
-                          onTap: () {
-                            // add delete event if needed
-                          },
+                          onTap: () {},
                           isDestructive: true,
                         ),
                         const SizedBox(height: 24),
-                        // Logout Button
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
@@ -139,9 +155,7 @@ class _SettingState extends State<Setting> {
                                 context: context,
                                 builder: (_) => LogoutDialog(
                                   onConfirm: () {
-                                    context
-                                        .read<SettingBloc>()
-                                        .add(Logout());
+                                    context.read<SettingBloc>().add(Logout());
                                   },
                                 ),
                               );
@@ -149,8 +163,7 @@ class _SettingState extends State<Setting> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.colorScheme.error,
                               foregroundColor: theme.colorScheme.onError,
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),

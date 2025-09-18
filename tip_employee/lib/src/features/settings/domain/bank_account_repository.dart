@@ -22,6 +22,7 @@ abstract class BankAccountRepository {
 
   /// Fetch existing bank account or create if missing
   Future<BankAccountResponse> getOrCreateBankAccount({
+    required String businessName,
     required String accountName,
     required String accountNumber,
     required Bank bank,
@@ -29,6 +30,7 @@ abstract class BankAccountRepository {
 
   /// Validate via resolution and then create or fetch the bank account
   Future<BankAccountResponse> validateAndCreateBankAccount({
+    required String businessName,
     required String accountName,
     required String accountNumber,
     required Bank bank,

@@ -2,34 +2,40 @@
 import 'bank_model.dart';
 
 class BankAccountRequest {
-  final String? accountName;
-  final String? accountNumber;
-  final String? bankCode;
+  final String businessName;
+  final String accountName;
+  final String accountNumber;
+  final int bankCode;
 
   BankAccountRequest({
-    this.accountName,
-    this.accountNumber,
-    this.bankCode,
+    required this.businessName,
+    required this.accountName,
+    required this.accountNumber,
+    required this.bankCode,
   });
 
-  // Create request from Bank model
+  /// Convenience constructor from Bank model
   factory BankAccountRequest.fromBank({
+    required String businessName,
     required String accountName,
     required String accountNumber,
     required Bank bank,
   }) {
     return BankAccountRequest(
+      businessName: businessName,
       accountName: accountName,
       accountNumber: accountNumber,
-      bankCode: bank.code,
+      bankCode: int.parse(bank.code), // ensure it's an int
     );
   }
 
+  /// Convert to JSON for API request
   Map<String, dynamic> toJson() {
     return {
-      if (accountName != null) "account_name": accountName,
-      if (accountNumber != null) "account_number": accountNumber,
-      if (bankCode != null) "bank_code": bankCode,
+      'business_name': businessName,
+      'account_name': accountName,
+      'account_number': accountNumber,
+      'bank_code': bankCode,
     };
   }
 }

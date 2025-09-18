@@ -4,8 +4,8 @@ import 'package:tip_employee/src/features/settings/domain/bank_account_repositor
 import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_event.dart';
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_state.dart';
-import 'package:tip_employee/src/shared/data/models/user_model.dart';
 import 'package:tip_employee/src/shared/domain/repositories/user_repository.dart';
+import 'package:tip_employee/src/shared/data/models/user_model.dart';
 
 class SettingBloc extends Bloc<SettingEvent, SettingState> {
   final UserSettingRepository userSettingRepository;
@@ -15,10 +15,10 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
   SettingBloc({
     required this.userSettingRepository,
     required this.userRepository,
-    required this.bankAccountRepository, 
+    required this.bankAccountRepository,
   }) : super(SettingInitial()) {
-    
-    // Your existing event handlers (unchanged)
+
+    // Load Profile
     on<LoadProfile>((event, emit) async {
       emit(SettingLoading());
       try {
@@ -28,7 +28,18 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
         emit(SettingError('Failed to load profile: ${e.toString()}'));
       }
     });
+on<LoadBanks>((event, emit) async {
+  emit(BankListLoading());
+  try {
+    final banks = await bankAccountRepository.getBanks();
+    emit(BankListLoaded(banks));
+  } catch (e) {
+    emit(SettingError('Failed to load banks: ${e.toString()}'));
+  }
+});
 
+
+    // Update Profile
     on<UpdateProfile>((event, emit) async {
       emit(SettingLoading());
       try {
@@ -43,6 +54,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
       }
     });
 
+    // Change Password
     on<ChangePassword>((event, emit) async {
       emit(SettingLoading());
       try {
@@ -57,6 +69,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
       }
     });
 
+    // Logout
     on<Logout>((event, emit) async {
       emit(SettingLoading());
       try {
@@ -67,24 +80,24 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
       }
     });
 
-    // Your existing bank account handlers (unchanged)
+    // Load Bank Account
     on<LoadBankAccount>((event, emit) async {
       emit(BankAccountUpdating());
       try {
         final bankAccount = await bankAccountRepository.getBankAccount();
-        emit(BankAccountUpdated(subAccountId: bankAccount.subAccountId ?? ''));
+        emit(BankAccountUpdated(subAccountId: bankAccount?.subAccountId ?? ''));
       } catch (e) {
         emit(BankAccountError('Failed to load bank account: ${e.toString()}'));
       }
     });
 
+    // Update Bank Account
     on<UpdateBankAccount>((event, emit) async {
       emit(BankAccountUpdating());
       try {
         final updatedAccount = await bankAccountRepository.updateBankAccount(event.request);
         emit(BankAccountUpdated(subAccountId: updatedAccount.subAccountId ?? ''));
 
-        // Optionally reload profile
         final updatedUser = await userRepository.getProfile();
         emit(ProfileLoaded(updatedUser));
       } catch (e) {
@@ -92,39 +105,39 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
       }
     });
 
-    // NEW: Event handler for account resolution (auto-detection)
+    // Resolve Account
     on<ResolveAccount>((event, emit) async {
-      // Emit loading state
-      emit(AccountResolving(
-        accountNumber: event.accountNumber,
-        bankCode: event.bankCode.isEmpty ? null : event.bankCode,
-      ));
+      emit(AccountResolving(accountNumber: event.accountNumber, bankCode: event.bankCode));
 
       try {
-        debugPrint('🔍 BLoC: Resolving account ${event.accountNumber} for bank ${event.bankCode}');
-        
         final resolution = await bankAccountRepository.resolveAccount(
           accountNumber: event.accountNumber,
           bankCode: event.bankCode,
         );
-
-        debugPrint('✅ BLoC: Account resolution completed: ${resolution.isValid}');
-        
-        // Emit success state with resolution result
-        emit(AccountResolved(
-          resolution: resolution,
-          accountNumber: event.accountNumber,
-        ));
-
+        emit(AccountResolved(resolution: resolution, accountNumber: event.accountNumber));
       } catch (e) {
-        debugPrint('❌ BLoC: Account resolution failed: $e');
-        
-        // Emit error state - but make it non-fatal for auto-detection
-        emit(AccountResolutionError(
-          message: e.toString(),
-          accountNumber: event.accountNumber,
-        ));
+        emit(AccountResolutionError(message: e.toString(), accountNumber: event.accountNumber));
       }
     });
+
+// Validate & Create Bank Account (fetch-or-create)
+on<ValidateAndCreateBankAccount>((event, emit) async {
+  emit(BankAccountUpdating());
+  try {
+    final createdAccount = await bankAccountRepository.validateAndCreateBankAccount(
+      businessName: event.businessName,  // ✅ Pass businessName
+      accountName: event.accountName,
+      accountNumber: event.accountNumber,
+      bank: event.bank,
+    );
+    emit(BankAccountUpdated(subAccountId: createdAccount.subAccountId ?? ''));
+
+    final updatedUser = await userRepository.getProfile();
+    emit(ProfileLoaded(updatedUser));
+  } catch (e) {
+    emit(BankAccountError('Failed to validate/create bank account: ${e.toString()}'));
+  }
+});
+
   }
 }

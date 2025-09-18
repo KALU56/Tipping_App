@@ -27,11 +27,13 @@ class Bank {
   BankAccountRequest toBankAccountRequest({
     required String accountName,
     required String accountNumber,
+    required String businessName,
   }) {
     return BankAccountRequest.fromBank(
       accountName: accountName,
       accountNumber: accountNumber,
       bank: this,
+      businessName: businessName,
     );
   }
 }
