@@ -3,7 +3,7 @@ import 'package:tip_employee/src/core/service/account_service.dart';
 import 'package:tip_employee/src/features/settings/data/model/bank_account_request.dart';
 import 'package:tip_employee/src/features/settings/data/model/bank_account_response.dart';
 import 'package:tip_employee/src/features/settings/data/model/bank_model.dart';
-import 'package:tip_employee/src/features/settings/data/model/bank_resolution_response.dart'; // NEW: Add this import
+import 'package:tip_employee/src/features/settings/data/model/bank_resolution_response.dart';
 import 'package:tip_employee/src/features/settings/domain/bank_account_repository.dart';
 
 class BankAccountRepositoryImpl implements BankAccountRepository {
@@ -11,17 +11,21 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
 
   BankAccountRepositoryImpl({required this.accountService});
 
+  /// Fetch existing bank account. Returns null if not found.
   @override
-  Future<BankAccountResponse> getBankAccount() async {
+  Future<BankAccountResponse?> getBankAccount() async {
     try {
       return await accountService.getBankAccount();
     } catch (e) {
-      // Log the error for debugging
       debugPrint('❌ Repository getBankAccount failed: $e');
-      rethrow; // Re-throw to let the caller handle it
+      if (e.toString().contains('Bank account not found')) {
+        return null; // No account yet
+      }
+      rethrow;
     }
   }
 
+  /// Create or update bank account
   @override
   Future<BankAccountResponse> updateBankAccount(BankAccountRequest request) async {
     try {
@@ -32,6 +36,7 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
     }
   }
 
+  /// Get list of banks
   @override
   Future<List<Bank>> getBanks() async {
     try {
@@ -44,14 +49,13 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
     }
   }
 
-  // NEW: Implement the resolveAccount method
+  /// Resolve account number with bank code
   @override
   Future<BankResolutionResponse> resolveAccount({
     required String accountNumber,
     required String bankCode,
   }) async {
     try {
-      // Input validation at repository level
       if (accountNumber.trim().isEmpty) {
         throw Exception('Account number cannot be empty');
       }
@@ -66,10 +70,8 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
         bankCode: bankCode.trim(),
       );
 
-      // Additional validation: check if resolution was successful
       if (!resolution.isValid) {
         debugPrint('⚠️ Repository: Resolution returned but not valid');
-        // Don't throw here - let the UI handle "not found" gracefully
       } else {
         debugPrint('✅ Repository: Account resolved successfully - ${resolution.accountName}');
       }
@@ -77,19 +79,54 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
       return resolution;
     } catch (e) {
       debugPrint('❌ Repository resolveAccount failed: $e');
-      
-      // Wrap service errors with context
       if (e.toString().contains('Invalid account number')) {
         throw Exception('The account number you entered is not valid for this bank');
       } else if (e.toString().contains('Bank not found')) {
         throw Exception('The selected bank is not available');
       }
-      
-      rethrow; // Re-throw for other errors
+      rethrow;
     }
   }
 
-  // Optional: Public getter for the underlying service (for advanced use cases)
-  // Only use this if you need direct service access in UI components
-  AccountService get _service => accountService;
+  /// Fetch existing bank account or create if missing
+  Future<BankAccountResponse> getOrCreateBankAccount({
+    required String accountName,
+    required String accountNumber,
+    required Bank bank,
+  }) async {
+    final existing = await getBankAccount();
+    if (existing != null) return existing;
+
+    debugPrint('⚠️ No bank account found. Creating a new one...');
+    final request = bank.toBankAccountRequest(
+      accountName: accountName,
+      accountNumber: accountNumber,
+    );
+
+    final created = await updateBankAccount(request);
+    debugPrint('✅ Bank account created successfully: ${created.subAccountId}');
+    return created;
+  }
+
+  /// Validate the account via resolution and then create or fetch
+  Future<BankAccountResponse> validateAndCreateBankAccount({
+    required String accountName,
+    required String accountNumber,
+    required Bank bank,
+  }) async {
+    final resolution = await resolveAccount(
+      accountNumber: accountNumber,
+      bankCode: bank.code,
+    );
+
+    if (!resolution.isValid) {
+      throw Exception('Account number could not be resolved for this bank');
+    }
+
+    return await getOrCreateBankAccount(
+      accountName: accountName,
+      accountNumber: accountNumber,
+      bank: bank,
+    );
+  }
 }

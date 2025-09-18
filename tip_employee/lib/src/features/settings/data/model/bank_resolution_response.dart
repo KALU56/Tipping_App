@@ -5,7 +5,7 @@ class BankResolutionResponse {
   final String? accountNumber;
   final String? bankCode;
   final String? bankName;
-  final bool isValid; // Helper to check if resolution was successful
+  final bool isValid;
 
   BankResolutionResponse({
     this.accountName,

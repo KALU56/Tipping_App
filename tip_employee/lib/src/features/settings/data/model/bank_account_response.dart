@@ -11,12 +11,17 @@ class BankAccountResponse {
   });
 
   factory BankAccountResponse.fromJson(Map<String, dynamic> json) {
+    final data = json["data"] ?? {};
     return BankAccountResponse(
-      message: json["message"],
-      subAccountId: json["data"]?["sub_account_id"],
-      updatedAt: json["data"]?["updated_at"] != null
-          ? DateTime.tryParse(json["data"]["updated_at"])
+      message: json["message"] ?? '',
+      subAccountId: data["sub_account_id"],
+      updatedAt: data["updated_at"] != null
+          ? DateTime.tryParse(data["updated_at"])
           : null,
     );
   }
+
+  @override
+  String toString() =>
+      'BankAccountResponse(message: $message, subAccountId: $subAccountId, updatedAt: $updatedAt)';
 }
