@@ -1,0 +1,24 @@
+{
+  "welcome": "Welcome!",
+  "scan_qr": "Scan Employee QR",
+  "enter_employee": "Enter Employee ID or Name",
+  "proceed_payment": "Proceed to Payment",
+  "send_tip": "Send Tip",
+  "tip_confirmation": "Tip Confirmation",
+  "return_home": "Return Home",
+  "amount_tipped": "Amount tipped: {}",
+  "tip_given_by": "Tip given by {}",
+  "confirm_tip": "Confirm Tip",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "payment_failed": "Payment failed. Please try again.",
+  "error_occurred": "An error occurred",
+
+      "enter_valid_amount": "Please enter a valid amount",
+  "confirm_tip": "Confirm Tip",
+  "confirm_tip_message": "Are you sure you want to tip %s to %s?",
+    "barcode_scanner": "Barcode Scanner",
+  "align_qr_barcode": "Align QR/Barcode inside the frame",
+  "barcode_read_failed": "Failed to read barcode",
+    "enter_tip_amount": "Enter tip amount"
+}

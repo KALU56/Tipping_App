@@ -23,7 +23,7 @@ class _ChapaWebviewPaymentState extends State<ChapaWebviewPayment> {
         children: [
           WebViewWidget(
             controller: WebViewController()
-              ..setJavaScriptMode(JavaScriptMode.disabled)
+              ..setJavaScriptMode(JavaScriptMode.unrestricted)
               ..setNavigationDelegate(
                 NavigationDelegate(
                   onPageFinished: (_) {

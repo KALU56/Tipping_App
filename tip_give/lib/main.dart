@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:tip_/tip/core/service/http_service/http_service.dart';
-import 'package:tip_/tip/core/service/tip_service.dart';
+import 'package:tip_give/tip/core/service/http_service/http_service.dart';
+import 'package:tip_give/tip/core/service/tip_service.dart';
 
 import 'tip/data/repository_imp.dart';
 import 'tip/domain/repository.dart';

@@ -1,0 +1,27 @@
+{
+  "welcome": "እንኳን ደህና መጡ!",
+  "scan_qr": "የሰራተኛ ቁልፍ QR እንዲቀርበው ያስሱ",
+  "enter_employee": "የሰራተኛ መለያ ወይም ስም ያስገቡ",
+  "proceed_payment": "ክፍያዎን እየሰራ ነው...",
+  "payment_failed": "ክፍያ አልተሳካም። እባክዎን ድጋሚ ይሞክሩ።",
+  "error_occurred": "አንድ ስህተት ተፈጠረ",
+  "send_tip": "ግብዣ ላክ",
+  "tip_confirmation": "ግብዣ ማረጋገጫ",
+  "return_home": "ወደ መነሻ ገጽ ተመለስ",
+  "amount_tipped": "የተሰጠው ግብዣ:  {}",
+  "tip_given_by": "ግብዣ የሰጠው {}",
+  "confirm_tip": "ግብዣ ያረጋግጡ",
+  "cancel": "አሰር",
+  "confirm": "አረጋግጥ",
+    "enter_valid_amount": "እባክዎ ትክክለኛ መጠን ያስገቡ",
+  "confirm_tip": "ክፍያን ያረጋግጡ",
+  "confirm_tip_message": "እርግጠኛ ነዎት ወደ %s %s ክፍያ ላክ?",
+  
+  "barcode_scanner": "ባርኮድ እና ኪው አንድ አድርግ",
+  "align_qr_barcode": "ኪው/ባርኮድን በመስመር ውስጥ ያስቀምጡ",
+  "barcode_read_failed": "ባርኮድ መንበር አልተሳካም",
+
+  "enter_tip_amount": "የቲፕ መጠን ያስገቡ"
+
+
+}

@@ -12,13 +12,13 @@ abstract interface class HttpService {
 class HttpServiceImpl implements HttpService {
   final Dio _dio;
 
-  HttpServiceImpl({Dio? dio, String baseUrl = 'https://61a79a5a969d.ngrok-free.app '})
+  HttpServiceImpl({Dio? dio, String baseUrl = "https://7577e981b0be.ngrok-free.app"})
       : _dio = dio ??
             Dio(
               BaseOptions(
                 baseUrl: baseUrl,
-                connectTimeout: const Duration(seconds: 10),
-                receiveTimeout: const Duration(seconds: 10),
+                connectTimeout: const Duration(seconds: 50),
+                receiveTimeout: const Duration(seconds: 80),
                 followRedirects: false,
                 validateStatus: (status) => status != null && status < 500,
                 headers: {
