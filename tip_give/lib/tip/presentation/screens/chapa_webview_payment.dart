@@ -12,6 +12,25 @@ class ChapaWebviewPayment extends StatefulWidget {
 
 class _ChapaWebviewPaymentState extends State<ChapaWebviewPayment> {
   bool _isLoading = true;
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (url) => print("Loading $url"),
+          onPageFinished: (url) => setState(() => _isLoading = false),
+          onNavigationRequest: (request) {
+            print("Navigating to ${request.url}");
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.checkoutUrl));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +40,7 @@ class _ChapaWebviewPaymentState extends State<ChapaWebviewPayment> {
       ),
       body: Stack(
         children: [
-          WebViewWidget(
-            controller: WebViewController()
-              ..setJavaScriptMode(JavaScriptMode.unrestricted)
-              ..setNavigationDelegate(
-                NavigationDelegate(
-                  onPageFinished: (_) {
-                    setState(() {
-                      _isLoading = false;
-                    });
-                  },
-                ),
-              )
-              ..loadRequest(Uri.parse(widget.checkoutUrl)),
-          ),
+          WebViewWidget(controller: _controller),
           if (_isLoading)
             const Center(
               child: CircularProgressIndicator(),

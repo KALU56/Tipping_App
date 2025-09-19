@@ -9,6 +9,8 @@ import 'tip/domain/repository.dart';
 import 'tip/presentation/bloc/tip_bloc.dart';
 import 'tip/presentation/screens/employee_selection_screen.dart';
 import 'themes/app_theme.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 
 void main() async {
@@ -18,7 +20,9 @@ void main() async {
   final httpService = HttpServiceImpl();
   final tipService = TipService(httpService: httpService);
   final TipRepository tipRepository = TipRepositoryImpl(tipService: tipService);
-
+  // if (WebViewPlatform.instance is WebViewPlatform) {
+  //   WebViewPlatform.instance = SurfaceAndroidWebView();
+  // }
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('am')],
