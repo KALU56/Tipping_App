@@ -1,4 +1,3 @@
-// tip_event.dart
 abstract class TipEvent {}
 
 class EmployeeIdEntered extends TipEvent {
@@ -6,9 +5,9 @@ class EmployeeIdEntered extends TipEvent {
   EmployeeIdEntered(this.employeeId);
 }
 
-class TipAmountEntered extends TipEvent {
-  final double amount;
-  TipAmountEntered(this.amount);
-}
+class InitializeTipEvent extends TipEvent {
+  final String employeeId;
+  final String amount;
 
-class TipSubmitted extends TipEvent {}
+  InitializeTipEvent({required this.employeeId, required this.amount});
+}

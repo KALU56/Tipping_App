@@ -1,6 +1,8 @@
-import '../data/model/models.dart';
+import '../data/model/tip_response.dart';
 
 abstract class TipRepository {
-  Future<bool> checkEmployee(String employeeId);
-  Future<TipModel> submitTip(String employeeId, double amount);
+  Future<TipResponse> initializeTip({
+    required String employeeId,
+    required String amount,
+  });
 }

@@ -1,8 +1,11 @@
+// employee_selection_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-
+import 'package:http/http.dart';
 import 'package:tip_/tip/presentation/bloc/tip_bloc.dart';
+import 'package:tip_/tip/presentation/bloc/tip_event.dart';
+
 import 'package:tip_/tip/presentation/screens/moble_scanner.dart';
 import 'package:tip_/tip/presentation/screens/payment_page.dart';
 
@@ -12,32 +15,35 @@ class EmployeeSelectionScreen extends StatefulWidget {
   const EmployeeSelectionScreen({super.key, required this.toggleTheme});
 
   @override
-  State<EmployeeSelectionScreen> createState() =>
-      _EmployeeSelectionScreenState();
+  State<EmployeeSelectionScreen> createState() => _EmployeeSelectionScreenState();
 }
 
 class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
   final TextEditingController _searchController = TextEditingController();
+  late TipBloc _tipBloc;
 
-  void _goToPayment(String employeeId, String employeeName) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: context.read<TipBloc>(), // pass same bloc forward
-          child: PaymentPage(
-            employeeId: employeeId,
-            employeeName: employeeName,
-          ),
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    _tipBloc = context.read<TipBloc>();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _goToPayment(String employeeId, String employeeName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: _tipBloc,
+          child: PaymentPage(employeeId: employeeId, employeeName: employeeName),
+        ),
+      ),
+    );
   }
 
   @override
@@ -59,8 +65,8 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
           ),
           PopupMenuButton<String>(
             onSelected: (value) {
-              if (value == 'en') context.setLocale(const Locale('en'));
-              if (value == 'am') context.setLocale(const Locale('am'));
+              if (value == 'en') context.setLocale(Locale('en'));
+              if (value == 'am') context.setLocale(Locale('am'));
             },
             itemBuilder: (context) => [
               const PopupMenuItem(value: 'en', child: Text('English')),
@@ -84,31 +90,25 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
                 ),
               ),
               SizedBox(height: size.height * 0.02),
-
-              // QR SCAN BUTTON
               ElevatedButton.icon(
                 onPressed: () async {
                   final scannedValue = await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const BarcodeScannerScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
                   );
                   if (scannedValue != null) {
+                    // Assume scanned value is employee ID
+                    _tipBloc.add(EmployeeIdEntered(scannedValue));
                     _goToPayment(scannedValue, "Employee $scannedValue");
                   }
                 },
                 icon: const Icon(Icons.qr_code_scanner),
                 label: Text('scan_qr'.tr()),
                 style: ElevatedButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(vertical: size.height * 0.02),
+                  padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
                 ),
               ),
-
               SizedBox(height: size.height * 0.02),
-
-              // MANUAL INPUT
               TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
@@ -117,17 +117,16 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
                 ),
               ),
               SizedBox(height: size.height * 0.015),
-
               ElevatedButton(
                 onPressed: () {
                   final employeeId = _searchController.text.trim();
                   if (employeeId.isNotEmpty) {
+                    _tipBloc.add(EmployeeIdEntered(employeeId));
                     _goToPayment(employeeId, "Employee $employeeId");
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(vertical: size.height * 0.02),
+                  padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
                 ),
                 child: Text('proceed_payment'.tr()),
               ),

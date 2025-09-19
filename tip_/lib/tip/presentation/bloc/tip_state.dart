@@ -1,36 +1,17 @@
-// tip_state.dart
-class TipState {
-  final String employeeId;
-  final bool employeeExists;
-  final double tipAmount;
-  final bool isSubmitting;
-  final bool isSuccess;
-  final String? errorMessage;
+import '../../data/model/tip_response.dart';
 
-  TipState({
-    this.employeeId = '',
-    this.employeeExists = false,
-    this.tipAmount = 0,
-    this.isSubmitting = false,
-    this.isSuccess = false,
-    this.errorMessage,
-  });
+abstract class TipState {}
 
-  TipState copyWith({
-    String? employeeId,
-    bool? employeeExists,
-    double? tipAmount,
-    bool? isSubmitting,
-    bool? isSuccess,
-    String? errorMessage,
-  }) {
-    return TipState(
-      employeeId: employeeId ?? this.employeeId,
-      employeeExists: employeeExists ?? this.employeeExists,
-      tipAmount: tipAmount ?? this.tipAmount,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      isSuccess: isSuccess ?? this.isSuccess,
-      errorMessage: errorMessage,
-    );
-  }
+class TipInitial extends TipState {}
+
+class TipLoading extends TipState {}
+
+class TipSuccess extends TipState {
+  final TipResponse response;
+  TipSuccess({required this.response});
+}
+
+class TipFailure extends TipState {
+  final String message;
+  TipFailure({required this.message});
 }
