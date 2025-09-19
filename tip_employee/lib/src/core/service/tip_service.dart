@@ -9,7 +9,7 @@ class TipService {
 
 
   Future<List<TipModel>> getEmployeeTips() async {
-    final response = await httpService.get('/api/employees/tips');
+    final response = await httpService.get('/api/employees/transactions');
 
     if (response.staticCode == 200) {
       final List tipsData = response.data['tips'] ?? [];
