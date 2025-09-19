@@ -1,17 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tip_employee/src/features/tip/domain/transaction_repository.dart';
 import 'package:tip_employee/src/shared/domain/repositories/user_repository.dart';
 
-import '../../../../shared/domain/repositories/tip_repository.dart';
+
 import 'home_event.dart';
 import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final UserRepository userRepository;
-  final TipRepository tipRepository;
+  final TransactionRepository transactionRepository;
 
   HomeBloc({
     required this.userRepository,
-    required this.tipRepository,
+    required this.transactionRepository,
   }) : super(const HomeState()) {
     on<FetchProfile>(_onFetchProfile);
     on<FetchTips>(_onFetchTips);
@@ -31,32 +32,44 @@ Future<void> _onFetchProfile(FetchProfile event, Emitter<HomeState> emit) async 
     ));
   }
 }
-   Future<void> _onFetchTips(FetchTips event, Emitter<HomeState> emit) async {
+     Future<void> _onFetchTips(FetchTips event, Emitter<HomeState> emit) async {
     emit(state.copyWith(isLoading: true));
     try {
-      final tips = await tipRepository.fetchEmployeeTips();
-      final firstSix = tips.length > 6 ? tips.sublist(0, 6) : tips;
+      final tips = await transactionRepository.getTransactions();
+
+      // Sort descending by createdAt (most recent first)
+      tips.sort((a, b) {
+        final aDate = a.createdAt ?? DateTime.now();
+        final bDate = b.createdAt ?? DateTime.now();
+        return bDate.compareTo(aDate);
+      });
+
+      // Take top 5 for Home
+      final recentTips = tips.length > 5 ? tips.sublist(0, 5) : tips;
+
       emit(state.copyWith(
         isLoading: false,
         allTips: tips,
-        filteredTips: firstSix,
+        filteredTips: recentTips,
       ));
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 
+  // Search by amount
   void _onSearchTips(SearchTips event, Emitter<HomeState> emit) {
     final query = event.query.trim();
     if (query.isEmpty) {
-    
-      final firstSix = state.allTips.length > 6 ? state.allTips.sublist(0, 6) : state.allTips;
-      emit(state.copyWith(filteredTips: firstSix));
+      // Reset to recent tips
+      final recentTips =
+          state.allTips.length > 5 ? state.allTips.sublist(0, 5) : state.allTips;
+      emit(state.copyWith(filteredTips: recentTips));
       return;
     }
 
     final filtered = state.allTips.where((tip) {
-      return tip.netAmount.toString().contains(query);
+      return tip.amount != null && tip.amount.toString().contains(query);
     }).toList();
 
     emit(state.copyWith(filteredTips: filtered));

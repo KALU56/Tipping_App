@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:tip_employee/src/shared/data/models/tip.dart';
+import 'package:tip_employee/src/features/tip/data/models/transaction_model.dart';
 
 
-class TipList extends StatelessWidget {
-  final List<TipModel> tips;
+class TransactionList extends StatelessWidget {
+  final List<TransactionModel> transactions;
 
-  const TipList({super.key, required this.tips});
+  const TransactionList({super.key, required this.transactions});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (tips.isEmpty) {
+    if (transactions.isEmpty) {
       return Center(
         child: Text(
-          'No tips found',
+          'No transactions found',
           style: theme.textTheme.bodyMedium,
         ),
       );
@@ -22,9 +22,19 @@ class TipList extends StatelessWidget {
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: tips.length,
+      itemCount: transactions.length,
       itemBuilder: (context, index) {
-        final tip = tips[index];
+        final tx = transactions[index];
+
+        final formattedDate = tx.createdAt != null
+            ? "${tx.createdAt!.day.toString().padLeft(2, '0')}-"
+              "${tx.createdAt!.month.toString().padLeft(2, '0')}-"
+              "${tx.createdAt!.year} "
+              "${tx.createdAt!.hour.toString().padLeft(2, '0')}:"
+              "${tx.createdAt!.minute.toString().padLeft(2, '0')}"
+            : "N/A";
+
+        final amount = tx.amount != null ? "\$${tx.amount!.toStringAsFixed(2)}" : "N/A";
 
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
@@ -41,7 +51,8 @@ class TipList extends StatelessWidget {
             ],
           ),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             leading: Container(
               width: 45,
               height: 45,
@@ -52,11 +63,11 @@ class TipList extends StatelessWidget {
               child: const Icon(Icons.monetization_on, color: Colors.white),
             ),
             title: Text(
-              'Amount: \$${tip.netAmount?.toStringAsFixed(2)}',
+              'Amount: $amount',
               style: theme.textTheme.titleMedium,
             ),
             subtitle: Text(
-              tip.date.toLocal().toString(),
+              'Time: $formattedDate',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
               ),

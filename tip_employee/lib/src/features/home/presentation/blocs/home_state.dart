@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:tip_employee/src/features/tip/data/models/transaction_model.dart';
 import 'package:tip_employee/src/shared/data/models/tip.dart';
 import 'package:tip_employee/src/shared/data/models/user_model.dart';
 
@@ -6,8 +7,8 @@ import 'package:tip_employee/src/shared/data/models/user_model.dart';
 class HomeState extends Equatable {
   final bool isLoading;
   final User? user;
-  final List<TipModel> allTips;
-  final List<TipModel> filteredTips;
+  final List<TransactionModel> allTips;  
+  final List<TransactionModel> filteredTips;
   final String? error;
 
   const HomeState({
@@ -21,8 +22,8 @@ class HomeState extends Equatable {
   HomeState copyWith({
     bool? isLoading,
     User? user,
-    List<TipModel>? allTips,
-    List<TipModel>? filteredTips,
+    List<TransactionModel>? allTips,
+    List<TransactionModel>? filteredTips,
     String? error,
   }) {
     return HomeState(
@@ -35,5 +36,5 @@ class HomeState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [isLoading, user, allTips, filteredTips, error];
+  List<Object?> get props => [isLoading, allTips, filteredTips, error];
 }

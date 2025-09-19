@@ -12,6 +12,7 @@ class FetchProfile extends HomeEvent {}
 
 class FetchTips extends HomeEvent {}
 
+// Search transactions by amount
 class SearchTips extends HomeEvent {
   final String query;
 
