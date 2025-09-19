@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-
-import 'package:tip_/app/themes/app_theme.dart';
-
 import 'package:tip_/tip/core/service/http_service/http_service.dart';
 import 'package:tip_/tip/core/service/tip_service.dart';
-import 'package:tip_/tip/data/repository_imp.dart';
-import 'package:tip_/tip/domain/repository.dart';
 
-import 'package:tip_/tip/presentation/bloc/tip_bloc.dart';
-import 'package:tip_/tip/presentation/screens/employee_selection_screen.dart';
+import 'tip/data/repository_imp.dart';
+import 'tip/domain/repository.dart';
+import 'tip/presentation/bloc/tip_bloc.dart';
+import 'tip/presentation/screens/employee_selection_screen.dart';
+import 'app/themes/app_theme.dart';
 
-Future<void> main() async {
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
@@ -43,10 +42,7 @@ class _CustomerPaymentAppState extends State<CustomerPaymentApp> {
   ThemeMode _themeMode = ThemeMode.light;
 
   void _toggleTheme() {
-    setState(() {
-      _themeMode =
-          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    });
+    setState(() => _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light);
   }
 
   @override
@@ -54,8 +50,8 @@ class _CustomerPaymentAppState extends State<CustomerPaymentApp> {
     return BlocProvider(
       create: (context) => TipBloc(repository: widget.repository),
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
         title: 'Customer Payment',
+        debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,

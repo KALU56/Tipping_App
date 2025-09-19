@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:tip_/tip/presentation/bloc/tip_bloc.dart';
 import 'package:tip_/tip/presentation/bloc/tip_event.dart';
-// Ensure that TipSubmitted is defined in tip_event.dart and imported correctly
 import 'package:tip_/tip/presentation/bloc/tip_state.dart';
 import 'package:tip_/tip/presentation/screens/tip_confirmation_screen.dart';
 
@@ -30,13 +29,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     super.initState();
     // Trigger the tip submission when the screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TipBloc>().add(
-        TipSubmitted(
-          employeeId: widget.employeeId,
-          employeeName: widget.employeeName,
-          tipAmount: widget.tipAmount,
-        ),
-      );
+      context.read<TipBloc>().add(TipSubmitted());
     });
   }
 
@@ -44,7 +37,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     return BlocListener<TipBloc, TipState>(
       listener: (context, state) {
-        if (state is TipSuccess) {
+        if (state.isSuccess) {
           // Navigate to success screen
           Navigator.pushReplacement(
             context,
@@ -56,7 +49,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
               ),
             ),
           );
-        } else if (state is TipFailure && state.errorMessage != null) {
+        } else if (state.errorMessage != null) {
           // Show error message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.errorMessage!)),

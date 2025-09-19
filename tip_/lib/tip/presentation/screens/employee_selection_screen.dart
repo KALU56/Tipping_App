@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-
-import 'package:tip_/tip/presentation/bloc/tip_bloc.dart';
 import 'package:tip_/tip/presentation/screens/moble_scanner.dart';
-import 'package:tip_/tip/presentation/screens/payment_page.dart';
+import '../bloc/tip_bloc.dart';
+import 'payment_page.dart';
+
 
 class EmployeeSelectionScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -12,8 +12,7 @@ class EmployeeSelectionScreen extends StatefulWidget {
   const EmployeeSelectionScreen({super.key, required this.toggleTheme});
 
   @override
-  State<EmployeeSelectionScreen> createState() =>
-      _EmployeeSelectionScreenState();
+  State<EmployeeSelectionScreen> createState() => _EmployeeSelectionScreenState();
 }
 
 class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
@@ -23,38 +22,22 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: context.read<TipBloc>(), // pass same bloc forward
-          child: PaymentPage(
-            employeeId: employeeId,
-            employeeName: employeeName,
-          ),
-        ),
+        builder: (_) => PaymentPage(employeeId: employeeId, employeeName: employeeName),
       ),
     );
   }
 
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('welcome'.tr()),
         actions: [
           IconButton(
-            icon: Icon(
-              theme.brightness == Brightness.dark
-                  ? Icons.wb_sunny
-                  : Icons.nightlight_round,
-            ),
+            icon: Icon(theme.brightness == Brightness.dark ? Icons.wb_sunny : Icons.nightlight_round),
             onPressed: widget.toggleTheme,
           ),
           PopupMenuButton<String>(
@@ -62,53 +45,31 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
               if (value == 'en') context.setLocale(const Locale('en'));
               if (value == 'am') context.setLocale(const Locale('am'));
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'en', child: Text('English')),
-              const PopupMenuItem(value: 'am', child: Text('አማርኛ')),
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 'en', child: Text('English')),
+              PopupMenuItem(value: 'am', child: Text('አማርኛ')),
             ],
-            icon: const Icon(Icons.language),
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: Image.asset(
-                  'assets/images/gift.png',
-                  height: size.height * 0.3,
-                  fit: BoxFit.contain,
-                ),
-              ),
+              Image.asset('assets/images/gift.png', height: size.height * 0.3),
               SizedBox(height: size.height * 0.02),
-
-              // QR SCAN BUTTON
               ElevatedButton.icon(
                 onPressed: () async {
                   final scannedValue = await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const BarcodeScannerScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
                   );
-                  if (scannedValue != null) {
-                    _goToPayment(scannedValue, "Employee $scannedValue");
-                  }
+                  if (scannedValue != null) _goToPayment(scannedValue, "Employee $scannedValue");
                 },
                 icon: const Icon(Icons.qr_code_scanner),
                 label: Text('scan_qr'.tr()),
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(vertical: size.height * 0.02),
-                ),
               ),
-
-              SizedBox(height: size.height * 0.02),
-
-              // MANUAL INPUT
               TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
@@ -116,19 +77,11 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
                   prefixIcon: const Icon(Icons.search),
                 ),
               ),
-              SizedBox(height: size.height * 0.015),
-
               ElevatedButton(
                 onPressed: () {
-                  final employeeId = _searchController.text.trim();
-                  if (employeeId.isNotEmpty) {
-                    _goToPayment(employeeId, "Employee $employeeId");
-                  }
+                  final id = _searchController.text.trim();
+                  if (id.isNotEmpty) _goToPayment(id, "Employee $id");
                 },
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(vertical: size.height * 0.02),
-                ),
                 child: Text('proceed_payment'.tr()),
               ),
             ],

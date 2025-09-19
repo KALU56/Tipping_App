@@ -9,7 +9,6 @@ class TipBloc extends Bloc<TipEvent, TipState> {
   TipBloc({required this.repository}) : super(TipInitial()) {
     on<InitializeTipEvent>((event, emit) async {
       emit(TipLoading());
-
       try {
         final response = await repository.initializeTip(
           employeeId: event.employeeId,
