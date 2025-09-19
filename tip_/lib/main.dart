@@ -1,20 +1,30 @@
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:tip_/tip/core/service/http_service/http_service.dart';
 import 'package:tip_/tip/core/service/tip_service.dart';
-
 import 'tip/data/repository_imp.dart';
 import 'tip/domain/repository.dart';
 import 'tip/presentation/bloc/tip_bloc.dart';
 import 'tip/presentation/screens/employee_selection_screen.dart';
 import 'app/themes/app_theme.dart';
-
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
+  // Only initialize WebView for mobile platforms
+  if (Platform.isAndroid) {
+    WebView.platform = AndroidWebView();
+  } else if (Platform.isIOS) {
+    WebView.platform = CupertinoWebView();
+  }
+  // Linux, Windows, macOS desktop: no WebView initialization needed
+
+  // Services & repository
   final httpService = HttpServiceImpl();
   final tipService = TipService(httpService: httpService);
   final TipRepository tipRepository = TipRepositoryImpl(tipService: tipService);
@@ -42,7 +52,9 @@ class _CustomerPaymentAppState extends State<CustomerPaymentApp> {
   ThemeMode _themeMode = ThemeMode.light;
 
   void _toggleTheme() {
-    setState(() => _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light);
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    });
   }
 
   @override
