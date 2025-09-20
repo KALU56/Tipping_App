@@ -42,7 +42,7 @@ class _SettingState extends State<Setting> {
             }
 
             if (state is ProfileLoaded) {
-              final user = state.user; // always use the latest user from Bloc
+              final user = state.user;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,15 +51,15 @@ class _SettingState extends State<Setting> {
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: ProfileSection(
-                      user: user,
                       onTap: () {
-                        // Just open the dialog, no need for `.then(...)`
-                        showDialog(
-                          context: context,
-                          barrierColor: Colors.transparent,
-                          builder: (_) => ProfileEditDialog(user: user),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ProfileDetailsScreen(user: user),
+                          ),
                         );
                       },
+                      user: user,
                     ),
                   ),
 
@@ -80,6 +80,19 @@ class _SettingState extends State<Setting> {
                     child: ListView(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       children: [
+                       SettingsOption(
+                          color: theme.colorScheme.primary,
+                          icon: Icons.person_outline,
+                          title: 'Edit Profile',
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              barrierColor: Colors.transparent,
+                              builder: (_) => ProfileEditDialog(user: user),
+                            );
+                          },
+                        ),
+
                         SettingsOption(
                           color: theme.colorScheme.primary,
                           icon: Icons.lock_outline,
@@ -103,7 +116,10 @@ class _SettingState extends State<Setting> {
                           icon: Icons.account_balance_wallet_outlined,
                           title: 'Update Bank Account',
                           onTap: () {
+                            // Load banks first
                             context.read<SettingBloc>().add(LoadBanks());
+
+                            // Open dialog
                             showDialog(
                               context: context,
                               builder: (_) {
