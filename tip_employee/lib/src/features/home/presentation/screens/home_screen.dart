@@ -1,5 +1,7 @@
 part of '../../home.dart';
 
+
+
 class _HomeScreen extends StatelessWidget {
   const _HomeScreen();
 
@@ -11,6 +13,7 @@ class _HomeScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
+          // Top background color
           Container(
             height: 100,
             color: AppTheme.primaryColor,
@@ -34,9 +37,18 @@ class _HomeScreen extends StatelessWidget {
 
                 const _PromotionalBanner(),
 
-                const _RecentTipsHeader(),
+                // Recent tips header
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text(
+                    'Recent Tips',
+                    style: theme.textTheme.titleLarge,
+                  ),
+                ),
                 const SizedBox(height: 8),
 
+                // List of recent 5 tips
                 Expanded(
                   child: BlocBuilder<HomeBloc, HomeState>(
                     builder: (context, state) {
@@ -52,8 +64,8 @@ class _HomeScreen extends StatelessWidget {
                         );
                       }
 
-                      // Use TransactionList instead of TipList
-                      return TransactionList(transactions: state.filteredTips);
+                      // Pass last 5 filtered transactions
+                      return TransactionHistoryList(transactions: state.filteredTips);
                     },
                   ),
                 ),
