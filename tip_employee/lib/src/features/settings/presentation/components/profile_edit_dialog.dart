@@ -44,32 +44,34 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
     }
   }
 
+  /// Save profile and update Bloc
   Future<void> _saveProfile() async {
-  if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
-  final String newFirstName = _firstnameController.text.trim();
-  final String newLastName = _lastnameController.text.trim();
+    setState(() => _isLoading = true);
 
-  print('💡 Saving profile with: firstName=$newFirstName, lastName=$newLastName, imageFile=$_imageFile');
+    final String newFirstName = _firstnameController.text.trim();
+    final String newLastName = _lastnameController.text.trim();
 
-  try {
-    final updatedUser = await context.read<SettingBloc>().userSettingRepository.updateProfile(
-      firstName: newFirstName,
-      lastName: newLastName,
-      imageFile: _imageFile,
-    );
+    try {
+      final updatedUser = await context.read<SettingBloc>().userSettingRepository.updateProfile(
+        firstName: newFirstName,
+        lastName: newLastName,
+        imageFile: _imageFile,
+      );
 
-    print('✅ Updated user data: $updatedUser');
+      // Update Bloc state so main screen reacts automatically
+      context.read<SettingBloc>().emit(ProfileLoaded(updatedUser));
 
-    Navigator.pop(context); // Close dialog after successful update
-  } catch (e) {
-    print('❌ Error updating profile: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to update profile: $e')),
-    );
+      Navigator.pop(context); // Close dialog
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile: $e')),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
