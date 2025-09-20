@@ -16,18 +16,20 @@ class TransactionRepositoryImpl implements TransactionRepository {
     if (response.staticCode == 200) {
       final data = response.data;
 
+      // Case 1: API returns { "transactions": [ ... ] }
       if (data is Map && data['transactions'] is List) {
         return (data['transactions'] as List)
             .map((json) => TransactionModel.fromJson(json))
             .toList();
       }
 
+      // Case 2: API returns a raw list [ ... ]
       if (data is List) {
         return data.map((json) => TransactionModel.fromJson(json)).toList();
       }
     }
 
-    // Error or empty response
+    // If error, return empty list (or throw exception depending on strategy)
     return [];
   }
 }

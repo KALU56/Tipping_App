@@ -7,12 +7,13 @@ abstract class HomeEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-
+/// Fetch user profile
 class FetchProfile extends HomeEvent {}
 
+/// Fetch transactions (for Home screen, only latest 5 are kept)
 class FetchTips extends HomeEvent {}
 
-// Search transactions by amount
+/// Search transactions by amount
 class SearchTips extends HomeEvent {
   final String query;
 

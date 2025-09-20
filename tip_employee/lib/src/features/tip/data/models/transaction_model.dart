@@ -36,4 +36,46 @@ class TransactionModel {
       'amount': amount,
     };
   }
+
+  TransactionModel copyWith({
+    int? id,
+    String? txRef,
+    String? status,
+    DateTime? createdAt,
+    double? amount,
+  }) {
+    return TransactionModel(
+      id: id ?? this.id,
+      txRef: txRef ?? this.txRef,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      amount: amount ?? this.amount,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'TransactionModel(id: $id, txRef: $txRef, status: $status, createdAt: $createdAt, amount: $amount)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TransactionModel &&
+        other.id == id &&
+        other.txRef == txRef &&
+        other.status == status &&
+        other.createdAt == createdAt &&
+        other.amount == amount;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        txRef.hashCode ^
+        status.hashCode ^
+        createdAt.hashCode ^
+        amount.hashCode;
+  }
 }
