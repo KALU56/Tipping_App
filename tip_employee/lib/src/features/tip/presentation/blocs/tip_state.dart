@@ -1,30 +1,33 @@
 import 'package:equatable/equatable.dart';
-import 'package:tip_employee/src/shared/data/models/tip.dart';
+import 'package:tip_employee/src/features/tip/data/models/transaction_model.dart';
 
+class TipHistoryState extends Equatable {
+  final bool isLoading;
+  final List<TransactionModel> allTransactions;      // all fetched
+  final List<TransactionModel> filteredTransactions; // filtered by period or search
+  final String? error;
 
-abstract class TipState extends Equatable {
-  const TipState();
+  const TipHistoryState({
+    this.isLoading = false,
+    this.allTransactions = const [],
+    this.filteredTransactions = const [],
+    this.error,
+  });
+
+  TipHistoryState copyWith({
+    bool? isLoading,
+    List<TransactionModel>? allTransactions,
+    List<TransactionModel>? filteredTransactions,
+    String? error,
+  }) {
+    return TipHistoryState(
+      isLoading: isLoading ?? this.isLoading,
+      allTransactions: allTransactions ?? this.allTransactions,
+      filteredTransactions: filteredTransactions ?? this.filteredTransactions,
+      error: error,
+    );
+  }
 
   @override
-  List<Object?> get props => [];
-}
-
-class TipInitial extends TipState {}
-
-class TipLoading extends TipState {}
-
-class TipLoaded extends TipState {
-  final List<TipModel> tips;
-  const TipLoaded(this.tips);
-
-  @override
-  List<Object?> get props => [tips];
-}
-
-class TipError extends TipState {
-  final String message;
-  const TipError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [isLoading, allTransactions, filteredTransactions, error];
 }

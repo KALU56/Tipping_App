@@ -1,5 +1,5 @@
+// 
 part of '../../tip.dart';
-
 class TipHistoryScreen extends StatefulWidget {
   const TipHistoryScreen({super.key});
 
@@ -7,14 +7,31 @@ class TipHistoryScreen extends StatefulWidget {
   State<TipHistoryScreen> createState() => _TipHistoryScreenState();
 }
 
-class _TipHistoryScreenState extends State<TipHistoryScreen> {
-  int _selectedFilter = 3; // Default "All"
-  final List<String> _filters = ['Today', 'This Week', 'This Month', 'All'];
+class _TipHistoryScreenState extends State<TipHistoryScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+
+  final List<String> _tabs = ['All', 'Month', 'Week', 'Today'];
 
   @override
   void initState() {
     super.initState();
-    context.read<TipBloc>().add(LoadTips());
+    _tabController = TabController(length: _tabs.length, vsync: this);
+    // Fetch all transactions on init
+    context.read<TipHistoryBloc>().add(FetchAllTransactions());
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) return;
+      final period = _tabs[_tabController.index].toLowerCase();
+      context.read<TipHistoryBloc>().add(FilterTransactions(period));
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -22,43 +39,53 @@ class _TipHistoryScreenState extends State<TipHistoryScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              SearchBar(
-                onSearchChanged: (query) =>
-                    context.read<TipBloc>().add(SearchTips(query)),
-              ),
-              const SizedBox(height: 12),
-              FilterChips(
-                filters: _filters,
-                selectedIndex: _selectedFilter,
-                onFilterChanged: (index) {
-                  setState(() => _selectedFilter = index);
-                  context.read<TipBloc>().add(FilterTips(index));
-                },
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: BlocBuilder<TipBloc, TipState>(
-                  builder: (context, state) {
-                    if (state is TipLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is TipLoaded) {
-                      return TipList(tips: state.tips);
-                    } else if (state is TipError) {
-                      return Center(child: Text('Error: ${state.message}'));
-                    }
-                    return const SizedBox.shrink();
-                  },
+      appBar: AppBar(
+        title: const Text('Tip History'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: _tabs.map((t) => Tab(text: t)).toList(),
+        ),
+      ),
+      body: Column(
+        children: [
+          // Search bar
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _searchController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: 'Search by amount',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
-            ],
+              onChanged: (value) {
+                context.read<TipHistoryBloc>().add(SearchTransactions(value));
+              },
+            ),
           ),
-        ),
+
+          // Transaction list
+          Expanded(
+            child: BlocBuilder<TipHistoryBloc, TipHistoryState>(
+              builder: (context, state) {
+                if (state.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (state.error != null) {
+                  return Center(child: Text('Error: ${state.error}'));
+                }
+
+                return TransactionHistoryList(
+                  transactions: state.filteredTransactions,
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

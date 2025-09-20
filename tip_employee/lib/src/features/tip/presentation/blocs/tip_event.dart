@@ -1,26 +1,31 @@
 import 'package:equatable/equatable.dart';
 
-abstract class TipEvent extends Equatable {
-  const TipEvent();
+abstract class TipHistoryEvent extends Equatable {
+  const TipHistoryEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class LoadTips extends TipEvent {}
+// Fetch all transactions
+class FetchAllTransactions extends TipHistoryEvent {}
 
-class SearchTips extends TipEvent {
+// Filter transactions by period: all, month, week, today
+class FilterTransactions extends TipHistoryEvent {
+  final String period; // 'all', 'month', 'week', 'today'
+
+  const FilterTransactions(this.period);
+
+  @override
+  List<Object?> get props => [period];
+}
+
+// Search transactions by amount
+class SearchTransactions extends TipHistoryEvent {
   final String query;
-  const SearchTips(this.query);
+
+  const SearchTransactions(this.query);
 
   @override
   List<Object?> get props => [query];
-}
-
-class FilterTips extends TipEvent {
-  final int filterIndex;
-  const FilterTips(this.filterIndex);
-
-  @override
-  List<Object?> get props => [filterIndex];
 }

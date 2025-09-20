@@ -1,66 +1,94 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tip_employee/src/shared/data/models/tip.dart';
+import 'package:tip_employee/src/features/tip/data/models/transaction_model.dart';
+import 'package:tip_employee/src/features/tip/domain/transaction_repository.dart';
+import 'package:tip_employee/src/features/tip/presentation/blocs/tip_event.dart';
+import 'package:tip_employee/src/features/tip/presentation/blocs/tip_state.dart';
 
-import 'package:tip_employee/src/shared/domain/repositories/tip_repository.dart';
 
-import 'tip_event.dart';
-import 'tip_state.dart';
+class TipHistoryBloc extends Bloc<TipHistoryEvent, TipHistoryState> {
+  final TransactionRepository transactionRepository;
 
-class TipBloc extends Bloc<TipEvent, TipState> {
-  final TipRepository repository;
-  List<TipModel> _allTips = [];
-
-  TipBloc(this.repository) : super(TipInitial()) {
-    on<LoadTips>(_onLoadTips);
-    on<SearchTips>(_onSearchTips);
-    on<FilterTips>(_onFilterTips);
+  TipHistoryBloc({required this.transactionRepository})
+      : super(const TipHistoryState()) {
+    on<FetchAllTransactions>(_onFetchAllTransactions);
+    on<FilterTransactions>(_onFilterTransactions);
+    on<SearchTransactions>(_onSearchTransactions);
   }
 
-  Future<void> _onLoadTips(LoadTips event, Emitter<TipState> emit) async {
-    emit(TipLoading());
+  Future<void> _onFetchAllTransactions(
+      FetchAllTransactions event, Emitter<TipHistoryState> emit) async {
+    emit(state.copyWith(isLoading: true));
     try {
-      _allTips = await repository.fetchEmployeeTips();
-      emit(TipLoaded(_allTips));
+      final txs = await transactionRepository.getTransactions();
+
+      // Sort descending by date
+      txs.sort((a, b) => (b.createdAt ?? DateTime(1970))
+          .compareTo(a.createdAt ?? DateTime(1970)));
+
+      emit(state.copyWith(
+        isLoading: false,
+        allTransactions: txs,
+        filteredTransactions: txs,
+      ));
     } catch (e) {
-      emit(TipError(e.toString()));
+      emit(state.copyWith(isLoading: false, error: e.toString()));
     }
   }
 
-  void _onSearchTips(SearchTips event, Emitter<TipState> emit) {
-    final query = double.tryParse(event.query);
-    final filtered = query != null
-        ? _allTips.where((tip) => tip.netAmount == query).toList()
-        : _allTips;
-    emit(TipLoaded(filtered));
-  }
-
-  void _onFilterTips(FilterTips event, Emitter<TipState> emit) {
+  void _onFilterTransactions(
+      FilterTransactions event, Emitter<TipHistoryState> emit) {
     final now = DateTime.now();
-    List<TipModel> filtered;
+    List<TransactionModel> filtered;
 
-    switch (event.filterIndex) {
-      case 0: // Today
-        filtered = _allTips.where((tip) =>
-            tip.date.year == now.year &&
-            tip.date.month == now.month &&
-            tip.date.day == now.day).toList();
+    switch (event.period) {
+      case 'today':
+        filtered = state.allTransactions.where((tx) {
+          final date = tx.createdAt;
+          return date != null &&
+              date.year == now.year &&
+              date.month == now.month &&
+              date.day == now.day;
+        }).toList();
         break;
-      case 1: // This Week
-        final weekStart = now.subtract(Duration(days: now.weekday - 1));
-        final weekEnd = weekStart.add(Duration(days: 6));
-        filtered = _allTips.where((tip) =>
-            tip.date.isAfter(weekStart.subtract(Duration(seconds: 1))) &&
-            tip.date.isBefore(weekEnd.add(Duration(days: 1)))).toList();
+      case 'week':
+        final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+        filtered = state.allTransactions.where((tx) {
+          final date = tx.createdAt;
+          return date != null &&
+              date.isAfter(startOfWeek) &&
+              date.isBefore(now.add(const Duration(days: 1)));
+        }).toList();
         break;
-      case 2: // This Month
-        filtered = _allTips.where((tip) =>
-            tip.date.year == now.year &&
-            tip.date.month == now.month).toList();
+      case 'month':
+        filtered = state.allTransactions.where((tx) {
+          final date = tx.createdAt;
+          return date != null &&
+              date.year == now.year &&
+              date.month == now.month;
+        }).toList();
         break;
-      default: // All
-        filtered = List.from(_allTips);
+      case 'all':
+      default:
+        filtered = List.from(state.allTransactions);
     }
 
-    emit(TipLoaded(filtered));
+    emit(state.copyWith(filteredTransactions: filtered));
+  }
+
+  void _onSearchTransactions(
+      SearchTransactions event, Emitter<TipHistoryState> emit) {
+    final query = event.query.trim();
+    if (query.isEmpty) {
+      // Reset to last filtered period
+      emit(state.copyWith(filteredTransactions: state.filteredTransactions));
+      return;
+    }
+
+    final filtered = state.filteredTransactions.where((tx) {
+      final amountStr = (tx.amount ?? 0).toString();
+      return amountStr.contains(query);
+    }).toList();
+
+    emit(state.copyWith(filteredTransactions: filtered));
   }
 }

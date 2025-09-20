@@ -8,35 +8,43 @@ import 'package:tip_employee/src/core/service/auth_service.dart';
 import 'package:tip_employee/src/core/service/user_service.dart';
 import 'package:tip_employee/src/core/service/account_service.dart';
 import 'package:tip_employee/src/core/service/cloudinary_service.dart';
+import 'package:tip_employee/src/core/service/tip_service.dart';
+
+// Repositories
+
+import 'package:tip_employee/src/features/tip/data/transaction_repository_impl.dart';
+import 'package:tip_employee/src/features/tip/domain/transaction_repository.dart';
 import 'package:tip_employee/src/features/tip/presentation/blocs/tip_bloc.dart';
-import 'package:tip_employee/src/features/tip/presentation/blocs/tip_event.dart';
 import 'package:tip_employee/src/shared/data/UserRepositoryImpl.dart';
-import 'package:tip_employee/src/shared/data/tip_repository_impl.dart';
 import 'package:tip_employee/src/features/settings/data/user_s_repository_impl.dart';
 import 'package:tip_employee/src/features/settings/data/bank_account_repository_impl.dart';
 import 'package:tip_employee/src/features/auth/data/repositories/auth_repository_impl.dart';
+
+// Domain
 import 'package:tip_employee/src/shared/domain/repositories/user_repository.dart';
-import 'package:tip_employee/src/shared/domain/repositories/tip_repository.dart';
 import 'package:tip_employee/src/features/settings/domain/user_s_repository.dart';
 import 'package:tip_employee/src/features/settings/domain/bank_account_repository.dart';
 import 'package:tip_employee/src/features/auth/domain/repositories/auth_repository.dart';
 
+// Blocs
 import 'package:tip_employee/src/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:tip_employee/src/features/home/presentation/blocs/home_bloc.dart';
 import 'package:tip_employee/src/features/home/presentation/blocs/home_event.dart';
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
 
+
+// Routes & Theme
 import 'package:tip_employee/src/app/routes/app_routes.dart';
 import 'package:tip_employee/src/app/routes/route_generator.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
 import 'package:tip_employee/src/app/themes/themeNotifier.dart';
 
-import 'package:tip_employee/src/core/service/tip_service.dart';
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
+  // Initialize core services
   final httpService = HttpServiceImpl();
   final authService = AuthService(httpService);
   final cloudinaryService = CloudinaryService(
@@ -50,18 +58,19 @@ void main() {
   final accountService = AccountService(httpService: httpService);
   final tipService = TipService(httpService: httpService);
 
+  // Initialize repositories
   final authRepository = AuthRepositoryImpl(authService);
   final userRepository = UserRepositoryImpl(userService: userService);
   final userSettingRepository = UserSettingRepositoryImpl(userService: userService);
   final bankAccountRepository = BankAccountRepositoryImpl(accountService: accountService);
-  final tipRepository = TipRepositoryImpl(tipService: tipService);
+  final transactionRepository = TransactionRepositoryImpl(httpService);
 
   runApp(MyApp(
     authRepository: authRepository,
     userRepository: userRepository,
     userSettingRepository: userSettingRepository,
-    tipRepository: tipRepository,
     bankAccountRepository: bankAccountRepository,
+    transactionRepository: transactionRepository,
   ));
 }
 
@@ -69,16 +78,16 @@ class MyApp extends StatelessWidget {
   final AuthRepository authRepository;
   final UserRepository userRepository;
   final UserSettingRepository userSettingRepository;
-  final TipRepository tipRepository;
   final BankAccountRepository bankAccountRepository;
+  final TransactionRepository transactionRepository;
 
   const MyApp({
     super.key,
     required this.authRepository,
     required this.userRepository,
     required this.userSettingRepository,
-    required this.tipRepository,
     required this.bankAccountRepository,
+    required this.transactionRepository,
   });
 
   @override
@@ -98,13 +107,13 @@ class MyApp extends StatelessWidget {
         BlocProvider<HomeBloc>(
           create: (_) => HomeBloc(
             userRepository: userRepository,
-            tipRepository: tipRepository,
+            transactionRepository: transactionRepository,
           )
             ..add(FetchProfile())
             ..add(FetchTips()),
         ),
-        BlocProvider<TipBloc>(
-          create: (_) => TipBloc(tipRepository)..add(LoadTips()),
+        BlocProvider<TipHistoryBloc>(
+          create: (_) => TipHistoryBloc(transactionRepository: transactionRepository),
         ),
       ],
       child: ValueListenableBuilder<ThemeMode>(
