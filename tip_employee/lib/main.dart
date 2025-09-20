@@ -5,16 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Core Services
 import 'package:tip_employee/src/core/service/http_service/http_service.dart';
 import 'package:tip_employee/src/core/service/auth_service.dart';
+import 'package:tip_employee/src/core/service/transaction_service.dart';
 import 'package:tip_employee/src/core/service/user_service.dart';
 import 'package:tip_employee/src/core/service/account_service.dart';
 import 'package:tip_employee/src/core/service/cloudinary_service.dart';
-import 'package:tip_employee/src/core/service/tip_service.dart';
 
-// Repositories
-
+// Repositories & Services
 import 'package:tip_employee/src/features/tip/data/transaction_repository_impl.dart';
 import 'package:tip_employee/src/features/tip/domain/transaction_repository.dart';
-import 'package:tip_employee/src/features/tip/presentation/blocs/tip_bloc.dart';
+
 import 'package:tip_employee/src/shared/data/UserRepositoryImpl.dart';
 import 'package:tip_employee/src/features/settings/data/user_s_repository_impl.dart';
 import 'package:tip_employee/src/features/settings/data/bank_account_repository_impl.dart';
@@ -31,7 +30,7 @@ import 'package:tip_employee/src/features/auth/presentation/blocs/auth_bloc.dart
 import 'package:tip_employee/src/features/home/presentation/blocs/home_bloc.dart';
 import 'package:tip_employee/src/features/home/presentation/blocs/home_event.dart';
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
-
+import 'package:tip_employee/src/features/tip/presentation/blocs/tip_bloc.dart';
 
 // Routes & Theme
 import 'package:tip_employee/src/app/routes/app_routes.dart';
@@ -44,7 +43,7 @@ void main() {
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
-  // Initialize core services
+  // --- Initialize core services ---
   final httpService = HttpServiceImpl();
   final authService = AuthService(httpService);
   final cloudinaryService = CloudinaryService(
@@ -56,14 +55,19 @@ void main() {
     cloudinaryService: cloudinaryService,
   );
   final accountService = AccountService(httpService: httpService);
-  final tipService = TipService(httpService: httpService);
 
-  // Initialize repositories
+  // --- Initialize repositories ---
   final authRepository = AuthRepositoryImpl(authService);
   final userRepository = UserRepositoryImpl(userService: userService);
   final userSettingRepository = UserSettingRepositoryImpl(userService: userService);
   final bankAccountRepository = BankAccountRepositoryImpl(accountService: accountService);
-  final transactionRepository = TransactionRepositoryImpl(httpService);
+
+  // --- Transaction: Service -> RepoImpl -> RepoInterface ---
+  final transactionService = TransactionService(httpService);
+  final transactionRepositoryImpl = TransactionRepositoryImpl(transactionService);
+  final TransactionRepository transactionRepository = transactionRepositoryImpl;
+
+  print('✅ Core services and repositories initialized');
 
   runApp(MyApp(
     authRepository: authRepository,
