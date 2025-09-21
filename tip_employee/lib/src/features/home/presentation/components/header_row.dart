@@ -13,17 +13,16 @@ class _HeaderRowState extends State<_HeaderRow> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocBuilder<HomeBloc, HomeState>(
+    return BlocBuilder<SettingBloc, SettingState>(
       builder: (context, state) {
-        // Show loading placeholders if still loading
-        final isLoading = state.isLoading;
-        final user = state.user;
+        User? user;
+        if (state is ProfileLoaded) {
+          user = state.user;
+        }
 
         final fullName = user != null
             ? "${user.firstname} ${user.lastname}".trim()
-            : isLoading
-                ? "Loading..." // placeholder while fetching
-                : "Guest";
+            : "Guest";
 
         final profileImage = (user?.imageUrl != null && user!.imageUrl!.isNotEmpty)
             ? NetworkImage(user.imageUrl!)
@@ -36,23 +35,12 @@ class _HeaderRowState extends State<_HeaderRow> {
               children: [
                 // Profile info
                 GestureDetector(
-                  onTap: () {
-                    // Navigate to profile page if needed
-                  },
+                  onTap: () {},
                   child: Row(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: theme.colorScheme.primary,
-                            width: 2,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundImage: profileImage,
-                        ),
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: profileImage,
                       ),
                       const SizedBox(width: 12),
                       Text(
@@ -67,64 +55,36 @@ class _HeaderRowState extends State<_HeaderRow> {
                 ),
 
                 // Notification button
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: theme.shadowColor.withOpacity(0.1),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      )
-                    ],
-                  ),
-                  child: IconButton(
-                    icon: Icon(Icons.notifications_none,
-                        color: theme.colorScheme.primary),
-                    onPressed: () {},
-                  ),
+                IconButton(
+                  icon: Icon(Icons.notifications_none, color: theme.colorScheme.primary),
+                  onPressed: () {},
                 ),
               ],
             ),
-
             const SizedBox(height: 16),
-
-            // Search box
+            // Search box (still uses HomeBloc for searching tips)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Container(
-                height: 44,
-                decoration: BoxDecoration(
-                  color: theme.cardColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search tips or customers...',
-                    border: InputBorder.none,
-                    prefixIcon: Icon(Icons.search, color: theme.colorScheme.primary),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _darkModeEnabled
-                            ? Icons.wb_sunny
-                            : Icons.nightlight_round,
-                        color: theme.colorScheme.primary,
-                      ),
-                      onPressed: () {
-                        setState(() => _darkModeEnabled = !_darkModeEnabled);
-                        themeNotifier.toggleTheme(_darkModeEnabled);
-                      },
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search tips or customers...',
+                  border: InputBorder.none,
+                  prefixIcon: Icon(Icons.search, color: theme.colorScheme.primary),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _darkModeEnabled ? Icons.wb_sunny : Icons.nightlight_round,
+                      color: theme.colorScheme.primary,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    onPressed: () {
+                      setState(() => _darkModeEnabled = !_darkModeEnabled);
+                      themeNotifier.toggleTheme(_darkModeEnabled);
+                    },
                   ),
-                  onChanged: (value) {
-                    context.read<HomeBloc>().add(SearchTips(value));
-                  },
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
+                onChanged: (value) {
+                  context.read<HomeBloc>().add(SearchTips(value));
+                },
               ),
             ),
           ],
