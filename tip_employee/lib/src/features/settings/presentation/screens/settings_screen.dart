@@ -49,9 +49,15 @@ class _SettingState extends State<Setting> {
             }
 
             // Logged out
+            // Logged out
             if (state is LoggedOut) {
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              // Clear all routes and navigate to Welcome screen
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const Welcome()),
+                (route) => false, // remove all previous routes
+              );
             }
+
 
             // Bank account error
             if (state is BankAccountError) {

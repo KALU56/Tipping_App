@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tip_employee/src/app/themes/app_theme.dart';
 import 'package:tip_employee/src/core/service/account_service.dart';
+import 'package:tip_employee/src/features/auth/presentation/screens/welcome.dart';
 import 'package:tip_employee/src/features/settings/data/model/bank_account_request.dart';
 import 'package:tip_employee/src/features/settings/data/model/bank_account_response.dart' show BankAccountResponse;
 import 'package:tip_employee/src/features/settings/data/model/bank_model.dart';
