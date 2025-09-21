@@ -1,5 +1,4 @@
 part of '../../settings.dart';
-
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
 
@@ -29,11 +28,15 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     return BlocConsumer<SettingBloc, SettingState>(
       listener: (context, state) {
         if (state is PasswordChanged) {
+          // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Password changed successfully')),
           );
-          Navigator.pop(context);
+
+          // Close dialog and return to Settings screen
+          Navigator.of(context).pop();
         } else if (state is SettingError) {
+          // Show error message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message)),
           );
@@ -82,7 +85,10 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () {
+                              // Close dialog on cancel
+                              Navigator.of(context).pop();
+                            },
                             child: const Text('Cancel'),
                           ),
                           const SizedBox(width: 8),
@@ -133,6 +139,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       return;
     }
 
+    // Trigger password change in bloc
     context.read<SettingBloc>().add(
           ChangePassword(
             _currentPasswordController.text,
