@@ -30,6 +30,7 @@ class _HeaderRowState extends State<_HeaderRow> {
 
         return Column(
           children: [
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -55,13 +56,30 @@ class _HeaderRowState extends State<_HeaderRow> {
                 ),
 
                 // Notification button
-                IconButton(
-                  icon: Icon(Icons.notifications_none, color: theme.colorScheme.primary),
-                  onPressed: () {},
+                 Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.shadowColor.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
+                      )
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.notifications_none,
+                        color: theme.colorScheme.primary),
+                    onPressed: () {},
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             // Search box (still uses HomeBloc for searching tips)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -87,6 +105,7 @@ class _HeaderRowState extends State<_HeaderRow> {
                 },
               ),
             ),
+            const SizedBox(height: 5),
           ],
         );
       },
