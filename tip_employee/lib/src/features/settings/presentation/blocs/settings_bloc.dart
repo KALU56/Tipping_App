@@ -55,19 +55,26 @@ on<LoadBanks>((event, emit) async {
     });
 
     // Change Password
-    on<ChangePassword>((event, emit) async {
-      emit(SettingLoading());
-      try {
-        await userSettingRepository.updatePassword(
-          currentPassword: event.oldPassword,
-          newPassword: event.newPassword,
-          confirmPassword: event.newPassword,
-        );
-        emit(PasswordChanged());
-      } catch (e) {
-        emit(SettingError('Failed to change password: ${e.toString()}'));
-      }
-    });
+   on<ChangePassword>((event, emit) async {
+  emit(SettingLoading());
+  try {
+    await userSettingRepository.updatePassword(
+      currentPassword: event.oldPassword,
+      newPassword: event.newPassword,
+      confirmPassword: event.newPassword,
+    );
+
+    // Emit success first
+    emit(PasswordChanged());
+
+    // Reload profile to ensure settings screen is updated
+    final updatedUser = await userRepository.getProfile();
+    emit(ProfileLoaded(updatedUser));
+  } catch (e) {
+    emit(SettingError('Failed to change password: ${e.toString()}'));
+  }
+});
+
 
     // Logout
     on<Logout>((event, emit) async {
