@@ -21,21 +21,25 @@ class _HomeScreen extends StatelessWidget {
           SafeArea(
             child: Column(
               children: [
-                // Header row with username from state
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor,
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(24),
-                      bottomRight: Radius.circular(24),
-                    ),
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  child: const _HeaderRow(),
-                ),
+// Header row with username from state
+Container(
+  width: double.infinity,
+  decoration: BoxDecoration(
+    color: AppTheme.primaryColor,
+    borderRadius: const BorderRadius.only(
+      bottomLeft: Radius.circular(24),
+      bottomRight: Radius.circular(24),
+    ),
+  ),
+  padding: const EdgeInsets.all(16),
+  child: const _HeaderRow(),
+),
 
-                const _PromotionalBanner(),
+BlocBuilder<HomeBloc, HomeState>(
+  builder: (context, state) {
+    return _PromotionalBanner(transactions: state.allTips);
+  },
+),
 
                 // Recent tips header
                 Container(

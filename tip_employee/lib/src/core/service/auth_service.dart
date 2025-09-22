@@ -10,7 +10,7 @@ class AuthService {
 
   AuthService(this._httpService);
 
-  final String baseUrl = 'https://dd24df4038a9.ngrok-free.app/api/employees';
+  final String baseUrl = 'https://9a6b2568ac0a.ngrok-free.app/api/employees';
 
   Future<LoginModel> login(String email, String password) async {
     final data = {'email': email, 'password': password};

@@ -1,28 +1,30 @@
 class TransactionModel {
-  final int? id;
-  final String? txRef;
-  final String? status;
-  final DateTime? createdAt;
+  final String? id;
+  final String? tipId;
   final double? amount;
+  final double? fee;
+  final DateTime? createdAt;
 
   TransactionModel({
     this.id,
-    this.txRef,
-    this.status,
-    this.createdAt,
+    this.tipId,
     this.amount,
+    this.fee,
+    this.createdAt,
   });
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
     return TransactionModel(
-      id: json['id'] as int?,
-      txRef: json['tx_ref'] as String?,
-      status: json['status'] as String?,
-      createdAt: json['created_at'] != null
-          ? DateTime.tryParse(json['created_at'])
-          : null,
+      id: json['id'] as String?,
+      tipId: json['tip_id'] as String?,
       amount: json['amount'] != null
           ? double.tryParse(json['amount'].toString())
+          : null,
+      fee: json['fee'] != null
+          ? double.tryParse(json['fee'].toString())
+          : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'])
           : null,
     );
   }
@@ -30,52 +32,31 @@ class TransactionModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'tx_ref': txRef,
-      'status': status,
-      'created_at': createdAt?.toIso8601String(),
+      'tip_id': tipId,
       'amount': amount,
+      'fee': fee,
+      'created_at': createdAt?.toIso8601String(),
     };
   }
 
   TransactionModel copyWith({
-    int? id,
-    String? txRef,
-    String? status,
-    DateTime? createdAt,
+    String? id,
+    String? tipId,
     double? amount,
+    double? fee,
+    DateTime? createdAt,
   }) {
     return TransactionModel(
       id: id ?? this.id,
-      txRef: txRef ?? this.txRef,
-      status: status ?? this.status,
-      createdAt: createdAt ?? this.createdAt,
+      tipId: tipId ?? this.tipId,
       amount: amount ?? this.amount,
+      fee: fee ?? this.fee,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
   @override
   String toString() {
-    return 'TransactionModel(id: $id, txRef: $txRef, status: $status, createdAt: $createdAt, amount: $amount)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is TransactionModel &&
-        other.id == id &&
-        other.txRef == txRef &&
-        other.status == status &&
-        other.createdAt == createdAt &&
-        other.amount == amount;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        txRef.hashCode ^
-        status.hashCode ^
-        createdAt.hashCode ^
-        amount.hashCode;
+    return 'TransactionModel(id: $id, tipId: $tipId, amount: $amount, fee: $fee, createdAt: $createdAt)';
   }
 }

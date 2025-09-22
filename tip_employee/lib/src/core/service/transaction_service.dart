@@ -1,7 +1,6 @@
 import 'package:tip_employee/src/core/service/http_service/http_service.dart';
 import 'package:tip_employee/src/core/service/http_service/http_service_response_model.dart';
 import 'package:tip_employee/src/features/tip/data/models/transaction_model.dart';
-
 class TransactionService {
   final HttpService _httpService;
 
@@ -21,12 +20,14 @@ class TransactionService {
       if (response.staticCode == 200) {
         final data = response.data;
 
-        if (data is Map && data['transactions'] is List) {
-          return (data['transactions'] as List)
+        // ✅ fix: API root key is "payments"
+        if (data is Map && data['payments'] is List) {
+          return (data['payments'] as List)
               .map((json) => TransactionModel.fromJson(json))
               .toList();
         }
 
+        // Fallback if backend ever returns just a list
         if (data is List) {
           return data.map((json) => TransactionModel.fromJson(json)).toList();
         }

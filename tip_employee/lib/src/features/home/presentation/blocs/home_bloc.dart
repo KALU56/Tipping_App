@@ -33,30 +33,34 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   /// 🔹 Fetch latest 5 transactions
-  Future<void> _onFetchTips(FetchTips event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(isLoading: true));
-    try {
-      final tips = await transactionRepository.getTransactions();
+ Future<void> _onFetchTips(FetchTips event, Emitter<HomeState> emit) async {
+  emit(state.copyWith(isLoading: true, error: null));
+  try {
+    final tips = await transactionRepository.getTransactions();
 
-      // Sort descending by createdAt (most recent first)
-      tips.sort((a, b) {
-        final aDate = a.createdAt ?? DateTime(1970);
-        final bDate = b.createdAt ?? DateTime(1970);
-        return bDate.compareTo(aDate);
-      });
+    tips.sort((a, b) {
+      final aDate = a.createdAt ?? DateTime(1970);
+      final bDate = b.createdAt ?? DateTime(1970);
+      return bDate.compareTo(aDate);
+    });
 
-      // Take top 5 for Home
-      final recentTips = tips.take(5).toList();
+    final recentTips = tips.take(5).toList();
 
-      emit(state.copyWith(
-        isLoading: false,
-        allTips: tips,
-        filteredTips: recentTips,
-      ));
-    } catch (e) {
-      emit(state.copyWith(isLoading: false, error: e.toString()));
-    }
+    emit(state.copyWith(
+      isLoading: false,
+      allTips: tips,
+      filteredTips: recentTips,
+    ));
+  } catch (e) {
+    emit(state.copyWith(
+      isLoading: false,
+      error: 'Failed to load tips: $e',
+      allTips: [],
+      filteredTips: [],
+    ));
   }
+}
+
 
   /// 🔹 Search transactions by amount
   void _onSearchTips(SearchTips event, Emitter<HomeState> emit) {

@@ -1,7 +1,30 @@
 part of '../../home.dart';
-
 class _PromotionalBanner extends StatelessWidget {
-  const _PromotionalBanner();
+  final List<TransactionModel> transactions;
+
+  const _PromotionalBanner({super.key, required this.transactions});
+
+  double getTotal() => transactions.fold(0, (sum, tx) => sum + (tx.amount ?? 0));
+
+  double getWeekTotal() {
+    final now = DateTime.now();
+    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    return transactions
+        .where((tx) => tx.createdAt != null &&
+                       tx.createdAt!.isAfter(startOfWeek) &&
+                       tx.createdAt!.isBefore(now.add(const Duration(days: 1))))
+        .fold(0, (sum, tx) => sum + (tx.amount ?? 0));
+  }
+
+  double getTodayTotal() {
+    final now = DateTime.now();
+    return transactions
+        .where((tx) => tx.createdAt != null &&
+                       tx.createdAt!.year == now.year &&
+                       tx.createdAt!.month == now.month &&
+                       tx.createdAt!.day == now.day)
+        .fold(0, (sum, tx) => sum + (tx.amount ?? 0));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +39,7 @@ class _PromotionalBanner extends StatelessWidget {
         image: const DecorationImage(
           image: AssetImage('assets/images/birr.png'),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-            Colors.black54,
-            BlendMode.darken,
-          ),
+          colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
         ),
         boxShadow: [
           BoxShadow(
@@ -27,7 +47,7 @@ class _PromotionalBanner extends StatelessWidget {
             spreadRadius: 2,
             blurRadius: 10,
             offset: const Offset(0, 3),
-          )
+          ),
         ],
       ),
       child: Padding(
@@ -35,79 +55,27 @@ class _PromotionalBanner extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Earnings info
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                Text(
-                  'Total money earned',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  '\$1,234.56',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Total in this week',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  '\$1,200.00',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'total today',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  '\$34.56',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-
-            const Spacer(),
-
-            // "Show all transactions" button
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: theme.cardColor, // adaptive background
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  'Show all tip',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.primary,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-            ),
+            const SizedBox(height: 30),
+            Text('Total money earned',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.white)),
+            Text('\$${getTotal().toStringAsFixed(2)}',
+                style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.white)),
+            const SizedBox(height: 8),
+            // Text('Total in this week',
+            //     style: theme.textTheme.bodySmall?.copyWith(
+            //         fontWeight: FontWeight.bold, color: Colors.white)),
+            // Text('\$${getWeekTotal().toStringAsFixed(2)}',
+            //     style: theme.textTheme.bodyMedium?.copyWith(
+            //         fontWeight: FontWeight.bold, color: Colors.white)),
+            // const SizedBox(height: 8),
+            Text('Total today',
+                style: theme.textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.white)),
+            Text('\$${getTodayTotal().toStringAsFixed(2)}',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.white)),
           ],
         ),
       ),

@@ -26,7 +26,7 @@ class _HeaderRowState extends State<_HeaderRow> {
 
         final profileImage = (user?.imageUrl != null && user!.imageUrl!.isNotEmpty)
             ? NetworkImage(user.imageUrl!)
-            : const AssetImage('assets/images/avatar.png') as ImageProvider;
+            : null;
 
         return Column(
           children: [

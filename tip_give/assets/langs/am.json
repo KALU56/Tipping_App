@@ -1,7 +1,7 @@
 {
   "welcome": "እንኳን ደህና መጡ!",
   "scan_qr": "የሰራተኛ ቁልፍ QR እንዲቀርበው ያስሱ",
-  "enter_employee": "የሰራተኛ መለያ ወይም ስም ያስገቡ",
+  "enter_employee": "የሰራተኛ መለያ ",
   "proceed_payment": "ክፍያዎን እየሰራ ነው...",
     "send_tip_to": "ግብዣ ላክ ወደ {}",
   "enter_tip_amount": "የቲፕ መጠን ያስገቡ",

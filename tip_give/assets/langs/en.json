@@ -1,7 +1,7 @@
 {
   "welcome": "Welcome!",
   "scan_qr": "Scan Employee QR",
-  "enter_employee": "Enter Employee ID or Name",
+  "enter_employee": "Enter Employee ID ",
   "proceed_payment": "Proceed to Payment",
     "send_tip_to": "Send Tip to {}",
   "enter_tip_amount": "Enter Tip Amount",

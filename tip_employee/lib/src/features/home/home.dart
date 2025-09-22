@@ -9,6 +9,7 @@ import 'package:tip_employee/src/features/home/presentation/blocs/home_event.dar
 import 'package:tip_employee/src/features/home/presentation/blocs/home_state.dart';
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:tip_employee/src/features/settings/presentation/blocs/settings_state.dart';
+import 'package:tip_employee/src/features/tip/data/models/transaction_model.dart';
 
 import 'package:tip_employee/src/shared/widgets/tip_list.dart';
 
