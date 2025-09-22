@@ -5,7 +5,6 @@ import 'package:tip_give/tip/presentation/screens/moble_scanner.dart';
 import '../bloc/tip_bloc.dart';
 import 'payment_page.dart';
 
-
 class EmployeeSelectionScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
 
@@ -34,10 +33,12 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('welcome'.tr()),
+        title: Text('welcome'.tr()), // localized
         actions: [
           IconButton(
-            icon: Icon(theme.brightness == Brightness.dark ? Icons.wb_sunny : Icons.nightlight_round),
+            icon: Icon(
+              theme.brightness == Brightness.dark ? Icons.wb_sunny : Icons.nightlight_round,
+            ),
             onPressed: widget.toggleTheme,
           ),
           PopupMenuButton<String>(
@@ -68,12 +69,12 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
                   if (scannedValue != null) _goToPayment(scannedValue, "Employee $scannedValue");
                 },
                 icon: const Icon(Icons.qr_code_scanner),
-                label: Text('scan_qr'.tr()),
+                label: Text('scan_qr'.tr()), // localized
               ),
               TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  labelText: 'enter_employee_id'.tr(),
+                  labelText: 'enter_employee'.tr(), // localized
                   prefixIcon: const Icon(Icons.search),
                 ),
               ),
@@ -82,7 +83,7 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
                   final id = _searchController.text.trim();
                   if (id.isNotEmpty) _goToPayment(id, "Employee $id");
                 },
-                child: Text('proceed_payment'.tr()),
+                child: Text('proceed_payment'.tr()), // localized
               ),
             ],
           ),

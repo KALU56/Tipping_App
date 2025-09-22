@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../bloc/tip_bloc.dart';
 import '../bloc/tip_event.dart';
 import '../bloc/tip_state.dart';
@@ -39,34 +40,45 @@ class _PaymentPageState extends State<PaymentPage> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Send Tip to ${widget.employeeName}")),
+      appBar: AppBar(
+        title: Text('send_tip_to'.tr(args: [widget.employeeName])),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocConsumer<TipBloc, TipState>(
           listener: (context, state) {
-            if (state is TipSuccess) _openCheckoutLink(state.response.link);
-            if (state is TipFailure)
+            if (state is TipSuccess) {
+              _openCheckoutLink(state.response.link);
+            }
+            if (state is TipFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Error: ${state.message}")));
+                SnackBar(content: Text('error_message'.tr(args: [state.message]))),
+              );
+            }
           },
           builder: (context, state) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text("Enter Tip Amount", style: Theme.of(context).textTheme.titleMedium),
+                Text(
+                  'enter_tip_amount'.tr(),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
                 SizedBox(height: size.height * 0.02),
                 TextField(
                   controller: _amountController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      labelText: "Amount", prefixIcon: Icon(Icons.attach_money)),
+                  decoration: InputDecoration(
+                    labelText: 'amount'.tr(),
+                    prefixIcon: const Icon(Icons.attach_money),
+                  ),
                 ),
                 SizedBox(height: size.height * 0.02),
                 ElevatedButton(
                   onPressed: state is TipLoading ? null : _submitTip,
                   child: state is TipLoading
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Proceed to Pay"),
+                      : Text('proceed_to_pay'.tr()),
                 ),
               ],
             );
