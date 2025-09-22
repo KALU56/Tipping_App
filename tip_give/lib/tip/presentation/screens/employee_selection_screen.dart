@@ -54,36 +54,76 @@ class _EmployeeSelectionScreenState extends State<EmployeeSelectionScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20), // more breathing space
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch, // buttons full width
             children: [
-              Image.asset('assets/images/gift.png', height: size.height * 0.3),
-              SizedBox(height: size.height * 0.02),
+              // Top illustration
+              Center(
+                child: Image.asset(
+                  'assets/images/gift.png',
+                  height: size.height * 0.28,
+                ),
+              ),
+              SizedBox(height: size.height * 0.04),
+
+              // Scan QR section
               ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 onPressed: () async {
                   final scannedValue = await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const BarcodeScannerScreen()),
                   );
-                  if (scannedValue != null) _goToPayment(scannedValue, "Employee $scannedValue");
+                  if (scannedValue != null) {
+                    _goToPayment(scannedValue, "Employee $scannedValue");
+                  }
                 },
-                icon: const Icon(Icons.qr_code_scanner),
-                label: Text('scan_qr'.tr()), // localized
+                icon: const Icon(Icons.qr_code_scanner, size: 22),
+                label: Text(
+                  'scan_qr'.tr(),
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
+
+              SizedBox(height: size.height * 0.04),
+
+              // Search field
               TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  labelText: 'enter_employee'.tr(), // localized
+                  labelText: 'enter_employee'.tr(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   prefixIcon: const Icon(Icons.search),
                 ),
               ),
+
+              SizedBox(height: size.height * 0.025),
+
+              // Proceed button
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 onPressed: () {
                   final id = _searchController.text.trim();
                   if (id.isNotEmpty) _goToPayment(id, "Employee $id");
                 },
-                child: Text('proceed_payment'.tr()), // localized
+                child: Text(
+                  'proceed_payment'.tr(),
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
             ],
           ),
