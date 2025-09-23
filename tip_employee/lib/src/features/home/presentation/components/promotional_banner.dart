@@ -63,13 +63,7 @@ class _PromotionalBanner extends StatelessWidget {
                 style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 8),
-            // Text('Total in this week',
-            //     style: theme.textTheme.bodySmall?.copyWith(
-            //         fontWeight: FontWeight.bold, color: Colors.white)),
-            // Text('\$${getWeekTotal().toStringAsFixed(2)}',
-            //     style: theme.textTheme.bodyMedium?.copyWith(
-            //         fontWeight: FontWeight.bold, color: Colors.white)),
-            // const SizedBox(height: 8),
+       
             Text('Total today',
                 style: theme.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.bold, color: Colors.white)),

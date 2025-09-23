@@ -12,7 +12,7 @@ abstract interface class HttpService {
 class HttpServiceImpl implements HttpService {
   final Dio _dio;
 
-  HttpServiceImpl({Dio? dio, String baseUrl = 'https://9a6b2568ac0a.ngrok-free.app'})
+  HttpServiceImpl({Dio? dio, String baseUrl = 'https://4bd229d2ff23.ngrok-free.app'})
       : _dio = dio ??
             Dio(
               BaseOptions(

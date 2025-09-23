@@ -9,9 +9,11 @@ import 'http_service/http_service.dart';
 
 class AccountService {
   final HttpService httpService;
+  // final String chapaApiKey =
+  //     "CHASECK_TEST-skBas9KQBa87Dbx7OyMpQicnYN0jIowy"; 
   final String chapaApiKey =
-      "CHASECK_TEST-skBas9KQBa87Dbx7OyMpQicnYN0jIowy"; // secure in real app
-
+      "CHASECK_TEST-HjvGXcCsyxMZW22QMXsG7LD8hbkfx1WI";
+          
   AccountService({required this.httpService});
 
   // Your existing getBanks method (updated to use 'id' instead of 'code')
