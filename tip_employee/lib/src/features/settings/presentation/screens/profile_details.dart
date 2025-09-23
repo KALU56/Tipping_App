@@ -57,7 +57,7 @@ class ProfileDetailsScreen extends StatelessWidget {
             _buildDetailItem(context, 'Firstname', user.firstname),
             _buildDetailItem(context, 'Lastname', user.lastname),
             _buildDetailItem(context, 'Account Name', user.accountName ?? 'N/A'),
-            _buildDetailItem(context, 'Account Number', user.accountNumber ?? 'N/A'),
+            // _buildDetailItem(context, 'Account Number', user.accountNumber ?? 'N/A'),
             _buildDetailItem(context, 'Bank Code', user.bankCode ?? 'N/A'),
             _buildDetailItem(context, 'Tip Code', user.tipCode ?? 'N/A'),
           ],
