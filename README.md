@@ -38,12 +38,15 @@ Tipping_App/
 
 
 ## 🎥 Demo Videos
-
-* **tip_employ Demo** — click below
   [![tip\_employ Demo](https://img.youtube.com/vi/dALlBdwtitY/0.jpg)](https://youtube.com/shorts/dALlBdwtitY)
+* **tip_employ Demo** — click below
 
-* **tip_give Demo** — click below
+
+
+
   [![tip\_give Demo](https://img.youtube.com/vi/GKrOXeTtU4A/0.jpg)](https://youtube.com/shorts/GKrOXeTtU4A)
+* **tip_give Demo** — click below
+
 
 ---
 
