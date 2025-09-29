@@ -1,10 +1,6 @@
-
-
 # 💸 Tipping App
 
-[![Watch Overall Demo](assets/tipping_app_demo.png)](https://youtu.be/your_overall_demo_video)
-
-This repository contains a **two-sided tipping platform** built in Flutter:
+This repository contains a **two-sided tipping platform** built in Flutter with a Laravel backend:
 
 * **tip_give** — for customers to send tips
 * **tip_employ** — for employees to receive & manage tips
@@ -18,6 +14,7 @@ Tipping_App/
 │
 ├── tip_give/       # Customer app (send tips)
 ├── tip_employ/     # Employee app (receive tips)
+├── backend/        # Laravel backend (API)
 └── README.md       # This file
 ```
 
@@ -56,12 +53,12 @@ Tipping_App/
 
 ## 🛠️ Tech Stack
 
-* Flutter / Dart
-* Firebase Authentication
-* Cloud Firestore
-* Payment SDK (Stripe / PayPal etc.)
-* Push Notifications
-* State Management (Bloc / Provider)
+* **Frontend:** Flutter / Dart
+* **Backend:** Laravel / PHP
+* **Database:** MySQL / Firestore hybrid
+* **Authentication:** Firebase Auth + Laravel Sanctum
+* **Payments:**  chapa
+* **State Management:** Bloc / Provider
 
 ---
 
@@ -88,77 +85,57 @@ flutter pub get
 flutter run
 ```
 
-### 4️⃣ Configure environment variables
 
-Create a `.env` or config file. Example:
 
-```env
-API_BASE_URL=https://your-backend.com
-PAYMENT_KEY=your_payment_key   # only needed in tip_give
-```
+## 📡 API Reference
 
----
 
-## 🎮 How It Works
+### 💳 Payment / Tipping
 
-### Customer Flow (tip_give)
-
-1. Log in / sign up
-2. Browse list of employees
-3. Select an employee → enter tip amount → confirm
-4. View receipt & tip history
-
-### Employee Flow (tip_employ)
-
-1. Log in / register
-2. See incoming tips in real time
-3. Get notifications when tipped
-4. Check history
-5. Withdraw funds
+| Method | Endpoint          | Description                      |
+| ------ | ----------------- | -------------------------------- |
+| `POST` | `/verify-payment` | Verify a tip payment transaction |
+| `GET`  | `/tip/{id}`       | Process a tip by ID              |
 
 ---
 
-## 🖼️ Screenshots
+### 🏢 Service Providers
 
-| tip_give Home              | tip_give Send Tip          | tip_employ Dashboard              | tip_employ History              |
-| -------------------------- | -------------------------- | --------------------------------- | ------------------------------- |
-| `assets/tip_give_home.png` | `assets/tip_give_send.png` | `assets/tip_employ_dashboard.png` | `assets/tip_employ_history.png` |
+| Method  | Endpoint                                       | Description         
+| ------- | ---------------------------------------------- | --------------------- 
+| `POST`  | `/service-providers/register`                  | Register new provider 
+| `POST`  | `/service-providers/login`                     | Login provider    
+| `POST`  | `/service-providers/verify-email`              | Verify email     
+| `GET`   | `/service-providers/profile`                   | Get provider profile
+| `POST`  | `/service-providers/logout`                    | Logout               
+| `GET`   | `/service-providers/employees`                 | Get employees data   
+| `POST`  | `/service-providers/employees/register`        | Register employees    
 
-*(Replace these with your real screenshots paths)*
-
----
-
-## 📊 Data Flow (APIs / Endpoints)
-
-* **Customers (tip_give):**
-
-  * `GET /employees` → list employees
-  * `POST /tip` → send tip
-  * `GET /tip-history` → view past tips
-
-* **Employees (tip_employ):**
-
-  * `GET /my-tips` → fetch received tips
-  * `POST /withdraw` → withdraw funds
-  * `GET /profile` → employee info
 
 ---
 
-## 🤝 Contributing
+### 👔 Employees
 
-1. Fork the repository
-2. Create a branch: `git checkout -b feature/your-feature`
-3. Make changes & commit: `git commit -m "Add feature"`
-4. Push branch: `git push origin feature/your-feature`
-5. Open a Pull Request
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License**.
-See the [LICENSE](LICENSE) file for details.
+| Method | Endpoint                   | Description         
+| ------ | -------------------------- | --------------------- 
+| `POST` | `/employees/register`      | Complete registration 
+| `POST` | `/employees/login`         | Login employee     
+| `POST` | `/employees/verify-email`  | Verify email         
+| `POST` | `/employees/logout`        | Logout               
+| `POST` | `/employees/set-bank-info` | Set bank info         
+| `GET`  | `/employees/transactions`  | View transactions     
 
 ---
 
-If you like, I can also generate a **beautiful architecture diagram** (image or ASCII) showing how both apps connect to a backend — that will help others understand the flow quickly in the README. Do you want me to make that too?
+### 👤 Employee Profile (current user)
+
+| Method   | Endpoint                 | Description          
+| -------- | ------------------------ | -------------------- 
+| `GET`    | `/employee/profile`      | Get employee profile 
+| `PUT`    | `/employee/profile`      | Update profile       
+| `PUT`    | `/employee/password`     | Update password      
+| `DELETE` | `/employee/account`      | Deactivate account   
+| `GET`    | `/employee/bank-account` | Get bank account     
+| `PUT`    | `/employee/bank-account` | Update bank account  
+
+
