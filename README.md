@@ -14,7 +14,6 @@ Tipping_App/
 │
 ├── tip_give/       # Customer app (send tips)
 ├── tip_employ/     # Employee app (receive tips)
-├── backend/        # Laravel backend (API)
 └── README.md       # This file
 ```
 
@@ -24,22 +23,19 @@ Tipping_App/
 
 ### 🧑‍💼 tip_give (Customer Side)
 
-* Sign up / Login
 * Browse employees
 * Send tips (with payments)
 * View tip history & receipts
-* Notifications for tipping status
 
 ### 👔 tip_employ (Employee Side)
 
 * Employee login / registration
+* Sign up / Login
 * Profile management
 * View incoming tips
 * Tip history & details
 * Notifications for new tips
-* Withdraw funds
 
----
 
 ## 🎥 Demo Videos
 
